@@ -1,0 +1,6 @@
+en la rutas le puedes pasar valores por defecto
+    Route::get("destidos/{cat}/{subcat?}, function($cat, $subcat = null) {...});
+
+para crear un controlador
+    php artisan create:controller NombreController
+
