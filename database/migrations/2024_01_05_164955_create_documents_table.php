@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('path');
             $table->string('documentable_type');
             $table->unsignedBigInteger('documentable_id');
-            $table->json('meta_data')->nullable();
             $table->foreignId('updated_user_id')->constrained('users');
             $table->timestamps();
         });

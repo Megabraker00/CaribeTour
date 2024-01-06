@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('payment_type_id')->constrained('types');
             $table->decimal('amount');
-            $table->json('meta_data')->nullable();
             $table->timestamps();
         });
     }

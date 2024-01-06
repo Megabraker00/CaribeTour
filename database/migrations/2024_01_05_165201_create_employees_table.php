@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('email_company');
             $table->string('dni_passport');
             $table->string('phone')->nullable();
-            $table->json('meta_data')->nullable();
             $table->foreignId('created_user_id')->constrained('users');
             $table->timestamps();
         });

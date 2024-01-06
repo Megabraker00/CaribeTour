@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('suplier_id')->constrained();
             $table->string('name');
             $table->string('slug');
-            $table->json('meta_data')->nullable();
             $table->foreignId('created_user_id')->constrained('users');
             $table->timestamps();
         });

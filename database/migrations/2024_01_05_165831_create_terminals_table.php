@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('parent_id')->constrained('terminals')->default(0);
             $table->string('name');
             $table->string('adress')->nullable();
-            $table->json('meta_data')->nullable();
             $table->timestamps();
         });
     }

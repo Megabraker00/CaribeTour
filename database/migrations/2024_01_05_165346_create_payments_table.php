@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('type_id')->constrained();
             $table->foreignId('booking_id')->constrained();
             $table->decimal('amount');
-            $table->json('meta_data')->nullable();
             $table->timestamps();
         });
     }

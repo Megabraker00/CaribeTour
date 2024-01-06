@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('booking_id')->constrained();
-            $table->json('meta_data')->nullable();
             $table->foreignId('created_user_id')->constrained('users')->default(0);
             $table->timestamps();
         });

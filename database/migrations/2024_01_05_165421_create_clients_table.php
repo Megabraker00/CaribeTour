@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('last_name');
             $table->string('dni_passport');
-            $table->json('meta_data')->nullable();
             $table->timestamps();
         });
     }

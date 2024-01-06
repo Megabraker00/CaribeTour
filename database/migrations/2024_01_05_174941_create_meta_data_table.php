@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('supliers', function (Blueprint $table) {
+        Schema::create('meta_data', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('state_id')->constrained();
+            $table->string('meta_dataable_type');
+            $table->unsignedBigInteger('meta_dataable_id');
+            $table->json('meta_data');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('supliers');
+        Schema::dropIfExists('meta_data');
     }
 };

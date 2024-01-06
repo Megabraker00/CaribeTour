@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->longText('content');
-            $table->json('meta_data')->nullable();
             $table->foreignId('created_user_id')->constrained('users');
             $table->timestamps();
         });
