@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('terminals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')->constrained('terminals')->default(0);
-            $table->string('name');
+            $table->string('name', 100);
             $table->string('adress')->nullable();
             $table->timestamps();
         });

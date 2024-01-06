@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('subscribers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
+            $table->string('name', 100);
+            $table->string('email', 100);
             $table->timestamps();
         });
     }

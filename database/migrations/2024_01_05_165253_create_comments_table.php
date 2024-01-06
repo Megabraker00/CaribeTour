@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('blog_id')->constrained();
             $table->foreignId('state_id')->constrained();
-            $table->string('name');
-            $table->string('email');
+            $table->string('name', 100);
+            $table->string('email', 100);
             $table->text('comment');
             $table->timestamps();
         });

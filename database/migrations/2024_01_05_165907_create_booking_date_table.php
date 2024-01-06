@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_dates', function (Blueprint $table) {
+        Schema::create('booking_date', function (Blueprint $table) {
             $table->foreignId('booking_id')->constrained();
-            $table->foreignId('date_id')->constrained('product_dates');
+            $table->foreignId('date_id')->constrained();
             $table->timestamps();
         });
     }

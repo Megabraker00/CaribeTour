@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('position_id')->constrained();
             $table->foreignId('state_id')->constrained();
-            $table->string('name');
-            $table->string('last_name');
-            $table->string('email_personal');
-            $table->string('email_company');
-            $table->string('dni_passport');
-            $table->string('phone')->nullable();
+            $table->string('name', 100);
+            $table->string('last_name', 100);
+            $table->string('email_personal', 100);
+            $table->string('email_company', 100);
+            $table->string('dni_passport', 20);
+            $table->string('phone', 20)->nullable();
             $table->foreignId('created_user_id')->constrained('users');
             $table->timestamps();
         });

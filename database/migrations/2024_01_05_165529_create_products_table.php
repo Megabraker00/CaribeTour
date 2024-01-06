@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('type_id')->constrained();
             $table->foreignId('state_id')->constrained();
             $table->foreignId('suplier_id')->constrained();
-            $table->string('name');
+            $table->string('name', 100);
             $table->string('slug');
             $table->foreignId('created_user_id')->constrained('users');
             $table->timestamps();

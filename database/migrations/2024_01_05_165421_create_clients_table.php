@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('type_id')->constrained();
             $table->foreignId('state_id')->constrained();
             $table->foreignId('booking_id')->constrained();
-            $table->string('name');
-            $table->string('last_name');
-            $table->string('dni_passport');
+            $table->string('name', 100);
+            $table->string('last_name', 100);
+            $table->string('dni_passport', 20);
             $table->timestamps();
         });
     }
