@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Payment extends Model
 {
@@ -24,5 +25,10 @@ class Payment extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
+    }
+
+    public function state(): MorphOne
+    {
+        return $this->morphOne(State::class, 'stateable');
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Product extends Model
 {
@@ -47,5 +48,10 @@ class Product extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class);
+    }
+
+    public function state(): MorphOne
+    {
+        return $this->morphOne(State::class, 'stateable');
     }
 }

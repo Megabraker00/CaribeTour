@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Booking extends Model
 {
@@ -30,5 +31,10 @@ class Booking extends Model
     public function documents(): MorphMany
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function state(): MorphOne
+    {
+        return $this->morphOne(State::class, 'stateable');
     }
 }

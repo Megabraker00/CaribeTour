@@ -4,24 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 
 class Type extends Model
 {
     use HasFactory;
 
-    public function payments(): HasMany
+    public function typeable()
     {
-        return $this->hasMany(Payment::class);
+        return $this->morphTo();
     }
 
-    public function clients(): HasMany
+    public function payments(): MorphMany
     {
-        return $this->hasMany(Client::class);
+        return $this->morphMany(Payment::class, 'typeable');
     }
 
-    public function products(): HasMany
+    public function clients(): MorphMany
     {
-        return $this->hasMany(Product::class);
+        return $this->morphMany(Client::class, 'typeable');
+    }
+
+    public function products(): MorphMany
+    {
+        return $this->morphMany(Product::class, 'typeable');
     }
 }
