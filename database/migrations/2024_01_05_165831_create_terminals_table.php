@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('terminals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->constrained('terminals')->default(0);
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name', 100);
-            $table->string('adress')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
+
+            $table->foreign('parent_id')->references('id')->on('terminals');
         });
     }
 

@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->boolean('is_main')->nullable();
             $table->string('path');
             $table->string('imageable_type');
             $table->unsignedBigInteger('imageable_id');
-            $table->foreignId('updated_user_id')->constrained('users');
+            $table->foreignId('uploaded_user_id')->constrained('users');
             $table->timestamps();
         });
     }
