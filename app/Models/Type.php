@@ -11,6 +11,11 @@ class Type extends Model
 {
     use HasFactory;
 
+    const TOUR = 1;
+    const EXCURSION = 2;
+    const SEGURO = 3;
+    const FREETOUR = 4;
+
     public function typeable()
     {
         return $this->morphTo();

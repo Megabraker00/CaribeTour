@@ -13,6 +13,8 @@ class Product extends Model
 {
     use HasFactory;
 
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -53,5 +55,30 @@ class Product extends Model
     public function state(): MorphOne
     {
         return $this->morphOne(State::class, 'stateable');
+    }
+
+    public function tourSlug(): string
+    {
+        $ret = [
+            $this->category->fullSlug(),
+            $this->slug,
+        ];
+
+        return implode('/', $ret);
+    }
+
+    public function related()
+    {
+        $productRelated = Product::where('category_id', $this->category->id)
+            ->where('id', '!=', $this->id)
+            ->limit(4)
+            ->get();
+
+        return $productRelated;
+    }
+
+    public function meta()
+    {
+        return $this->morphOne(Metadata::class, 'meta_dataable');
     }
 }

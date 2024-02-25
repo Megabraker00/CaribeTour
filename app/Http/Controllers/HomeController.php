@@ -3,23 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Category;
+use App\Models\Type;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function __invoke()
     {
 
-        $featured_products = Product::all();
+        //$featured_products = Product::all();
 
-        $tours = Product::select('id', 'name', 'category_id', 'slug')->where('type_id', 1)->take(8)->get();
+        $featured_products = Product::select('products.*', DB::raw('SUM(dates.price + dates.taxes) as total'))
+            ->join('dates', 'products.id', '=', 'dates.product_id')
+            ->groupBy('products.id')
+            ->orderBy('total')
+            ->take(5)
+            ->get();
+
+        $tours = Product::select('id', 'name', 'category_id', 'slug')->where('type_id', Type::TOUR)->take(8)->get();
 
         $blog = Blog::orderBy('id', 'DESC')->firstOrNew();
 
-        $featured_excursions = Product::where('type_id', 2)->take(6)->get();
+        $featured_excursions = Product::where('type_id', Type::EXCURSION)->take(6)->get();
 
-        return view('index', [
+        $categories_search = Category::whereNotNull('parent_id')->get();
+
+        view()->share('categories', $categories_search);
+
+        return view('home', [
             'featured_products' => $featured_products,
             'tours' => $tours,
             'blog' => $blog,

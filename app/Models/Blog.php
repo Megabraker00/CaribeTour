@@ -16,7 +16,6 @@ class Blog extends Model
     {
         return $this->belongsTo(User::class);
     }
-
     
     public function images(): MorphMany
     {
@@ -26,5 +25,10 @@ class Blog extends Model
     public function state(): MorphOne
     {
         return $this->morphOne(State::class, 'stateable');
+    }
+
+    public function create_date()
+    {
+        return date('d-m-Y', strtotime($this->created_at));
     }
 }
