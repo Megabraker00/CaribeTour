@@ -67,7 +67,7 @@
                     </li>
                     <li style="font-size:1.8em;">
                         <div class="colored-icon icon-3"><span></span></div>
-                        <strong>Precio:</strong> 1.000,30€
+                        <strong>Precio:</strong> {{ $firstDate->price + $firstDate->taxes }} &euro;
                     </li>
                 </ul>
                 <p>En este resort se aprovechan los recursos naturales del área tales como las piedras, el coco, la madera y
@@ -86,7 +86,7 @@
                 </p>
                 <footer class="tour-footer">
                     <a hreflang="es" type="text/html" charset="iso-8859-1"
-                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'fecha' => 2]) }}"
+                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'idF' => $firstDate->id]) }}"
                         title="Solicitar la reserva de {{ $tour->name }}"
                         class="button small">
                         <span>Reservar Ahora</span>
@@ -148,7 +148,7 @@
                         <div class="bubble-text">
                             <div class="column twelvecol last">
                                 <h5>{{ $tour->name }}</h5>
-                                <p>{{ $tour->meta->meta_data['itinerario'] }}</p>
+                                <p>{{ $tour->meta?->meta_data['itinerario'] }}</p>
                             </div>
                         </div>
                     </div>

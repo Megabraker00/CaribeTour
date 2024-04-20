@@ -10,6 +10,12 @@ class State extends Model
 {
     use HasFactory;
 
+    const BOOKING_PENDING_PAYMENT = 1;
+    const BOOKING_PAID = 2;
+    const BOOKING_CANCELLED = 3;
+
+    const CLIENT_ACTIVE = 4;
+
     public function stateable()
     {
         return $this->morphTo();

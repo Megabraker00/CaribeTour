@@ -23,6 +23,7 @@ Route::get('/', HomeController::class)->name('inicio');
 Route::controller(ServiceController::class)->group(function() {
     Route::get('/servicios', 'index')->name('servicios');
     Route::get('/servicios/{servicio}', 'show');
+    Route::get('/servicios/{cat}', 'categoryIndex');
 });
 
 Route::get('/blogs', function() {
@@ -44,11 +45,11 @@ Route::get('/contacto', function() {
 })->name('contacto');
 
 Route::controller(DestinationController::class)->group(function() {
-    Route::get('/destinos', 'index')->name('destinos');
+    Route::get('/destinos', 'countryIndex')->name('destinos');
+    Route::get('/destinos/{country}', 'provinceIndex');
+    Route::get("/destinos/{country}/{province}", 'tourIndex');
+    Route::get("/destinos/{country}/{province}/{tour}", 'tourShow');
     Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
-    Route::get('/destinos/{cat}', 'categoryIndex');
-    Route::get("/destinos/{cat}/{subcat}", 'subcategoryIndex');
-    Route::get("/destinos/{cat}/{subcat}/{tour}", 'tourShow');
 });
 
 Route::get('/galeria', function() {
@@ -57,8 +58,8 @@ Route::get('/galeria', function() {
 
 Route::controller(ReservationController::class)->group(function() {
     Route::get("/reserva/{producto}", 'create')->name('reservation.create');
-    Route::post("/reserva/{producto}", 'store');
-    Route::get("/reserva/{producto}/pago", 'payment');
+    Route::post("/reserva/{producto}", 'store')->name('reservation.create');
+    Route::get("/reserva/{producto}/pago", 'payment')->name('payment');
     Route::get("/reserva/{producto}/pago/ok", 'paymentOk');
     Route::get("/reserva/{producto}/pago/no-ok", 'paymentNoOk');
 });

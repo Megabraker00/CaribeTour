@@ -16,6 +16,9 @@ class Type extends Model
     const SEGURO = 3;
     const FREETOUR = 4;
 
+    const CLIENT_HOLDER = 5;
+    const CLIENT_PASSENGERS = 6;
+
     public function typeable()
     {
         return $this->morphTo();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('meta_data', function (Blueprint $table) {
             $table->id();
-            $table->string('meta_dataable_type');
+            $table->string('meta_dataable_type'); // cambiarlo por sólo meta_dataable
             $table->unsignedBigInteger('meta_dataable_id');
             $table->json('meta_data');
             $table->timestamps();

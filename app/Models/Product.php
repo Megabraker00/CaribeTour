@@ -67,6 +67,16 @@ class Product extends Model
         return implode('/', $ret);
     }
 
+    public function serviceSlug(): string
+    {
+        $ret = [
+            $this->category->slug, 
+            $this->slug,
+        ];
+
+        return implode('/', $ret);
+    }
+
     public function related()
     {
         $productRelated = Product::where('category_id', $this->category->id)

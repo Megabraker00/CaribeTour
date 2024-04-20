@@ -69,6 +69,7 @@
 
             <nav class="pagination">
                 <span class="page-numbers current">1</span>
+                {{ $tours->links() }}
             </nav>
 
         </div>

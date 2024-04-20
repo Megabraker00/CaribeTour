@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 
 class DestinationController extends Controller
 {
-    public function index()
+    public function countryIndex()
     {
         $parentCategories = Category::whereNull('parent_id')->get();
 
         return view('destination.category', ['categories' => $parentCategories]);
     }
 
-    public function categoryIndex($slugParentCategory)
+    public function provinceIndex($slugParentCategory)
     {
         $parentCategory = Category::where('slug', $slugParentCategory)->first();
 
@@ -28,14 +28,14 @@ class DestinationController extends Controller
         return view('destination.sub_category', ['subCategories' => $subCategories]);
     }
 
-    public function subcategoryIndex($slugCategory, $slugSubCategoy)
+    public function tourIndex($slugCategory, $slugSubCategoy)
     {
         $subCategory = Category::where('slug', $slugSubCategoy)->first();
 
         $tours = [];
 
         if ($subCategory) {
-            $tours = $subCategory->products;
+            $tours = $subCategory->products()->paginate(4);
         }
 
         $categories_search = Category::whereNotNull('parent_id')->get();
@@ -49,6 +49,9 @@ class DestinationController extends Controller
     {
         $tour = Product::where('slug', $slugTour)->first();
 
-        return view('destination.tour', ['tour' => $tour]);
+        $firstDate = $tour->dates->sortBy('id')->first();
+        $price = $firstDate->price + $firstDate->taxes; // blade $tour->dates->sortBy('id')->first()->price
+
+        return view('destination.tour', ['tour' => $tour, 'firstDate' => $firstDate, 'price' => $price]);
     }
 }

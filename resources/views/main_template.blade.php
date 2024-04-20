@@ -107,7 +107,7 @@
                                 <li id="menu-item-306" class="menu-item"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('servicios') }}" title="Nuestros Servicios">SERVICIOS</a></li>
                                 <li id="menu-item-122" class="menu-item"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('destinos') }}" title="Todos los Destinos">DESTINOS</a></li>
                                 <li id="menu-item-120" class="menu-item"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('blogs') }}" title="Nuestro Blog">BLOG</a></li>
-                                <li id="menu-item-121" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-121"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('galeria') }}" title="Galer&iacute;a de Imagenes">GALERIA</a></li>
+                                <li id="menu-item-121" class="menu-item"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('galeria') }}" title="Galer&iacute;a de Imagenes">GALERIA</a></li>
                                 <li id="menu-item-100" class="menu-item"><a hreflang="es" type="text/html" charset="iso-8859-1" href="{{ route('contacto') }}" title="Contacta con Nosotros">CONTACTOS</a></li>
                             </ul>
                         </div>

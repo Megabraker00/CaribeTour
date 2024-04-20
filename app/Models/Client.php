@@ -25,4 +25,9 @@ class Client extends Model
     {
         return $this->morphOne(State::class, 'stateable');
     }
+
+    public function meta()
+    {
+        return $this->morphOne(Metadata::class, 'meta_dataable');
+    }
 }

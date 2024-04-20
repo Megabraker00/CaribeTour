@@ -221,14 +221,14 @@
 
                     @foreach ($featured_excursions as $index => $f_excursion)
 
-                    <div class="column gallery-item fourcol @if(($index + 1) % 3 == 0) last @endif">
+                    <div class="column gallery-item fourcol @if (($index + 1) % 3 == 0) last @endif">
                         <div class="featured-image">
-                            <a href="{{ route('servicios') }}/{{ $f_excursion->tourSlug() }}">
+                            <a href="{{ route('servicios') }}/{{ $f_excursion->serviceSlug() }}">
                                 <img width="440"
                                     height="330" src="img/vik-hotel-arena-blanca_14609041623.jpg"
                                     class="attachment-preview wp-post-image" alt="Imagen de {{ $f_excursion->name }}">
                             </a>
-                            <a class="featured-image-caption hidden-caption" href="{{ route('servicios') }}/{{ $f_excursion->tourSlug() }}" style="bottom: -54px;">
+                            <a class="featured-image-caption hidden-caption" href="{{ route('servicios') }}/{{ $f_excursion->serviceSlug() }}" style="bottom: -54px;">
                                 <h6>{{ $f_excursion->name }}</h6>
                             </a>
                         </div>
