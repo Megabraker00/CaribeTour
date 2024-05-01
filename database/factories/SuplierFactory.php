@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\State;
+use App\Models\Status;
 use App\Models\Suplier;
 
 /**
@@ -18,10 +18,10 @@ class SuplierFactory extends Factory
      */
     public function definition(): array
     {
-        $states = State::where('stateable', Suplier::class )->get();
+        $states = Status::where('statusable', Suplier::class )->get();
         return [
             'name' => fake()->company(),
-            'state_id' => fake()->randomElement($states),
+            'status_id' => fake()->randomElement($states),
         ];
     }
 }

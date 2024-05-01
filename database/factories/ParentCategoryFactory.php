@@ -10,8 +10,10 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
  */
-class CategoryFactory extends Factory
+class ParentCategoryFactory extends Factory
 {
+    protected $model = Category::class;
+
     /**
      * Define the model's default state.
      *
@@ -21,12 +23,10 @@ class CategoryFactory extends Factory
     {
         $states = Status::where('statusable', Category::class )->get();
         $name = fake()->words(2, true);
-        $parentCategory = Category::whereNull('parent_id')->get();
         return [
             'name' => $name,
             'slug' => Str::slug($name),
             'status_id' => fake()->randomElement($states),
-            'parent_id' => fake()->randomElement($parentCategory),
         ];
     }
 }

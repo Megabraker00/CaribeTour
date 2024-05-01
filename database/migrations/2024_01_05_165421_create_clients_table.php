@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('type_id')->constrained();
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('status_id')->constrained('statuses');
             $table->foreignId('booking_id')->constrained();
             $table->string('name', 100);
             $table->string('last_name', 100);

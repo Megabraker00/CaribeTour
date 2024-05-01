@@ -16,8 +16,8 @@ class Suplier extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function state(): MorphOne
+    public function status(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 }

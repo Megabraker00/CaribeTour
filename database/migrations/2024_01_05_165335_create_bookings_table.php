@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('payment_type_id')->constrained('types');
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('status_id')->constrained('statuses');
             $table->decimal('total_amount');
             $table->timestamps();
         });

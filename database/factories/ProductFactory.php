@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\State;
+use App\Models\Status;
 use App\Models\Suplier;
 use App\Models\Category;
 use App\Models\Product;
@@ -23,9 +23,9 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $categories = Category::all();
+        $categories = Category::whereNotNull('parent_id')->get();
         $types = Type::where('typeable', Product::class)->get();
-        $states = State::where('stateable', Product::class )->get();
+        $states = Status::where('statusable', Product::class )->get();
         $suplier = Suplier::all();
         $name = fake()->name();
         $users = User::all();
@@ -35,7 +35,7 @@ class ProductFactory extends Factory
             'slug' => Str::slug($name),
             'category_id' => fake()->randomElement($categories),
             'type_id' => fake()->randomElement($types),
-            'state_id' => fake()->randomElement($states),
+            'status_id' => fake()->randomElement($states),
             'suplier_id' => fake()->randomElement($suplier),
             'created_user_id' => fake()->randomElement($users),
         ];

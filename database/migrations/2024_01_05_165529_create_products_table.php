@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('type_id')->constrained();
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('status_id')->constrained('statuses');
             $table->foreignId('suplier_id')->constrained();
             $table->string('name', 100);
             $table->string('slug');

@@ -16,8 +16,8 @@ class Position extends Model
         return $this->belongsToMany(Employee::class);
     }
 
-    public function state(): MorphOne
+    public function status(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 }

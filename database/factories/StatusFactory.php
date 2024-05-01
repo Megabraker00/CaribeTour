@@ -13,9 +13,9 @@ use App\Models\Suplier;
 use App\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\State>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Status>
  */
-class StateFactory extends Factory
+class StatusFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -28,7 +28,7 @@ class StateFactory extends Factory
 
         return [
             'name' => fake()->word(),
-            'stateable' => fake()->randomElement($typeables),
+            'statusable' => fake()->randomElement($typeables),
         ];
     }
 }

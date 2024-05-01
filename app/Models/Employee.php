@@ -22,8 +22,8 @@ class Employee extends Model
         return $this->hasOne(Position::class);
     }
 
-    public function state(): MorphOne
+    public function status(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 }

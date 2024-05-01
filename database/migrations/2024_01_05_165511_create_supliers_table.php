@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('supliers', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->foreignId('state_id')->constrained();
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }

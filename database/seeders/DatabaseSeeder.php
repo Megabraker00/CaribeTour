@@ -7,10 +7,11 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Date;
 use App\Models\Product;
-use App\Models\State;
+use App\Models\Status;
 use App\Models\Suplier;
 use App\Models\Terminal;
 use App\Models\Type;
+use Database\Factories\ParentCategoryFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -29,7 +30,8 @@ class DatabaseSeeder extends Seeder
 
         //$this->call(TypeSeeder::class);
         Type::factory(20)->create();
-        State::factory(20)->create();
+        Status::factory(20)->create();
+        ParentCategoryFactory::factoryForModel('Category')->create();
         Category::factory(10)->create();
         Suplier::factory(10)->create();
         Product::factory(50)->create();

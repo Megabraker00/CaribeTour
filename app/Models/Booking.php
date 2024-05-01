@@ -33,8 +33,8 @@ class Booking extends Model
         return $this->morphMany(Document::class, 'documentable');
     }
 
-    public function state(): MorphOne
+    public function status(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 }

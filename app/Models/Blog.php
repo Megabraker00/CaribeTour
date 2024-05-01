@@ -24,7 +24,7 @@ class Blog extends Model
 
     public function state(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 
     public function create_date()

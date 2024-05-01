@@ -21,9 +21,9 @@ class Client extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function state(): MorphOne
+    public function status(): MorphOne
     {
-        return $this->morphOne(State::class, 'stateable');
+        return $this->morphOne(Status::class, 'statusable');
     }
 
     public function meta()
