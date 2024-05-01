@@ -6,7 +6,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\Date;
 use App\Models\Product;
-use App\Models\State;
+use App\Models\Status;
 use App\Models\Type;
 use Exception;
 use Illuminate\Http\Request;
@@ -27,7 +27,15 @@ class ReservationController extends Controller
     {
         try {
             // validate form
-            //$request->validate();
+            $request->validate(
+                [
+                    "nombreT" => "required",
+                    "apellidosT" => "required",
+                    "dniT" => "required",
+                    "telefono" => "required",
+                    "mail" => "required",
+                ]
+            );
 
             // validate date is still available
             $date = Date::find($request->idF);
@@ -41,7 +49,7 @@ class ReservationController extends Controller
             $booking = new Booking();
             $booking->payment_type_id = $request->formaPago; // validar que sea una forma de pago existente (con una funcion y dentro switch case o posición de array)
             $booking->total_amount = $request->totalAmount;
-            $booking->state_id = State::BOOKING_PENDING_PAYMENT;
+            $booking->status_id = Status::BOOKING_PENDING_PAYMENT;
             $booking->save();
 
             // link resercation to date
@@ -53,7 +61,7 @@ class ReservationController extends Controller
             $client->last_name = $request->apellidosT;
             $client->dni_passport = $request->dniT;
             $client->type_id = Type::CLIENT_HOLDER;
-            $client->state_id = State::CLIENT_ACTIVE;
+            $client->status_id = Status::CLIENT_ACTIVE;
             $client->booking_id = $booking->id;
             $client->save();
 
@@ -67,7 +75,7 @@ class ReservationController extends Controller
                 //$p->meta()->create(['meta_dataable_id' => $p->id, 'meta_data' => json_encode(['birthdate' => $birthdate])]);
                 $p->booking_id = $booking->id;
                 $p->type_id = Type::CLIENT_PASSENGERS;
-                $p->state_id = State::CLIENT_ACTIVE;
+                $p->status_id = Status::CLIENT_ACTIVE;
                 $p->save();
             }
 
