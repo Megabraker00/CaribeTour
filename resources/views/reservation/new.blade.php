@@ -16,46 +16,67 @@
                     <div id="clientes">
                         <fieldset class="sixcol column" name="Titular">
                             <label for="nombre">Nombre</label>
-                            <div class="field-container"><input id="nombre" type="text" name="nombreT" value=""
+                            <div class="field-container">
+                                <input id="nombre" type="text" name="nombreT" value="{{old('nombreT')}}"
                                     placeholder="Nombre" title="Introduzca su Nombre" maxlength="20" tabindex="1"
-                                    required=""></div>
+                                    >
+                                @error('nombreT')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                             <label for="apelli2">Apellidos</label>
                             <div class="field-container"><input id="apelli2" type="text" name="apellidosT"
-                                    value="" placeholder="Apellidos" title="Introduzca sus Apellidos" maxlength="30"
-                                    tabindex="2" required=""></div>
+                                    value="{{old('apellidosT')}}" placeholder="Apellidos" title="Introduzca sus Apellidos" maxlength="30"
+                                    tabindex="2" >
+                                @error('apellidosT')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                             <label for="dni">DNI o Pasaporte</label>
-                            <div class="field-container"><input id="dni" type="text" name="dniT" value=""
+                            <div class="field-container"><input id="dni" type="text" name="dniT" value="{{old('dniT')}}"
                                     placeholder="DNI o Pasaporte"
                                     title="Introduzca el DNI o Pasaporte sin guiones ni espacios." maxlength="10"
-                                    tabindex="3" required=""></div>
+                                    tabindex="3" >
+                                @error('dniT')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                             <label for="telefono">Teléfono de contacto</label>
-                            <div class="field-container"><input id="telefono" type="number" name="telefono" value=""
+                            <div class="field-container"><input id="telefono" type="number" name="telefono" value="{{old('telefono')}}"
                                     placeholder="Teléfono" title="Introduzca su Número Telefónico sin guiones ni espacios"
-                                    maxlength="15" tabindex="4" required=""></div>
+                                    maxlength="15" tabindex="4" >
+                                @error('telefono')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                             <label for="email">Email</label>
-                            <div class="field-container"><input type="email" name="mail" id="email" value=""
+                            <div class="field-container"><input type="email" name="mail" id="email" value="{{old('mail')}}"
                                     placeholder="Email" title="Introduzca su Correo Eletrónico" maxlength="50"
-                                    tabindex="5" required=""></div>
+                                    tabindex="5" >
+                                @error('mail')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                         </fieldset>
                         <fieldset class="sixcol column" name="Direccion">
                             <label for="ciudad">Ciudad o Pueblo</label>
-                            <div class="field-container"><input type="text" id="ciudad" name="ciudad" value=""
+                            <div class="field-container"><input type="text" id="ciudad" name="ciudad" value="{{old('ciudad')}}"
                                     placeholder="Ciudad o Pueblo" title="Introduzca su Ciudad" maxlength="30" tabindex="7"
-                                    required=""></div>
+                                    ></div>
                             <label for="provincia">Provincia</label>
                             <div class="field-container"><input type="text" id="provincia" name="provincia"
-                                    value="" placeholder="Provincia" title="Introduzca su Provincia" maxlength="30"
-                                    tabindex="8" required=""></div>
+                                    value="{{old('provincia')}}" placeholder="Provincia" title="Introduzca su Provincia" maxlength="30"
+                                    tabindex="8" ></div>
                             <label for="cp">C�digo Postal</label>
                             <div class="field-container"><input type="number" id="cp" name="codigoPostal"
-                                    value="" placeholder="Código Postal"
+                                    value="{{old('codigoPostal')}}" placeholder="Código Postal"
                                     title="Introduzca el Código Postal sin guiones ni espacios" maxlength="6"
-                                    tabindex="9" required=""></div>
+                                    tabindex="9" ></div>
                             <label for="notas">Notas</label>
                             <div class="field-container">
                                 <textarea name="notas" id="notas" title="Agrega cualquier comentario que sea de utilidad..."
                                     placeholder="Agrega cualquier comentario que sea de utilidad..." maxlength="500" width="100%"
-                                    spellcheck="true" tabindex="10"></textarea>
+                                    spellcheck="true" tabindex="10">{{old('notas')}}</textarea>
                             </div>
                         </fieldset><br>
                         <fieldset class="sixcol  column">
@@ -73,28 +94,28 @@
                             <label for="nombrep">Nombre</label>
                             <div class="field-container"><input id="nombrep" type="text" name="nombreP[]"
                                     value="" placeholder="Nombre" title="Introduzca su Nombre" maxlength="20"
-                                    tabindex="12" required=""></div>
+                                    tabindex="12" ></div>
                             <label for="apelli2p">Apellidos</label>
                             <div class="field-container"><input id="apelli2p" type="text" name="apellidosP[]"
                                     value="" placeholder="Apellidos" title="Introduzca sus Apellidos"
-                                    maxlength="30" tabindex="13" required=""></div>
+                                    maxlength="30" tabindex="13" ></div>
                             <label for="dnip">DNI o Pasaporte</label>
                             <div class="field-container"><input id="dnip" type="text" name="dniP[]"
                                     value="" placeholder="DNI o Pasaporte"
                                     title="Introduzca el DNI o Pasaporte sin guiones ni espacios." maxlength="10"
-                                    tabindex="14" required=""></div>
+                                    tabindex="14" ></div>
                             <legend>Fecha de Nacimiento</legend>
                             <div class="threecol column">
                                 <div class="field-container"><input type="number" name="diaP[]" value=""
                                         id="dia" placeholder="Día"
                                         onkeyup="if (this.value.length == this.getAttribute('maxlength')) mesP[].focus()"
                                         maxlength="2" max="31" min="1"
-                                        title="Introduzca el Día de su nacimiento" tabindex="15" required=""></div>
+                                        title="Introduzca el Día de su nacimiento" tabindex="15" ></div>
                             </div>
                             <div class="sixcol column last">
                                 <div class="field-container">
                                     <select name="mesP[]" id="mes" title="Seleccione el mes de su nacimiento"
-                                        tabindex="16" required="">
+                                        tabindex="16" >
                                         <option value="" selected="selected">Mes</option>
                                         <option value="01">Enero</option>
                                         <option value="02">Febrero</option>
@@ -117,7 +138,7 @@
                                         max="2006" min="1934" placeholder="Año"
                                         title="Introduzca el año de su nacimiento" tabindex="17"
                                         onkeyup="if (this.value.length == this.getAttribute('maxlength')) strCiudad[].focus()"
-                                        required="">
+                                        >
                                 </div>
                             </div>
                         </fieldset>
@@ -129,28 +150,28 @@
                             <label for="nombrep2">Nombre</label>
                             <div class="field-container"><input id="nombrep2" type="text" name="nombreP[]"
                                     value="" placeholder="Nombre" title="Introduzca su Nombre" maxlength="20"
-                                    tabindex="18" required=""></div>
+                                    tabindex="18" ></div>
                             <label for="apelli2p2">Apellidos</label>
                             <div class="field-container"><input id="apelli2p2" type="text" name="apellidosP[]"
                                     value="" placeholder="Apellidos" title="Introduzca sus Apellidos"
-                                    maxlength="30" tabindex="19" required=""></div>
+                                    maxlength="30" tabindex="19" ></div>
                             <label for="dnip2">DNI o Pasaporte</label>
                             <div class="field-container"><input id="dnip2" type="text" name="dniP[]"
                                     value="" placeholder="DNI o Pasaporte"
                                     title="Introduzca el DNI o Pasaporte sin guiones ni espacios." maxlength="10"
-                                    tabindex="20" required=""></div>
+                                    tabindex="20" ></div>
                             <legend>Fecha de Nacimiento</legend>
                             <div class="threecol column">
                                 <div class="field-container"><input type="number" name="diaP[]" value=""
                                         id="dia" placeholder="Día"
                                         onkeyup="if (this.value.length == this.getAttribute('maxlength')) mesP[].focus()"
                                         maxlength="2" max="31" min="1"
-                                        title="Introduzca el Día de su nacimiento" tabindex="21" required=""></div>
+                                        title="Introduzca el Día de su nacimiento" tabindex="21" ></div>
                             </div>
                             <div class="sixcol column last">
                                 <div class="field-container">
                                     <select name="mesP[]" id="mes" title="Seleccione el mes de su nacimiento"
-                                        tabindex="22" required="">
+                                        tabindex="22" >
                                         <option value="" selected="selected">Mes</option>
                                         <option value="01">Enero</option>
                                         <option value="02">Febrero</option>
@@ -173,7 +194,7 @@
                                         max="2024" min="1934" placeholder="Año"
                                         title="Introduzca el año de su nacimiento" tabindex="23"
                                         onkeyup="if (this.value.length == this.getAttribute('maxlength')) strCiudad[].focus()"
-                                        required="">
+                                        >
                                 </div>
                             </div>
                         </fieldset>
@@ -200,7 +221,7 @@
                     <!--<input type="button" name="addPasajero" class="button dark" id="add_pasajero" onClick="javascript:add_pasajero();" value="Agregar Otro Pasajero" title="Agregue otro pasajero haciendo clic aqu&iacute;" /><br /><br />-->
                     <p>&nbsp;</p>
                     <div class="field-container"><input type="checkbox" name="chx_termsAndConditions"
-                        id="chx_termsAndConditions" tabindex="24" required=""> 
+                        id="chx_termsAndConditions" tabindex="24" > 
                         <label for="chx_termsAndConditions" title="Aceptar los terminos y condiciones">He leído y acepto las
                             <a href="legal/condiciones-de-uso" title="Ver condiciones generales"
                                 target="_blank">Condiciones generales</a> de venta y la <a

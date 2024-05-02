@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Caribetour',
     'title_prefix' => '',
-    'title_postfix' => '',
+    'title_postfix' => ' | Administración',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>Caribetour</b> Admin',
+    'logo_img' => 'images/favicon-194x194.png', //'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => 'Caribetour Admin Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -134,11 +134,11 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
+    'usermenu_image' => true,
     'usermenu_desc' => false,
-    'usermenu_profile_url' => false,
+    'usermenu_profile_url' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -154,8 +154,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'admin',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -316,16 +316,49 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
+            'text' => 'home',
+            'url' => 'admin',
+            'icon' => 'fas fa-fw fa-home',
+        ],
+        [
+            'text' => 'Reservas',
+            'url' => 'admin/reservas',
             'icon' => 'far fa-fw fa-file',
             'label' => 4,
+            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Clientes',
+            'url' => 'admin/clientes',
+            'icon' => 'far fa-fw fa-file',
+            'label' => 4,
+            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Facturas',
+            'url' => 'admin/facturas',
+            'icon' => 'far fa-fw fa-file',
+            'label' => 4,
+            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Pagos',
+            'url' => 'admin/pagos',
+            'icon' => 'far fa-fw fa-file',
+            'label' => 23,
+            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Productos',
+            'url' => 'admin/productos',
+            'icon' => 'far fa-fw fa-file',
+            'label' => 23,
             'label_color' => 'success',
         ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
-            'url' => 'admin/settings',
+            'url' => 'admin/configuracion',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Route;
 
@@ -63,3 +67,31 @@ Route::controller(ReservationController::class)->group(function() {
     Route::get("/reserva/{producto}/pago/ok", 'paymentOk');
     Route::get("/reserva/{producto}/pago/no-ok", 'paymentNoOk');
 });
+
+//Auth::routes();
+
+
+Route::get('/login', LoginController::class)->name('login');
+Route::get('/register', RegisterController::class)->name('register');
+Route::post('/register', [RegisterController::class, 'create']);
+//Route::get('/password/reset', ForgotPasswordController::class);
+
+
+/**
+ * Authentication routes
+ */
+/*
+Route::middleware(['guest'])->group(function () {
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+});
+*/
+
+
+//Auth::routes();
+
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

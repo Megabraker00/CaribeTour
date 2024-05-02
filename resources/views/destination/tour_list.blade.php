@@ -69,7 +69,9 @@
 
             <nav class="pagination">
                 <span class="page-numbers current">1</span>
-                {{ $tours->links() }}
+                @if (!empty($list))
+                    {{ $tours->links() }}
+                @endif
             </nav>
 
         </div>
@@ -123,7 +125,7 @@
                         <textarea id="mensaje" name="mensaje" title="Indique su consulta." maxlength="500" placeholder="Consultas"
                             required=""></textarea>
                     </div>
-                    <input type="hidden" name="producto" id="producto" value="{{ $tour->name }}"
+                    <input type="hidden" name="producto" id="producto" value=""
                         class="popup-id">
                     <input type="hidden" name="volver"
                         value="http://localhost/caribetour/destinos/republica-dominicana/punta-cana">

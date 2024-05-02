@@ -1,6 +1,69 @@
-en la rutas le puedes pasar valores por defecto
-    Route::get("destidos/{cat}/{subcat?}, function($cat, $subcat = null) {...});
+productos (
+    producto_id, categoria_id, tipo_id, estado_id, proveedor_id, nombre, slug,
+    SEO (meta_description, meta_keywords),
+    meta_data(
+        incluye/servicios (gimnasio, priscina, terraza, aire_acondicionado, resepción 24h, bar, discoteca, servicio_medico, caja fuerte, wifi, lavanderia, sauna),
+        itinerario, stock, 
+        
+        )
+    timestamp, 
+    )
 
-para crear un controlador
-    php artisan create:controller NombreController
+proveedores (proveedor_id, nombre, estado_id, meta_data(telefono, dirección, web, contacto, cuenta_banco, notas, etc) timestamp)
 
+fechas (id, producto_id, precio, tasas, fecha_salida,  id_terminal_salida, fecha_regreso,  id_terminal_regreso) 
+nota: puede que tenga que poner dos fechas por trayecto, es decir, fecha de salida y llegada para la ida y fecha de salida y llegada para la vuelta
+
+terminales (id, nombre, terminal_padre_id, dirección, meta_data, timestamp)
+
+nota: cuando el cliente le da a reservar, pasamos a introducir los datos del cliente (sin reserva), cuando el cliente completa sus datos y le da a siguiente es cuendo se genera una reserva, luego una reserva_productos, el cliente puede seguir añadiendo productos y/o servicios a la reserva (seguros, excursiones, etc)
+
+reservas (id, estado_id, pago_tipo_id(transferencia, tarjeta, bizum, paypal, bitcoin), total(tasas incluidas), timestamp) // se guarda el total de la reserva porque un producto puede cambiar de precio para unas fechas, pero si ya han comprado a un precio, eso se tiene que respetar.
+
+reserva_productos (carrito) (reserva_id, producto_id, fecha_id, total, tasas timestamp)
+
+nota: todas las reservas de productos tendran una fecha, si es un servicio (segugo, excursion, etc) las fechas se generaran el día de la contratación.
+
+pagos (id, reserva_id, importe, pago_tipo_id, timestamp)
+
+facturas (id, reserva_id)
+
+clientes (
+    id, reserva_id, tipo_id (pasajero/pagador), estado_id, nombre, apellidos, dni_pasaporte,
+    meta_data (
+        nacionalidad, contacto(email, telefono), dirección(pais, cp, provincia, pueblo, calle), fecha_nacimiento, alergias, necesita_silla, etc),
+    timestamp
+    )
+
+usuarios (id, empleado_id, nombre, email, password, timestamp)
+
+empleados (id, estado_id, nombre, email_personal, email_corporativo, telefono, dni_pasaporte, puesto_id, timestamp)
+
+puestos (id, nombre, estado_id, timestamp)
+
+blogs (id, user_id, nombre, slug, contenido, meta_data(etiquegas, fuente_de_información, etc), timestamp)
+
+notes (id, lookup_table_name, lookup_table_id, estado_id, nombre, email, comentario, timestamp)
+
+suscriptores (id, nombre, email, timestamp)
+
+LOOKUP TABLES
+
+documentos (id, lookup_table_name, lookup_table_id, nombre, path, subido_usuario_id, timestamp)
+
+imagenes (id, lookup_table_name, lookup_table_id, path, nombre, subido_usuario_id, timestamp)
+
+tipos (id, lookup_table_name, nombre, timestamp)
+
+categorias (id, lookup_table_name, categoria_id(0), nombre,  timestamp)
+
+estados (id, lookup_table_name, nombre, timestamp)
+
+
+REGLAS DE NOMBRADO DE VARIABLES
+BBDD
+tablas, campos -> se nombran en snake_case ej: total_amount
+
+plantilla, controladores -> se nombre en camelCase ej: totalAmount
+
+NOTA: nunca poner los nombre de campos en plantilla igual que el de la BBDD 

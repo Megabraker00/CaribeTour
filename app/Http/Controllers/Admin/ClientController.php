@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 
-class HomeController extends Controller
+class ClientController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,6 +25,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        return view('admin.client.index');
     }
 }

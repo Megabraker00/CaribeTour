@@ -23,8 +23,10 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
+        // TODO: hacer la consultas para productos que tengan fechas disponibles y la categoría y el producto estén activos
         $tours = Product::select('id', 'name', 'category_id', 'slug')->where('type_id', Type::TOUR)->take(8)->get();
 
+        // TODO: hacer la consulta para blogs que esté publicados (no borrador)
         $blog = Blog::orderBy('id', 'DESC')->firstOrNew();
 
         $featured_excursions = Product::where('type_id', Type::EXCURSION)->take(6)->get();

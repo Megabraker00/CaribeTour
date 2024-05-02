@@ -84,4 +84,23 @@ class User extends Authenticatable
             set: fn($value) => strtolower($value) // mutador
         );
     }
+
+    // Admin LTE
+
+    public function adminlte_image()
+    {
+        return 'https://picsum.photos/300/300'; // TODO: obtener la imagen del usuario de la bbdd
+    }
+
+    public function adminlte_desc()
+    {
+        return 'administrador'; // TODO: obtener el rol de la bbdd
+    }
+
+    public function adminlte_profile_url()
+    {
+        return "profile/$this->id";
+    }
+
+    // end Admin LTE
 }
