@@ -1,0 +1,7 @@
+#the_table tbody tr {
+    cursor: pointer;
+}
+
+#the_table {
+    width: 100% !important;
+}
