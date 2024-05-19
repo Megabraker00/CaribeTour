@@ -52,22 +52,31 @@
                 destroy: true,
                 //bDestroy: true,
                 //retrieve: true
-                stateSave:true, // guarda el estado de la tabla
+                stateSave: true, // guarda el estado de la tabla
                 processing: true,
                 responsive: true,
                 autoWidth: false,
                 //scrollX: true,
                 //serverSide: true,
                 //lengthMenu: [5, 10, 50, 100, 200, 500], // opciones para mostrar cantidad de registros
-                //pageLength: 5, // canditad de registros por pagina
+                //pageLength: 5, // canditad de registros por pagina por defecto
                 order: [[ 0, 'desc' ]], // por defecto ordene la primera columna en forma descendente
-                buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                //buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                //dom: "Bfrtilp",
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa-solid fa-file-csv"></i>',
+                        titleAttr: "Exportar a Excel",
+                        className: "btn btn-success",
+                    }
+                ],
                 columns: [],
                 columnDefs: [
-                    {orderable: false, targets: [-1]}, // no se pueda ordenar por la ultima columna
-                    {targets: '_all', className: 'text-center'}, // tambien se puede especificar las columnas a la que queremos aplicar la clase, con tagets: [0, 3, 4], sólo se aplicará a la columna en la posición 0, 3 y 4
-                    // {width: "15%", targets: [-1]}, // especificar el ancho de una columna
-                    {searchable: false, targets: [0, 3]}, // indicamos las columnas que no realizaran busquedas
+                    {orderable: false, targets: [-1]}, // no se pueda ordenar por la ultima columna, usa targets:'_all' para aplicarlo a todas las columnas
+                    {className: 'text-center', targets: [0, -2]}, // tambien se puede especificar las columnas a la que queremos aplicar la clase, con tagets: [0, 3, 4], sólo se aplicará a la columna en la posición 0, 3 y 4, usa targets:'_all' para aplicarlo a todas las columnas
+                    // {width: "15%", targets: [-1]}, // especificar el ancho de una o varias columnas
+                    {searchable: false, targets: [0, 3]}, // indicamos las columnas que no realizaran busquedas, usa targets:'_all' para aplicarlo a todas las columnas
                 ],
                 language: {
                     "decimal": ",",

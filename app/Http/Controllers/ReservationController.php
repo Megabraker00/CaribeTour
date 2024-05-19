@@ -8,7 +8,6 @@ use App\Models\Date;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +17,7 @@ class ReservationController extends Controller
     {
         $product = Product::where('slug', $producSlug)->first();
 
-        $date = Date::find($request->query('idF'));
+        $date = Date::findOrFail($request->query('idD'));
 
         return view('reservation.new', ['product' => $product, 'date' => $date]);
     }
@@ -38,46 +37,21 @@ class ReservationController extends Controller
             );
 
             // validate date is still available
-            $date = Date::find($request->idF);
-            if (!$date) {
-                throw new Exception("date not available");
-            }
+            $date = Date::findOrFail($request->idD);
 
             DB::beginTransaction();
 
             // create a new reservation
-            $booking = new Booking();
-            $booking->payment_type_id = $request->formaPago; // validar que sea una forma de pago existente (con una funcion y dentro switch case o posición de array)
-            $booking->total_amount = $request->totalAmount;
-            $booking->status_id = Status::BOOKING_PENDING_PAYMENT;
-            $booking->save();
+            $booking = $this->createNewReservation($request);            
 
             // link resercation to date
             $booking->dates()->attach($date);
 
             // store reservation holder
-            $client = new Client();
-            $client->name = $request->nombreT;
-            $client->last_name = $request->apellidosT;
-            $client->dni_passport = $request->dniT;
-            $client->type_id = Type::CLIENT_HOLDER;
-            $client->status_id = Status::CLIENT_ACTIVE;
-            $client->booking_id = $booking->id;
-            $client->save();
+            $this->createClientReservation($request, $booking->id);
 
             // store reservation passengers
-            for ($i = 0; $i <= 1; $i++) {
-                $p = new Client();
-                $p->name = $request->nombreP[$i];
-                $p->last_name = $request->apellidosP[$i];
-                $p->dni_passport = $request->dniP[$i];
-                $birthdate = date('d/m/Y H:i:s', strtotime("{$request->diaP[$i]}.{$request->mesP[$i]}.{$request->anioP[$i]}"));
-                //$p->meta()->create(['meta_dataable_id' => $p->id, 'meta_data' => json_encode(['birthdate' => $birthdate])]);
-                $p->booking_id = $booking->id;
-                $p->type_id = Type::CLIENT_PASSENGERS;
-                $p->status_id = Status::CLIENT_ACTIVE;
-                $p->save();
-            }
+            $this->createPassengersReservation($request, $booking->id);
 
             DB::commit();
 
@@ -85,7 +59,7 @@ class ReservationController extends Controller
             return redirect()->route('payment', [
                 'producto' => $producSlug, 
                 'idB' => $booking->id, 
-                'idF' => $request->idF, 
+                'idD' => $request->idD, 
                 'idP' => $request->formaPago
             ]);
 
@@ -99,12 +73,58 @@ class ReservationController extends Controller
     {
         $request->validate([
             'idB' => 'required',
-            'idF' => 'required',
+            'idD' => 'required',
             'idP' => 'required',
         ]);
 
         $product = Product::where('slug', $producSlug)->first();
 
         return view('reservation.payment', ['product' => $product]);
+    }
+
+    private function createNewReservation(Request $request)
+    {
+        $booking = new Booking();
+        $booking->payment_type_id = $request->formaPago; // validar que sea una forma de pago existente (con una funcion y dentro switch case o posición de array)
+        $booking->total_amount = $request->totalAmount;
+        $booking->status_id = Status::BOOKING_PENDING_PAYMENT;
+        $booking->save();
+
+        return $booking;
+    }
+
+    private function createClientReservation($request, $booking_id)
+    {
+        $client = new Client();
+        $client->name = $request->nombreT;
+        $client->last_name = $request->apellidosT;
+        $client->dni_passport = $request->dniT;
+        $client->type_id = Type::CLIENT_HOLDER;
+        $client->status_id = Status::CLIENT_ACTIVE;
+        $client->booking_id = $booking_id;
+        $client->save();
+
+        return $client;
+    }
+
+    private function createPassengersReservation($request, $booking_id)
+    {
+        $ret = [];
+
+        for ($i = 0; $i <= 1; $i++) {
+            $p = new Client();
+            $p->name = $request->nombreP[$i];
+            $p->last_name = $request->apellidosP[$i];
+            $p->dni_passport = $request->dniP[$i];
+            $birthdate = date('d/m/Y H:i:s', strtotime("{$request->diaP[$i]}.{$request->mesP[$i]}.{$request->anioP[$i]}"));
+            //$p->meta()->create(['meta_dataable_id' => $p->id, 'meta_data' => json_encode(['birthdate' => $birthdate])]);
+            $p->booking_id = $booking_id;
+            $p->type_id = Type::CLIENT_PASSENGERS;
+            $p->status_id = Status::CLIENT_ACTIVE;
+            $p->save();
+            $ret[] = $p;
+        }
+
+        return $ret;
     }
 }

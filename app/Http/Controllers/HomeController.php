@@ -13,9 +13,6 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-
-        //$featured_products = Product::all();
-
         $featured_products = Product::select('products.*', DB::raw('SUM(dates.price + dates.taxes) as total'))
             ->join('dates', 'products.id', '=', 'dates.product_id')
             ->groupBy('products.id')
@@ -24,12 +21,14 @@ class HomeController extends Controller
             ->get();
 
         // TODO: hacer la consultas para productos que tengan fechas disponibles y la categoría y el producto estén activos
-        $tours = Product::select('id', 'name', 'category_id', 'slug')->where('type_id', Type::TOUR)->take(8)->get();
+        $tours = Product::select('id', 'name', 'category_id', 'slug')
+            ->with(['category', 'mainImage'])
+            ->where('type_id', Type::TOUR)->take(8)->get();
 
         // TODO: hacer la consulta para blogs que esté publicados (no borrador)
         $blog = Blog::orderBy('id', 'DESC')->firstOrNew();
 
-        $featured_excursions = Product::where('type_id', Type::EXCURSION)->take(6)->get();
+        $featured_excursions = Product::with('category')->where('type_id', Type::EXCURSION)->take(6)->get();
 
         $categories_search = Category::whereNotNull('parent_id')->get();
 

@@ -197,7 +197,7 @@ return [
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
+    'classes_sidebar_nav' => 'nav-child-indent',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
@@ -350,10 +350,26 @@ return [
         ],
         [
             'text' => 'Productos',
-            'url' => 'admin/productos',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 23,
-            'label_color' => 'success',
+            'icon' => 'fas fa-fw fa-share',
+            'submenu' => [
+                [
+                    'text' => 'Tours',
+                    'icon' => 'far fa-fw fa-file',
+                    'url' => 'admin/tours',
+                ],
+                [
+                    'text' => 'Excursiones',
+                    'url' => 'admin/excursiones',
+                ],
+                [
+                    'text' => 'Hoteles',
+                    'url' => 'admin/hoteles',
+                ],
+                [
+                    'text' => 'Seguros',
+                    'url' => 'admin/seguros',
+                ],
+            ],
         ],
         ['header' => 'account_settings'],
         [

@@ -29,6 +29,7 @@ class Blog extends Model
 
     public function create_date()
     {
-        return date('d-m-Y', strtotime($this->created_at));
+        //return date('d-m-Y', strtotime($this->created_at));
+        return $this->create_at?->format('d-m-Y');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\Product;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 
@@ -42,5 +43,23 @@ class DatatableController extends Controller
         $clients = Client::select('id', 'name', 'last_name', 'dni_passport', 'booking_id');
 
         return DataTables::make($clients)->toJson();
+    }
+
+    public function tours()
+    {
+        $tours = Product::join('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.id', 'products.name as name', 'products.status_id as status_id', 
+        'categories.name as category', DB::raw('"652.25" as precio'))
+        ->get();
+
+        /*
+        $tours = Product::with(['category' => function($query){
+            $query->select('name');
+        }])
+        ->select('id', 'name', 'status_id', DB::raw('"precio" as precio'))
+        ->get();
+        */
+
+        return DataTables::make($tours)->toJson();
     }
 }

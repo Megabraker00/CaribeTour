@@ -42,9 +42,14 @@ class Product extends Model
 
     public function mainImage()
     {
+
+        return $this->morphOne(Image::class, 'imageable')->where('is_main', 1) ?? new Image();
+
+        /*
         return  $this->images()->where('is_main', 1)->first()
             ?? $this->images()->first()
             ?? new Image();
+            */
     }
 
     public function type(): BelongsTo

@@ -3,7 +3,14 @@
 @section('title', 'Clientes')
 
 @section('content_header')
-    <h1>Clientes</h1>
+<div class="row mb-2">
+    <div class="col-sm">
+        <h1>Clientes</h1>
+    </div>
+    <div class="col-sm text-right">
+        <button class="btn btn-info">Nuevo</button>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -46,7 +53,7 @@
 <script>
     $(document).ready(function() {        
         let properties = dtProperties()
-        properties.ajax = "{{ route('datatable.clients') }}"
+        properties.ajax = "{{ route('api.datatable.clients') }}"
         properties.columns = [
             {data: 'id'},
             {data: 'name'},

@@ -229,7 +229,7 @@
                                 target="_blank">Política de Seguridad y Privacidad</a>
                         </label>
                     </div>
-                    <input type="hidden" name="idF" value="{{ $date->id }}">
+                    <input type="hidden" name="idD" value="{{ $date->id }}">
                     <input type="hidden" name="totalAmount" value="{{ $date->price + $date->taxes }}">
                     <input type="hidden" name="dblTasas" value="{{ $date->taxes }}">
                     <input type="submit" name="submit" value="Confirmar Datos y Pagar"
@@ -241,7 +241,7 @@
             <div class="featured-blog">
                 <article class="post">
                     <div class="featured-image">
-                        <img width="550" height="413" src="{{ asset('images/' . $product->mainImage()->path) }}"
+                        <img width="550" height="413" src="{{ asset('images/' . $product->mainImage?->path) }}"
                             class="attachment-extended wp-post-image" alt="Imagen de {{ $product->name }}"
                             title="{{ $product->name }}">
                     </div>

@@ -27,4 +27,9 @@ class ClientController extends Controller
     {
         return view('admin.client.index');
     }
+
+    public function show($id)
+    {
+        return view('admin.client.show');
+    }
 }

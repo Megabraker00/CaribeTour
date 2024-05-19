@@ -22,9 +22,9 @@
                                 <a hreflang="es" type="text/html" charset="UTF-8"
                                     href="destinos/{{ $f_product->category->fullSlug() }}">
                                     <div class="etiqueta-categoria" id="etiqueta">
-                                        {{ $f_product->category->name }} desde <?php echo 'precio'; ?>&euro;
+                                        {{ $f_product->category->name }} desde {{ $f_product->total }} &euro;
                                     </div><img width="824" height="370"
-                                        src="{{ asset('images/' . $f_product->mainImage()->path) }}"
+                                        src="{{ asset('images/' . $f_product->mainImage?->path) }}"
                                         class="attachment-large wp-post-image" alt="{{ $f_product->category->name }}"
                                         title="Ver Todos Los destinos de {{ $f_product->category->name }}" />
                                 </a>
@@ -142,7 +142,7 @@
                         <div class="tour-thumb">
                             <a hreflang="es" type="text/html" charset="iso-8859-1"
                                 href="{{ route('destinos') }}/{{ $tour->tourSlug() }}"><img
-                                    width="440" height="330" src="{{ asset( 'images/' . $tour->mainImage()->path )}}"
+                                    width="440" height="330" src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
                                     class="attachment-preview wp-post-image"
                                     alt="{{ $tour->name }}"
                                     title="{{ $tour->name }}"></a>
@@ -182,6 +182,8 @@
                         <h2>Blogs de Viajes</h2>
                     </a>
                 </div>
+
+                @if($blog)
                 <div class="featured-blog">
                     <article
                         class="post-112 post type-post status-publish format-standard hentry category-guides tag-amet tag-dolor tag-lorem post">
@@ -207,6 +209,8 @@
                         </footer>
                     </article>
                 </div>
+                @endif
+
             </div>
 
             <div class="sixcol column">

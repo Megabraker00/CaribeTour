@@ -11,7 +11,7 @@
                     <div class="content-slider tour-slider fade-effect">
                         <ul style="height: 379px;">
                             <li class="" style="display: none; position: relative; z-index: 1;"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage()->path )}}"
+                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
                                     alt="Imagen de {{ $tour->name }}"
                                     title="Natura Park Beach Eco Resort &amp; Spa"></li>
                             <li style="position: relative; z-index: 1; display: none;" class=""><img
@@ -24,7 +24,7 @@
                                     title="Natura Park Beach Eco Resort &amp; Spa"></li>
                                     <!-- MAIN IMAGEN -->
                             <li style="position: relative; z-index: 1; display: list-item;" class="current"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage()->path )}}"
+                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
                                     alt="Imagen de {{ $tour->name }}"
                                     title="{{ $tour->name }}"></li>
                                     <!-- \MAIN IMAGEN -->
@@ -86,7 +86,7 @@
                 </p>
                 <footer class="tour-footer">
                     <a hreflang="es" type="text/html" charset="iso-8859-1"
-                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'idF' => $firstDate->id]) }}"
+                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'idD' => $firstDate->id]) }}"
                         title="Solicitar la reserva de {{ $tour->name }}"
                         class="button small">
                         <span>Reservar Ahora</span>
@@ -278,7 +278,7 @@
                                 href="{{ route('destinos') }}/{{ $tourRelated->tourSlug() }}"
                                 title="{{ $tourRelated->name }}">
                                 <img width="440" height="330"
-                                    src="{{ asset( 'images/' . $tourRelated->mainImage()->path )}}"
+                                    src="{{ asset( 'images/' . $tourRelated->mainImage?->path )}}"
                                     class="attachment-preview wp-post-image"
                                     alt="{{ $tourRelated->name }}">
                             </a>

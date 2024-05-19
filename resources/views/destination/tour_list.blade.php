@@ -9,6 +9,10 @@
 
             <div class="items-list clearfix">
 
+                @if(empty($tours))
+                <h2>La categoría no exite</h2>
+                @endif
+
                 @foreach ($tours as $index => $tour)                    
                 
                 <div class="full-tour clearfix">                    

@@ -8,6 +8,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\PostController;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Route;
 
@@ -22,27 +23,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// para ver las consultas que se están ejecutando 
+//DB::listen(function ($query) { dump($query->sql); });
+
 Route::get('/', HomeController::class)->name('inicio');
 
 Route::controller(ServiceController::class)->group(function() {
     Route::get('/servicios', 'index')->name('servicios');
-    Route::get('/servicios/{servicio}', 'show');
+    Route::get('/servicios/{servicio}', 'show')->name('servicios.detalle');
     Route::get('/servicios/{cat}', 'categoryIndex');
 });
 
-Route::get('/blogs', function() {
+Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
 
-    $blogs = Blog::all();
-
-    return view('blogs', ['blogs' => $blogs]);
-})->name('blogs');
-
-Route::get('/blogs/{post}', function($postSlug) {
-
-    $post = Blog::where('slug', $postSlug)->first();
-
-    return view('blog_post', ['post' => $post]);
-});
+Route::get('/blogs/{post}', [PostController::class, 'show'])->name('blog.show');
 
 Route::get('/contacto', function() {
     return view('contact');
@@ -50,9 +44,9 @@ Route::get('/contacto', function() {
 
 Route::controller(DestinationController::class)->group(function() {
     Route::get('/destinos', 'countryIndex')->name('destinos');
-    Route::get('/destinos/{country}', 'provinceIndex');
-    Route::get("/destinos/{country}/{province}", 'tourIndex');
-    Route::get("/destinos/{country}/{province}/{tour}", 'tourShow');
+    Route::get('/destinos/{country}', 'provinceIndex')->name('destinos.pais');
+    Route::get("/destinos/{country}/{province}", 'tourIndex')->name('destinos.provincia');
+    Route::get("/destinos/{country}/{province}/{tour}", 'tourShow')->name('destinos.tour');
     Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
 });
 
@@ -62,7 +56,7 @@ Route::get('/galeria', function() {
 
 Route::controller(ReservationController::class)->group(function() {
     Route::get("/reserva/{producto}", 'create')->name('reservation.create');
-    Route::post("/reserva/{producto}", 'store')->name('reservation.create');
+    Route::post("/reserva/{producto}", 'store')->name('reservation.store');
     Route::get("/reserva/{producto}/pago", 'payment')->name('payment');
     Route::get("/reserva/{producto}/pago/ok", 'paymentOk');
     Route::get("/reserva/{producto}/pago/no-ok", 'paymentNoOk');
