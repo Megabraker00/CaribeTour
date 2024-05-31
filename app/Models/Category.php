@@ -15,6 +15,11 @@ class Category extends Model
 
     protected $table = 'categories';
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

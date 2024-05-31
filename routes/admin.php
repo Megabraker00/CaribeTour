@@ -24,8 +24,12 @@ Route::controller(ClientController::class)->group(function(){
 });
 
 Route::controller(ProductController::class)->group(function(){
-    Route::get("/tours", "indexTours")->name('admin.tour.index');
-    Route::get("/tours/{id}", "showTours")->name('admin.tour.show');
+    Route::get("/tours", "indexTour")->name('admin.tour.index');
+    Route::get("/tours/new", "createTour")->name('admin.tour.create');
+    Route::post("/tours", "storeTour")->name('admin.tour.store');
+    Route::get("/tours/{id}", "showTour")->name('admin.tour.show');
+    Route::get("/tours/{id}/edit", "editTour")->name('admin.tour.edit');
+    Route::put("/tours/{id}", "updateTour")->name('admin.tour.update');
 });
 
 /**

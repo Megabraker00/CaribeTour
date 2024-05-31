@@ -14,17 +14,7 @@
 
     <div class="card">
 
-        <!-- form -->
-        <form readonly>
-            <div class="card-body">
-                @yield('fields')
-            </div>
-
-            <div class="card-footer">
-                <button type="submit" class="btn btn-info">Guardar</button>
-            </div>
-        </form>
-        <!-- /form -->
+        @yield('form')
 
     </div>
 

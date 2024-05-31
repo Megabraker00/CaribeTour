@@ -16,6 +16,10 @@ class Status extends Model
 
     const CLIENT_ACTIVE = 4;
 
+    const TOUR_DRAFT = 5;
+    const TOUR_ACTIVE = 6;
+    const TOUR_NOT_ACTIVE = 7;
+
     /**
      * The table associated with the model.
      *

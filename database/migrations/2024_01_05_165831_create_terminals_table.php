@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('terminals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name', 100);
             $table->string('address')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
-
             $table->foreign('parent_id')->references('id')->on('terminals');
         });
     }

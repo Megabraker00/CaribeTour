@@ -76,7 +76,7 @@
                     {orderable: false, targets: [-1]}, // no se pueda ordenar por la ultima columna, usa targets:'_all' para aplicarlo a todas las columnas
                     {className: 'text-center', targets: [0, -2]}, // tambien se puede especificar las columnas a la que queremos aplicar la clase, con tagets: [0, 3, 4], sólo se aplicará a la columna en la posición 0, 3 y 4, usa targets:'_all' para aplicarlo a todas las columnas
                     // {width: "15%", targets: [-1]}, // especificar el ancho de una o varias columnas
-                    {searchable: false, targets: [0, 3]}, // indicamos las columnas que no realizaran busquedas, usa targets:'_all' para aplicarlo a todas las columnas
+                    {searchable: false, targets: [3]}, // indicamos las columnas que no realizaran busquedas, usa targets:'_all' para aplicarlo a todas las columnas
                 ],
                 language: {
                     "decimal": ",",

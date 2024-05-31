@@ -9,7 +9,7 @@
         <h1>Tours</h1>
     </div>
     <div class="col-sm text-right">
-        <button class="btn btn-info">Nuevo</button>
+        <a href="{{ route('admin.tour.create') }}" class="btn btn-info">Nuevo</a>
     </div>
 </div>
 
@@ -65,8 +65,8 @@
             {
                 data: null,
                 render: (data, type, row) => '<div class="row" role="group">' +
-                       '<a class="btn btn-sm btn-info" href="tours/' + row.id + '" title="Más Información"> Más Info <i class="fa fa-info"></i></a>' +
-                       '<a class="btn btn-sm btn-warning" href="tours/' + row.id + '/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>' +
+                       '<a class="btn btn-sm btn-info" href="tours/' + row.id + '" title="Más Información">Más Info</a>' +
+                       '<a class="btn btn-sm btn-warning" href="tours/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
                    '</div>',
             }
         ]

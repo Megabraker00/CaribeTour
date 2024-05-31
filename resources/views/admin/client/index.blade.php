@@ -64,7 +64,7 @@
                 data: null,
                 render: (data, type, row) => '<div class="row" role="group">' +
                        '<a class="btn btn-sm btn-info" href="clientes/' + row.id + '" title="Más Información"> Más Info <i class="fa fa-info"></i></a>' +
-                       '<a class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>' +
+                       '<a class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
                    '</div>',
                  //'<a class="btn btn-sm btn-info" href="clientes/'+ row.id +'" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/'+ row.id +'/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>',
                 // defaultContent: '<a class="btn btn-sm btn-info" href="clientes/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/3/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>'

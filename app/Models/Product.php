@@ -13,7 +13,12 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
 
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function user(): BelongsTo
     {

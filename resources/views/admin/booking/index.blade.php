@@ -65,7 +65,7 @@
             },
             {
                 data: null,
-                defaultContent: '<a class="btn btn-sm btn-info" href="reserva/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="reserva/3/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>'
+                defaultContent: '<a class="btn btn-sm btn-info" href="reserva/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="reserva/3/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>'
             }
         ]
 
