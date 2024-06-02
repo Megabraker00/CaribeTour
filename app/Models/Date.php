@@ -11,6 +11,8 @@ class Date extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -21,9 +23,9 @@ class Date extends Model
         return $this->belongsTo(Terminal::class, 'departure_terminal_id', 'id');
     }
 
-    public function return_t(): BelongsTo
+    public function arrival_t(): BelongsTo
     {
-        return $this->belongsTo(Terminal::class, 'return_terminal_id', 'id');
+        return $this->belongsTo(Terminal::class, 'arrival_terminal_id', 'id');
     }
 
     public function bookings(): BelongsToMany

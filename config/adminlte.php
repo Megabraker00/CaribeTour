@@ -349,7 +349,7 @@ return [
             'label_color' => 'success',
         ],
         [
-            'text' => 'Productos',
+            'text' => 'PRODUCTOS',
             'icon' => 'fas fa-fw fa-share',
             'submenu' => [
                 [
@@ -368,6 +368,29 @@ return [
                 [
                     'text' => 'Seguros',
                     'url' => 'admin/seguros',
+                ],
+            ],
+        ],
+        [
+            'text' => 'SETTINGS',
+            'icon' => 'fa fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Tipos',
+                    'icon' => 'far fa-fw fa-file',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Estados',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Categorías',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Terminales',
+                    'url' => '#',
                 ],
             ],
         ],

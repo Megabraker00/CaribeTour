@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\DateController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
@@ -14,22 +15,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('', [HomeController::class, 'index'])->name('admin');
 
-Route::controller(ReservationController::class)->group(function(){
+Route::controller(ReservationController::class)->group(function() {
     Route::get("/reservas", 'index')->name('admin.booking.index');
 });
 
-Route::controller(ClientController::class)->group(function(){
+Route::controller(ClientController::class)->group(function() {
     Route::get("/clientes", 'index')->name('admin.client.index');
     Route::get("/clientes/{id}", 'show')->name('admin.client.show');
 });
 
-Route::controller(ProductController::class)->group(function(){
+Route::controller(ProductController::class)->group(function() {
     Route::get("/tours", "indexTour")->name('admin.tour.index');
     Route::get("/tours/new", "createTour")->name('admin.tour.create');
     Route::post("/tours", "storeTour")->name('admin.tour.store');
     Route::get("/tours/{id}", "showTour")->name('admin.tour.show');
     Route::get("/tours/{id}/edit", "editTour")->name('admin.tour.edit');
     Route::put("/tours/{id}", "updateTour")->name('admin.tour.update');
+});
+
+Route::controller(DateController::class)->group(function() {
+    Route::post("/tourDate", "storeTourDate")->name('admin.tour.date.store');
+    Route::delete("/tourDate/{id}/destroy", "destroyTourDate")->name('admin.tour.date.destroy');
 });
 
 /**

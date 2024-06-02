@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\Date;
 use App\Models\Product;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
@@ -49,5 +50,12 @@ class DatatableController extends Controller
         */
 
         return DataTables::make($tours)->toJson();
+    }
+
+    public function tourDates($productId)
+    {
+        $dates = Date::with(['departure_t', 'arrival_t'])->where('product_id', $productId)->get();
+
+        return DataTables::make($dates)->toJson();
     }
 }

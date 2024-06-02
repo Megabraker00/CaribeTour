@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Suplier;
+use App\Models\Terminal;
 use App\Models\Type;
 use Illuminate\Http\Request;
 
@@ -49,10 +50,10 @@ class ProductController extends Controller
         $validatedFields['status_id'] = Status::TOUR_DRAFT;
         $validatedFields['created_user_id'] = 1; // set default value
 
-        $product = Product::create($validatedFields);
+        $tour = Product::create($validatedFields);
 
         //return redirect()->route('admin.tour.index')->with('success', 'Tour created successfully.');
-        return redirect()->route('admin.tour.show', $product->id);
+        return redirect()->route('admin.tour.show', $tour->id);
     }
 
     public function showTour($id)
@@ -63,10 +64,13 @@ class ProductController extends Controller
 
         $supliers = Suplier::all();
 
+        $terminals = Terminal::all();
+
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'supliers' => $supliers,
+            'terminals' => $terminals,
             'show' => true,
         ]);
     }
@@ -106,7 +110,7 @@ class ProductController extends Controller
         $tour = Product::findOrFail($id);
         $tour->update($validatedFields);
 
-        return redirect()->route('admin.tour.index')
+        return redirect()->route('admin.tour.show', $tour->id)
             ->with('success', 'Tour updated successfully.');
     }
 }
