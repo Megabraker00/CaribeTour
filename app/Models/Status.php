@@ -10,15 +10,18 @@ class Status extends Model
 {
     use HasFactory;
 
-    const BOOKING_PENDING_PAYMENT = 1;
-    const BOOKING_PAID = 2;
-    const BOOKING_CANCELLED = 3;
+    // from 1 to 9 belongs to Product model
+    const TOUR_DRAFT = 1;
+    const TOUR_ACTIVE = 2;
+    const TOUR_NOT_ACTIVE = 3;
 
-    const CLIENT_ACTIVE = 4;
+    // from 10 to 19 belongs to Booking model
+    const BOOKING_PENDING_PAYMENT = 10;
+    const BOOKING_PAID = 11;
+    const BOOKING_CANCELLED = 12;
 
-    const TOUR_DRAFT = 5;
-    const TOUR_ACTIVE = 6;
-    const TOUR_NOT_ACTIVE = 7;
+    // from 20 to 29 belongs to Client model
+    const CLIENT_ACTIVE = 20;
 
     /**
      * The table associated with the model.

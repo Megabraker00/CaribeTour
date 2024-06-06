@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_date', function (Blueprint $table) {
+        Schema::create('booking_itinerary', function (Blueprint $table) {
             $table->foreignId('booking_id')->constrained();
-            $table->foreignId('date_id')->constrained();
+            $table->foreignId('itinerary_id')->constrained();
+            $table->tinyInteger('itinerary_order');
         });
     }
 
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_dates');
+        Schema::dropIfExists('booking_itinerary');
     }
 };

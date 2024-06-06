@@ -109,6 +109,22 @@
                 <!-- /form -->
             </div>
             <!-- /card -->
+
+            <div class="card">
+
+              <div class="card-header">
+                <div class="card-title">
+                    Imagenes
+                </div>
+              </div>
+  
+              <div class="card-body">
+                <form>
+                  <input type="file">
+                </form>
+              </div>
+  
+            </div>
         </div>
         <!-- /col -->
 
@@ -354,7 +370,7 @@
     <script>
         $(document).ready(function() {
             let properties = dtProperties()
-            properties.ajax = "{{ route('api.datatable.tours.dates', $tour->id) }}"
+            properties.ajax = "{{ route('api.datatable.tours.itineraries', $tour->id) }}"
             properties.columns = [{
                     data: 'id'
                 },

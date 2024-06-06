@@ -13,8 +13,8 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $featured_products = Product::select('products.*', DB::raw('SUM(dates.price + dates.taxes) as total'))
-            ->join('dates', 'products.id', '=', 'dates.product_id')
+        $featured_products = Product::select('products.*', DB::raw('SUM(itineraries.price + itineraries.taxes) as total'))
+            ->join('itineraries', 'products.id', '=', 'itineraries.product_id')
             ->groupBy('products.id')
             ->orderBy('total')
             ->take(5)

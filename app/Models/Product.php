@@ -35,9 +35,9 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function dates(): HasMany
+    public function itineraries(): HasMany
     {
-        return $this->hasMany(Date::class);
+        return $this->hasMany(Itinerary::class);
     }
 
     public function images(): MorphMany

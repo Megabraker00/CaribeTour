@@ -12,11 +12,11 @@ class Terminal extends Model
 
     public function departure_dates(): HasMany
     {
-        return $this->hasMany(Date::class, 'departure_terminal_id', 'id');
+        return $this->hasMany(Itinerary::class, 'departure_terminal_id', 'id');
     }
 
     public function return_dates(): HasMany
     {
-        return $this->hasMany(Date::class, 'return_terminal_id', 'id');
+        return $this->hasMany(Itinerary::class, 'return_terminal_id', 'id');
     }
 }

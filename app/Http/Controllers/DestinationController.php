@@ -49,8 +49,8 @@ class DestinationController extends Controller
     {
         $tour = Product::where('slug', $slugTour)->first();
 
-        $firstDate = $tour->dates->sortBy('id')->first();
-        $price = $firstDate->price + $firstDate->taxes; // blade $tour->dates->sortBy('id')->first()->price
+        $firstDate = $tour->itineraries->sortBy('id')->first();
+        $price = $firstDate->price + $firstDate->taxes; // blade $tour->itineraries->sortBy('id')->first()->price
 
         return view('destination.tour', ['tour' => $tour, 'firstDate' => $firstDate, 'price' => $price]);
     }

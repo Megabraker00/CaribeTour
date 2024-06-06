@@ -11,13 +11,22 @@ class Type extends Model
 {
     use HasFactory;
 
+    // from 1 to 9 belongs to Product model
     const TOUR = 1;
     const EXCURSION = 2;
     const SEGURO = 3;
     const FREETOUR = 4;
 
-    const CLIENT_HOLDER = 5;
-    const CLIENT_PASSENGERS = 6;
+    // from 10 to 19 belongs to Payment model
+    const CARD = 10;
+    const TRANSFER = 11;
+    const STRIPE = 12;
+    const PAYPAL = 13;
+    const CASH = 14;
+
+    // from 20 to 29 belongs to Client model
+    const HOLDER = 20;
+    const PASSENGER = 21;
 
     public function typeable()
     {

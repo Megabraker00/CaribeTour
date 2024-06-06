@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('last_name', 100);
+            $table->date('date_of_birth')->nullable();
             $table->string('dni_passport', 20);
             $table->foreignId('type_id')->constrained();
             $table->foreignId('status_id')->constrained('statuses');

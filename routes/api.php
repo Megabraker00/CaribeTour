@@ -26,5 +26,5 @@ Route::controller(DatatableController::class)->group(function(){
     Route::get('datatable/bookings', 'bookings')->name('api.datatable.bookings');
     Route::get('datatable/clientes', 'clients')->name('api.datatable.clients');
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');
-    Route::get('datatable/tours/{id}/dates', 'tourDates')->name('api.datatable.tours.dates');
+    Route::get('datatable/tours/{id}/itineraries', 'tourItinerarys')->name('api.datatable.tours.itineraries');
 });

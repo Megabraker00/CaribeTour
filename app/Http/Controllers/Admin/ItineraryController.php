@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Date;
+use App\Models\Itinerary;
 use App\Models\Product;
 
-class DateController extends Controller
+class ItineraryController extends Controller
 {
     public function storeTourDate(Request $request)
     {
@@ -21,14 +21,14 @@ class DateController extends Controller
             'product_id' => 'required',
         ]);
 
-        Date::create($validatedFields);
+        Itinerary::create($validatedFields);
 
         return redirect()->route('admin.tour.show', $request->product_id);
     }
 
     public function destroyTourDate(Request $request)
     {
-        $date = Date::findOrFail($request->date_id);
+        $date = Itinerary::findOrFail($request->date_id);
         $product_id = $date->product_id;
         $date->delete();
 

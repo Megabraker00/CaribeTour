@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Date extends Model
+class Itinerary extends Model
 {
     use HasFactory;
+
+    protected $table = 'itineraries';
 
     protected $guarded = [];
 

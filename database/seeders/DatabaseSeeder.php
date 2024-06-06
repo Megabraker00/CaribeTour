@@ -5,7 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Category;
-use App\Models\Date;
+use App\Models\Itinerary;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Suplier;
@@ -36,6 +36,6 @@ class DatabaseSeeder extends Seeder
         Suplier::factory(10)->create();
         Product::factory(50)->create();
         Terminal::factory(10)->create();
-        Date::factory(100)->create();
+        Itinerary::factory(100)->create();
     }
 }

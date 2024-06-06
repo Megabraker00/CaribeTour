@@ -23,9 +23,9 @@ class Booking extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function dates(): BelongsToMany
+    public function itineraries(): BelongsToMany
     {
-        return $this->belongsToMany(Date::class);
+        return $this->belongsToMany(Itinerary::class);
     }
 
     public function documents(): MorphMany

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Client;
-use App\Models\Date;
+use App\Models\Itinerary;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
@@ -17,9 +17,9 @@ class ReservationController extends Controller
     {
         $product = Product::where('slug', $producSlug)->first();
 
-        $date = Date::findOrFail($request->query('idD'));
+        $itinerary = Itinerary::findOrFail($request->query('idD'));
 
-        return view('reservation.new', ['product' => $product, 'date' => $date]);
+        return view('reservation.new', ['product' => $product, 'itinerary' => $itinerary]);
     }
 
     public function store(Request $request, $producSlug)
@@ -36,16 +36,16 @@ class ReservationController extends Controller
                 ]
             );
 
-            // validate date is still available
-            $date = Date::findOrFail($request->idD);
+            // validate itinerary is still available
+            $itinerary = Itinerary::findOrFail($request->idD);
 
             DB::beginTransaction();
 
             // create a new reservation
             $booking = $this->createNewReservation($request);            
 
-            // link resercation to date
-            $booking->dates()->attach($date);
+            // link resercation to itinerary
+            $booking->itineraries()->attach($itinerary);
 
             // store reservation holder
             $this->createClientReservation($request, $booking->id);
@@ -99,7 +99,7 @@ class ReservationController extends Controller
         $client->name = $request->nombreT;
         $client->last_name = $request->apellidosT;
         $client->dni_passport = $request->dniT;
-        $client->type_id = Type::CLIENT_HOLDER;
+        $client->type_id = Type::HOLDER;
         $client->status_id = Status::CLIENT_ACTIVE;
         $client->booking_id = $booking_id;
         $client->save();
@@ -119,7 +119,7 @@ class ReservationController extends Controller
             $birthdate = date('d/m/Y H:i:s', strtotime("{$request->diaP[$i]}.{$request->mesP[$i]}.{$request->anioP[$i]}"));
             //$p->meta()->create(['meta_dataable_id' => $p->id, 'meta_data' => json_encode(['birthdate' => $birthdate])]);
             $p->booking_id = $booking_id;
-            $p->type_id = Type::CLIENT_PASSENGERS;
+            $p->type_id = Type::PASSENGER;
             $p->status_id = Status::CLIENT_ACTIVE;
             $p->save();
             $ret[] = $p;
