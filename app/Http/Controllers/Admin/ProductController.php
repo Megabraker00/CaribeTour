@@ -82,11 +82,14 @@ class ProductController extends Controller
         $parentCategories = Category::whereNull('parent_id')->get();
 
         $supliers = Suplier::all();
+
+        $terminals = Terminal::all();
         
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'supliers' => $supliers,
+            'terminals' => $terminals,
             'edit' => true,
         ]);
     }

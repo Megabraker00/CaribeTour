@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\ClientController;
-use App\Http\Controllers\Admin\DateController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\ItineraryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Models\Client;
@@ -33,7 +33,7 @@ Route::controller(ProductController::class)->group(function() {
     Route::put("/tours/{id}", "updateTour")->name('admin.tour.update');
 });
 
-Route::controller(DateController::class)->group(function() {
+Route::controller(ItineraryController::class)->group(function() {
     Route::post("/tourDate", "storeTourDate")->name('admin.tour.date.store');
     Route::delete("/tourDate/{id}/destroy", "destroyTourDate")->name('admin.tour.date.destroy');
 });
@@ -47,7 +47,7 @@ Route::get('popularcliente', function() {
         $client->name = fake()->name();;
         $client->last_name = fake()->words(2, true);
         $client->dni_passport = fake()->randomNumber(5, true);
-        $client->type_id = Type::CLIENT_HOLDER;
+        $client->type_id = Type::HOLDER;
         $client->status_id = Status::CLIENT_ACTIVE;
         $client->booking_id = 1;
         $client->save();
