@@ -30,6 +30,7 @@ class ProductController extends Controller
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'supliers' => $supliers,
+            'terminals' => [],
             'new' => true,
         ]);
     }

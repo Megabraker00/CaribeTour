@@ -42,10 +42,10 @@ class ReservationController extends Controller
             DB::beginTransaction();
 
             // create a new reservation
-            $booking = $this->createNewReservation($request);            
+            $booking = $this->createNewReservation($request);
 
             // link resercation to itinerary
-            $booking->itineraries()->attach($itinerary);
+            $booking->itineraries()->attach($itinerary, ['itinerary_order' => 1]);
 
             // store reservation holder
             $this->createClientReservation($request, $booking->id);
@@ -57,10 +57,10 @@ class ReservationController extends Controller
 
             // redirect to payment
             return redirect()->route('payment', [
-                'producto' => $producSlug, 
-                'idB' => $booking->id, 
-                'idD' => $request->idD, 
-                'idP' => $request->formaPago
+                'producto' => $producSlug,
+                'idB' => $booking->id,
+                'idD' => $request->idD,
+                'idP' => $request->formaPago,
             ]);
 
         } catch (\Throwable $th) {

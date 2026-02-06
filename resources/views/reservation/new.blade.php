@@ -7,6 +7,7 @@
     <div class="row">
         <div class="section-title">
             <h1>Datos del Titular de la reserva</h1>
+            {{ $errors }}
         </div>
         <div class="eightcol column">
             <div class="booking-form">
@@ -229,9 +230,9 @@
                                 target="_blank">Política de Seguridad y Privacidad</a>
                         </label>
                     </div>
-                    <input type="hidden" name="idD" value="{{ $date->id }}">
-                    <input type="hidden" name="totalAmount" value="{{ $date->price + $date->taxes }}">
-                    <input type="hidden" name="dblTasas" value="{{ $date->taxes }}">
+                    <input type="hidden" name="idD" value="{{ $itinerary->id }}">
+                    <input type="hidden" name="totalAmount" value="{{ $itinerary->price + $itinerary->taxes }}">
+                    <input type="hidden" name="dblTasas" value="{{ $itinerary->taxes }}">
                     <input type="submit" name="submit" value="Confirmar Datos y Pagar"
                         title="Confirmar Datos y Pagar" tabindex="25">
                 </form>
@@ -265,7 +266,7 @@
                             </li>
                             <li style="font-size:1.8em;">
                                 <div class="colored-icon icon-3"><span></span></div><strong>Precio por persona:</strong>
-                                {{ $date->price + $date->taxes }} &euro;
+                                {{ $itinerary->price + $itinerary->taxes }} &euro;
                             </li>
                         </ul>
                         <p>&nbsp;</p>

@@ -28,7 +28,14 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        //$this->call(TypeSeeder::class);
+        $this->call([
+            TypeSeeder::class,
+            CategorySeeder::class,
+            StatusSeeder::class,
+            ProductSeeder::class,
+            TerminalSeeder::class,
+        ]);
+
         Type::factory(20)->create();
         Status::factory(20)->create();
         ParentCategoryFactory::factoryForModel('Category')->create();

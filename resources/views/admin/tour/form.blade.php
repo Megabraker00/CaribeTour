@@ -47,7 +47,7 @@
                                     @method('PUT')
                                 @endif
 
-                                <fieldset {{ isset($show) ? 'disabled' : '' }}> {{-- disabled para deshabilitar todos los campos dentro del fieldset --}}
+                                <fieldset {{ isset($show) ? 'disabled' : '' }} class="col-md-6"> {{-- disabled para deshabilitar todos los campos dentro del fieldset --}}
                                     <div class="form-group">
                                         <label for="nombre">Nombre</label>
                                         <input name="name" class="form-control @error('name') is-invalid @enderror"
