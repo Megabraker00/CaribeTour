@@ -28,3 +28,12 @@ Route::controller(DatatableController::class)->group(function(){
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');
     Route::get('datatable/tours/{id}/itineraries', 'tourItinerarys')->name('api.datatable.tours.itineraries');
 });
+
+// API Resources
+Route::prefix('v1')->group(function () {
+    Route::apiResource('products', App\Http\Controllers\Api\ProductController::class);
+    Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class);
+    Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class);
+    Route::apiResource('types', App\Http\Controllers\Api\TypeController::class);
+    Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class);
+});

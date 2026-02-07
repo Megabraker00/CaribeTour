@@ -1,0 +1,799 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CaribeTour API",
+        "description": "API documentation for CaribeTour project",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/categories": {
+            "get": {
+                "summary": "Get list of categories",
+                "description": "Display a listing of the resource.",
+                "operationId": "52c3c8d702572c2b4347b0ecf7573e54",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter categories by fields (e.g., name)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of categories returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new category",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "f9171669d626697cd543f9f421cff718",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Category Name"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "category-name"
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Category created successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/{id}": {
+            "get": {
+                "summary": "Get a category by ID",
+                "description": "Display the specified resource.",
+                "operationId": "11d2d45398d538612b1a4156d210652e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a category",
+                "description": "Update the specified resource in storage.",
+                "operationId": "8edd529bf8c5d2c024f479805defe8b6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Category Name"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "updated-category-name"
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a category",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "91c938105382f9b2d833cb18706e6694",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Category deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/products": {
+            "get": {
+                "summary": "Get list of products",
+                "description": "Display a listing of the resource.",
+                "operationId": "072fd15d3be55577bb08c19d19f1e75c",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter products by fields (e.g., name, category_id)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of products returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new product",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "eda0d526a50c0273ae224eb766440226",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Product Name"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "product-name"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "type_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "suplier_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/products/{id}": {
+            "get": {
+                "summary": "Get a product by ID",
+                "description": "Display the specified resource.",
+                "operationId": "e607d06420046014759462af284aeb59",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a product",
+                "description": "Update the specified resource in storage.",
+                "operationId": "d3addbe72313169741e652404694ef9d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Product Name"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "updated-product-name"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "type_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "suplier_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a product",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "bbf520f1a23d6a5f3dfb12813b5930d6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/statuses": {
+            "get": {
+                "summary": "Get list of statuses",
+                "description": "Display a listing of the resource.",
+                "operationId": "642664c912621220ca61f5b175605ca1",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter statuses by fields (e.g., name)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of statuses returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new status",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "a59343c409c50ebd023a31575312c3cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Status Name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Status created successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/statuses/{id}": {
+            "get": {
+                "summary": "Get a status by ID",
+                "description": "Display the specified resource.",
+                "operationId": "82cfdc00fe3517e81f5a1dcbbc856034",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a status",
+                "description": "Update the specified resource in storage.",
+                "operationId": "999e68ef5de3a83d92ff3ef44e3c904b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Status Name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a status",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "6d73d030aadbeef48b57629b93df4987",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Status deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/terminals": {
+            "get": {
+                "summary": "Get list of terminals",
+                "description": "Display a listing of the resource.",
+                "operationId": "bebbac2893d672f93a64e5857ffdd4c3",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter terminals by fields (e.g., name)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of terminals returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new terminal",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "91047f26a45793d9844b358f7b3018bc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Terminal Name"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main St"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Terminal created successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/terminals/{id}": {
+            "get": {
+                "summary": "Get a terminal by ID",
+                "description": "Display the specified resource.",
+                "operationId": "3b4eb45ec7a5f7f05cf6c2e777d0cdc0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a terminal",
+                "description": "Update the specified resource in storage.",
+                "operationId": "5dccba6c4a91055c0601a5b10f81f78c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Terminal Name"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "456 Elm St"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Terminal updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a terminal",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "6366519f374551b50d58b4e41a8edd6a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Terminal deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/types": {
+            "get": {
+                "summary": "Get list of types",
+                "description": "Display a listing of the resource.",
+                "operationId": "294c29e77d2424d2754db38dac833443",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Filter types by fields (e.g., name)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the number of types returned",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new type",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "501ca968763db6d4e180c9c03e128b89",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Type Name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Type created successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/types/{id}": {
+            "get": {
+                "summary": "Get a type by ID",
+                "description": "Display the specified resource.",
+                "operationId": "444683c95a9bddb4bad4747e36991524",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a type",
+                "description": "Update the specified resource in storage.",
+                "operationId": "ea224d615f6726887e9c2b31a736dc4d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Type Name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Type updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a type",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "a1303e5639393a10ed4a9319bc1ffe56",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Type deleted successfully"
+                    }
+                }
+            }
+        }
+    }
+}
