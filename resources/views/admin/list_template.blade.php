@@ -15,6 +15,9 @@
 @section('content')
 
     <div class="card">
+        <div class="card-header">
+            <a href="{{ route('admin') }}" class="btn btn-primary">Nuevo</a>
+        </div>
         <div class="card-body">
 
             <div class="table-responsive">
@@ -24,14 +27,13 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Titular</th>
-                            <th scope="col" nowrap>Fecha de Salida</th>
+                            <th scope="col" nowrap>Fecha de la Salida</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Estado</th>
 
                         </tr>
                     </thead>                    
                 </table>
-                
             </div>
 
         </div>

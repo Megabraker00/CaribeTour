@@ -34,7 +34,7 @@ class HomeController extends Controller
 
         view()->share('categories', $categories_search);
 
-        return view('home', [
+        return view('index', [
             'featured_products' => $featured_products,
             'tours' => $tours,
             'blog' => $blog,

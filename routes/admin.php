@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Models\Client;
 use App\Models\Type;
 use App\Models\Status;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rules\In;
 
 // para ver las consultas que se están ejecutando 
 // DB::listen(function ($query) { dump($query->sql); });
@@ -36,6 +38,15 @@ Route::controller(ProductController::class)->group(function() {
 Route::controller(ItineraryController::class)->group(function() {
     Route::post("/tourDate", "storeTourDate")->name('admin.tour.date.store');
     Route::delete("/tourDate/{id}/destroy", "destroyTourDate")->name('admin.tour.date.destroy');
+});
+
+Route::controller(InvoiceController::class)->group(function() {
+    Route::get("/facturas", 'index')->name('admin.facturas.index');
+    Route::get("/facturas/new", 'create')->name('admin.facturas.create');
+    Route::post("/facturas", 'store')->name('admin.facturas.store');
+    Route::get("/facturas/{id}/edit", 'edit')->name('admin.facturas.edit');
+    Route::put("/facturas/{id}", 'update')->name('admin.facturas.update');
+    Route::delete("/facturas/{id}", 'destroy')->name('admin.facturas.destroy');
 });
 
 /**

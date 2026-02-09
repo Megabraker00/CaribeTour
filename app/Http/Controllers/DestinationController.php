@@ -12,7 +12,8 @@ class DestinationController extends Controller
     {
         $parentCategories = Category::whereNull('parent_id')->get();
 
-        return view('destination.category', ['categories' => $parentCategories]);
+        //return view('destination.category', ['categories' => $parentCategories]);
+        return view('destinos', ['categories' => $parentCategories]);
     }
 
     public function provinceIndex($slugParentCategory)

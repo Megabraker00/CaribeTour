@@ -3,23 +3,15 @@
 @section('title', 'Tours')
 
 @section('content_header')
-
-<div class="row mb-2">
-    <div class="col-sm">
-        <h1>Tours</h1>
-    </div>
-    <div class="col-sm text-right">
-        <a href="{{ route('admin.tour.create') }}" class="btn btn-info">Nuevo</a>
-    </div>
-</div>
-
+    <h1>Tours</h1>
 @stop
 
 @section('content')
-
     <div class="card">
+        <div class="card-header">
+            <a href="{{ route('admin.tour.create') }}" class="btn btn-primary">Nuevo</a>
+        </div>
         <div class="card-body">
-
             <div class="table-responsive">
                 <table class="table table-striped table-hover" id="the_table" style="width:99%">
                     <caption>Lista de Tours</caption>
@@ -64,11 +56,14 @@
             {data: 'precio'},
             {
                 data: null,
-                render: (data, type, row) => '<div class="row" role="group">' +
-                       '<a class="btn btn-sm btn-info" href="tours/' + row.id + '" title="Más Información">Más Info</a>' +
-                       '<a class="btn btn-sm btn-warning" href="tours/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
+                render: (data, type, row) => '<div class="btn-group" role="group">' +
+                       '<a role="button" class="btn btn-sm btn-info" href="tours/' + row.id + '" title="Más Información">Más Info</a>' +
+                       '<a role="button" class="btn btn-sm btn-warning" href="tours/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
                    '</div>',
             }
+        ]
+        properties.columnDefs = [
+            {targets: [1,2,5], className: 'text-nowrap'},
         ]
 
         $('#the_table').DataTable(properties)

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\Invoice;
 use App\Models\Itinerary;
 use App\Models\Product;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,6 +26,13 @@ class DatatableController extends Controller
         $bookings = Booking::select('id', 'status_id', 'total_amount', DB::raw('"R titular" as titular'), DB::raw('"15/06/24" as f_salida'))->get();
 
         return DataTables::make($bookings)->toJson();
+    }
+
+    public function invoices()
+    {
+        $invoices = Invoice::select('id', 'booking_id', 'created_at','created_user_id')->get();
+
+        return DataTables::make($invoices)->toJson();
     }
 
     public function clients()
