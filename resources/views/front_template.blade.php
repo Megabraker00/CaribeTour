@@ -83,10 +83,10 @@
     <header class="bg-palm">
 
         <!-- container -->
-        <div class="container pt-4 pb-4">
+        <div class="container py-4">
 
             <!-- button-header -->
-            <div class="d-flex flex-wrap justify-content-center align-items-center py-3 mb-4">
+            <div class="d-flex flex-wrap justify-content-center align-items-center py-3">
 
                 <a href="{{ route('inicio') }}" rel="home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                     <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo" title="CaribeTour Logo">
@@ -139,19 +139,20 @@
             </div>
             <!-- /button-header -->
 
-            <div class="row">
-
-                @yield('hero')
-
-            </div>
+            @yield('hero')
 
         </div>
         <!-- /container -->
 
     </header>
 
-    <main class="flex-fill">
-    @yield('content')
+    <main class="flex-fill top-bottom-shadow">
+
+        @if (!request()->routeIs('inicio'))
+            <x-breadcrumbs />
+        @endif
+
+        @yield('content')
     </main>
 
     <!-- footer -->

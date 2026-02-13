@@ -38,16 +38,18 @@ a:hover {
     right: 0;
 }
 
-.shadow-top {
-    box-shadow: 0 -10px 10px -3px rgba(0, 0, 0, 0.5);
-    height: 10px;
+.top-shadow {
+    box-shadow: inset 0 18px 22px -18px rgba(0,0,0,.55);
 }
 
-.shadow-bottom {
-    box-shadow: 0 10px 10px -3px rgba(0, 0, 0, 0.5);
-    height: 10px;
-    z-index: auto;
-    position: relative;
+.bottom-shadow {
+    box-shadow: inset 0 -18px 22px -18px rgba(0,0,0,.55);
+}
+
+.top-bottom-shadow {
+  box-shadow: 
+    inset 0 18px 22px -18px rgba(0,0,0,.55), 
+    inset 0 -18px 22px -18px rgba(0,0,0,.55);
 }
 
 /* zoom */

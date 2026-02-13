@@ -1,18 +1,21 @@
 @extends('front_template')
 @section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
+@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
+@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_image', asset('images/og-default.jpg'))
 
 @section('content')
-<!-- container -->
-    <div class="w-100 shadow-top"></div>
-    <section class="container pt-4">
+    <!-- container -->
+    <section class="container py-4">
 
-        <div class="row pt-4">
+        <div class="row">
 
             <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="pais.html" class="text-decoration-none">
+                <a href="{{ route('destinos.pais', 'republica-dominicana') }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="img/tour/i+Love+Bootstrap (4).png" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title" title="Hotel Grand Palladium Punta Cana Resort & Spa"><i class="bi bi-geo-alt-fill"></i> República. Dominicana</h5>
@@ -23,10 +26,10 @@
             </div>
 
             <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="/" class="text-decoration-none">
+                <a href="{{ route('destinos.pais', 'mexico') }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="img/tour/i+Love+Bootstrap (1).png" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap1.png') }}" class="card-img">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title"><i class="bi bi-geo-alt-fill"></i> Mexico</h5>
@@ -37,10 +40,10 @@
             </div>
 
             <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="/" class="text-decoration-none">
+                <a href="{{ route('destinos.pais', 'cuba') }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="img/tour/i+Love+Bootstrap (3).png" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title"><i class="bi bi-geo-alt-fill"></i> Cuba</h5>
@@ -52,6 +55,5 @@
         </div>
 
     </section>
-    <div class="w-100 shadow-bottom"></div>
     <!-- /container -->
 @endsection

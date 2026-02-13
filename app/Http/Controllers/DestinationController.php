@@ -13,10 +13,10 @@ class DestinationController extends Controller
         $parentCategories = Category::whereNull('parent_id')->get();
 
         //return view('destination.category', ['categories' => $parentCategories]);
-        return view('destinos', ['categories' => $parentCategories]);
+        return view('destination.destinos', ['categories' => $parentCategories]);
     }
 
-    public function provinceIndex($slugParentCategory)
+    public function countryShow($slugParentCategory)
     {
         $parentCategory = Category::where('slug', $slugParentCategory)->first();
 
@@ -26,10 +26,10 @@ class DestinationController extends Controller
             $subCategories = $parentCategory->subCategories;
         }
 
-        return view('destination.sub_category', ['subCategories' => $subCategories]);
+        return view('destination.pais', ['subCategories' => $subCategories]);
     }
 
-    public function tourIndex($slugCategory, $slugSubCategoy)
+    public function provinceShow($slugCategory, $slugSubCategoy)
     {
         $subCategory = Category::where('slug', $slugSubCategoy)->first();
 
@@ -43,16 +43,24 @@ class DestinationController extends Controller
         
         view()->share('categories', $categories_search);
 
-        return view('destination.tour_list', ['tours' => $tours]);
+        return view('destination.provincia', ['tours' => $tours]);
     }
 
     public function tourShow($category, $subCategory, $slugTour)
     {
+        /*
         $tour = Product::where('slug', $slugTour)->first();
+
+        if ($tour === null) {
+            abort(404);
+        }        
 
         $firstDate = $tour->itineraries->sortBy('id')->first();
         $price = $firstDate->price + $firstDate->taxes; // blade $tour->itineraries->sortBy('id')->first()->price
 
         return view('destination.tour', ['tour' => $tour, 'firstDate' => $firstDate, 'price' => $price]);
+        */
+
+        return view('destination.tour', ['tour' => null, 'firstDate' => null, 'price' => 0]);
     }
 }

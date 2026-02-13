@@ -1,5 +1,4 @@
 <!-- buscador -->
-<div class="col-md-12 col-lg-4">
 
     <div class="card mb-4 tour-search-form ">
 
@@ -7,7 +6,7 @@
             <h5 class="text-center">Encuentra tu Destino</h5>
         </div>
 
-        <form action="provincia.html">
+        <form action="{{ route('destinos.pais', 'republica-dominicana') }}">
             <div class="card-body">
 
                 <div class="mb-3">
@@ -85,5 +84,4 @@
         </form>
     </div>
 
-</div>
 <!-- /buscador -->

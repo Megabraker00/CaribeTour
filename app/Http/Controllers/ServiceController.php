@@ -9,7 +9,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        return view('service');
+        return view('servicios');
     }
 
     /**
@@ -17,6 +17,6 @@ class ServiceController extends Controller
      */
     public function show($service)
     {
-        return view('service');
+        return view('servicios');
     }
 }

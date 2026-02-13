@@ -1,317 +1,276 @@
-@extends('main_template')
+@extends('front_template')
+@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
+@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
+@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_image', asset('images/og-default.jpg'))
 
-@section('title', 'Unos destinos de puta madre')
+@section('content')
+    <!-- container -->
 
-@section('site-content')
+    <section class="container py-4">
 
-    <div class="row">
-        <div class="full-tour clearfix">
-            <div class="sixcol column">
-                <div class="content-slider-container tour-slider-container">
-                    <div class="content-slider tour-slider fade-effect">
-                        <ul style="height: 379px;">
-                            <li class="" style="display: none; position: relative; z-index: 1;"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
-                                    alt="Imagen de {{ $tour->name }}"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                            <li style="position: relative; z-index: 1; display: none;" class=""><img
-                                    src="img/natura-park-beach-eco-resort-y-spa_14694525191.jpg"
-                                    alt="Imagen de Natura Park Beach Eco Resort &amp; Spa"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                            <li style="position: relative; z-index: 1; display: none;" class=""><img
-                                    src="img/natura-park-beach-eco-resort-y-spa_14694525192.jpg"
-                                    alt="Imagen de Natura Park Beach Eco Resort &amp; Spa"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                                    <!-- MAIN IMAGEN -->
-                            <li style="position: relative; z-index: 1; display: list-item;" class="current"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
-                                    alt="Imagen de {{ $tour->name }}"
-                                    title="{{ $tour->name }}"></li>
-                                    <!-- \MAIN IMAGEN -->
-                        </ul>
-                        <div class="arrow arrow-left content-slider-arrow"></div>
-                        <div class="arrow arrow-right content-slider-arrow"></div>
-                        <input type="hidden" class="slider-speed" value="400">
-                        <input type="hidden" class="slider-pause" value="6000">
-                        <div class="controls">
-                            <a href="#" class=""></a><a href="#" class=""></a>
-                            <a href="#" class=""></a><a href="#" class="current"></a>
+        <!-- carousel and description -->
+        <div class="row">
+            <!-- carousel -->
+            <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
+
+                <div class="card shadow">
+
+                    <div class="card-body">
+
+                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
+                                    aria-label="Slide 4"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{{ asset('images/i-love-bootstrap3.png') }}"
+                                        class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>First slide label</h5>
+                                        <p>Some representative placeholder content for the first slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap2.png') }}"
+                                        class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Second slide label</h5>
+                                        <p>Some representative placeholder content for the second slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap1.png') }}"
+                                        class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Third slide label</h5>
+                                        <p>Some representative placeholder content for the third slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap4.png') }}"
+                                        class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Fourth slide label</h5>
+                                        <p>Some representative placeholder content for the second slide.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
+
                     </div>
-                    <div class="block-background layer-1"></div>
-                    <div class="block-background layer-2"></div>
+
                 </div>
+
             </div>
-            <div class="sixcol column last">
-                <div class="section-title">
-                    <h1>{{ $tour->name }}</h1>
-                </div>
-                <ul class="tour-meta">
-                    <li>
-                        <div class="colored-icon icon-2"></div>
-                        <strong>Destino:</strong> <a hreflang="es" type="text/html" charset="iso-8859-1"
-                            href="{{ route('destinos') }}/{{ $tour->category->fullSlug() }}" rel="tag"
-                            title="Ver destinos en {{ $tour->category->name }}">{{ $tour->category->name }}</a>
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-1"><span></span></div>
-                        <strong>Duracion:</strong> 8 Días
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-6"><span></span></div>
-                        <strong>Salida:</strong> Martes 02 de Agosto del 2016
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-7"><span></span></div>
-                        <strong>Regreso:</strong> Martes 09 de Agosto del 2016
-                    </li>
-                    <li style="font-size:1.8em;">
-                        <div class="colored-icon icon-3"><span></span></div>
-                        <strong>Precio:</strong> {{ $firstDate->price + $firstDate->taxes }} &euro;
-                    </li>
+            <!-- /carousel -->
+
+            <!-- description -->
+            <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
+
+                <h2>Hotel Carolina</h2>
+                <hr>
+
+                <ul class="tour-info">
+                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
+                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> Punta Cana</li>
+                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> Sábado 15 de Septiempre 2024</li>
+                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> Domingo 22 de Septiembre 2024</li>
+                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> 8 Días - 7 Noches</li>
+                    <li title="Precio por persona"><span class="fs-4"><i class="bi bi-tag-fill"></i><strong>Precio por Persona:</strong> 507.65€</span></li>
                 </ul>
-                <p>En este resort se aprovechan los recursos naturales del área tales como las piedras, el coco, la madera y
-                    la caña, creando un ambiente de extraordinaria belleza natural que parece estar soñando...<br>
-                    <br>
-                    viva la experiencia de unas vacaciones en completa armonía con la naturaleza en el lujoso resort de
-                    punta cana, natura park. abundantes jardines tropicales que rebosan con una exótica vida de aves se
-                    mezclan con lagunas y puentes a lo largo de caminos serpenteantes que llevan a la playa. el hotel está
-                    ubicado en la maravillosa playa de , uno de los mejores en el caribe.<br>
-                    <br>
-                    el natura park beach eco resort se beneficia de un diseño arquitectónico original que utiliza los
-                    recursos naturales de la zona como la piedra, los cocoteros, la madera y la caña para crear un ambiente
-                    tranquilo y confortable. el natura park es un lugar idílico para unas vacaciones relajantes en el
-                    caribe. nuestra excelente ubicación del punta cana resort ofrece una completa selección de actividades y
-                    de servicios especiales.
-                </p>
-                <footer class="tour-footer">
-                    <a hreflang="es" type="text/html" charset="iso-8859-1"
-                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'idD' => $firstDate->id]) }}"
-                        title="Solicitar la reserva de {{ $tour->name }}"
-                        class="button small">
-                        <span>Reservar Ahora</span>
-                    </a>
-                    <a href="#question-form"
-                        data-id="{{ $tour->slug }}" data-title="{{ $tour->name }}"
-                        class="button grey small colorbox inline cboxElement">
-                        <span>Consultar</span>
-                    </a> 
-                </footer>
-            </div>
-        </div>
+                
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur aliquid officiis corrupti, sed laborum nesciunt possimus delectus. Officia sequi iste animi quidem nulla nobis explicabo impedit dolor iusto? Corrupti, inventore.</p>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Modi nisi minima sapiente soluta cum a aspernatur repudiandae quos dolorum obcaecati inventore, illo quis. Molestias voluptatibus harum eveniet illum necessitatibus magnam.</p>
 
-        <!-- question form -->
-        <div class="hidden">
-            <div class="question-form popup-form" id="question-form">
-                <div class="section-title popup-title">
-                    <h4></h4>
+                <div>
+                    <button class="btn btn-primary me-2">Reservar Fechas</button>
+                    <button class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</button>
                 </div>
-                <form action="mail.php" method="POST" class="formatted-form" name="clientes"
-                    onsubmit="return validacion();">
-                    <div class="sixcol column ">
-                        <div class="field-container">
-                            <input type="text" id="nombre" name="nombre" title="Introduzca su nombtre completo."
-                                maxlength="50" value="" placeholder="Nombre Completo" required="">
-                        </div>
-                    </div>
-                    <div class="sixcol column last">
-                        <div class="clear"></div>
-                        <div class="field-container">
-                            <input type="email" id="email" name="email" title="Introduzca su email." maxlength="80"
-                                value="" placeholder="Email" required="">
-                        </div>
-                    </div>
-                    <div class="clear"></div>
-                    <div class="field-container">
-                        <textarea id="mensaje" name="mensaje" title="Indique su consulta." maxlength="500" placeholder="Consultas"
-                            required=""></textarea>
-                    </div>
-                    <input type="hidden" name="producto" id="producto" value="Natura Park Beach Eco Resort &amp; Spa"
-                        class="popup-id">
-                    <input type="hidden" name="volver"
-                        value="http://localhost/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa">
-                    <input type="submit" value="Enviar" title="Enviar la consulta">
-                    <!--<a class="submit-button button" href="#">Enviar</a> -->
-                </form>
             </div>
-            <!-- /question form -->
+            <!-- /description -->
 
         </div>
-        <div class="sixcol column">
-            <div class="tour-itinerary">
-                <div class="tour-day">
-                    <div class="tour-day-number">
-                        <h5>Itinerario</h5>
-                    </div>
-                    <div class="tour-day-text clearfix">
-                        <div class="bubble-corner"></div>
-                        <div class="bubble-text">
-                            <div class="column twelvecol last">
-                                <h5>{{ $tour->name }}</h5>
-                                <p>{{ $tour->meta?->meta_data['itinerario'] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tour-day">
-                    <div class="tour-day-number">
-                        <h5>Incluye</h5>
-                    </div>
-                    <div class="tour-day-text clearfix">
-                        <div class="bubble-corner"></div>
-                        <div class="bubble-text">
-                            <div class="column twelvecol last">
-                                <h5>¿Qué incluye {{ $tour->name }}?</h5>
-                                <p>-Vuelo directo con la compañía Evelop desde Madrid con destino Punta Cana.<br>
-                                    -Estancia en habitación Standard, 7 noches en régimen de todo incluído en el Hotel
-                                    Natura Park Eco - Resort &amp; Spa 5* - Punta Cana.<br>
-                                    -Traslados de entrada y salida Punta Cana.<br>
-                                    -Tasas aéreas incluidas.<br>
-                                    -Seguro obligatorio de Viaje.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- /carousel and description -->
+
+        <!-- itinerary and calendar -->
+        <div class="row">
+            <div class="col-md-12 col-lg-6 col-xl-6">
+                <h5><i class="bi bi-card-list"></i> Itinerario</h5>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex quo reiciendis eius sunt quia debitis accusamus fugiat est veritatis fugit ducimus voluptatem, quas dolorum temporibus tempore cupiditate nesciunt nobis quibusdam.
+                Nemo sit cupiditate eaque eveniet alias esse, aperiam vitae voluptatem! Consequatur, in? Porro laborum dolor similique vitae officia cupiditate obcaecati repudiandae, distinctio rem ratione, sunt, dolores et maxime culpa vero?</p>
+
+                <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque ut neque placeat impedit, aliquid perferendis at ipsum minima quidem ea eaque id vero voluptates aperiam. Architecto delectus maxime perspiciatis obcaecati.</p>
+
             </div>
-        </div>
-        <div class="sixcol column last">
-            <div class="calendario">
-                <table summary="Calendario con las fechas de salida para el tour Natura Park Beach Eco Resort &amp; Spa">
-                    <caption>
-                        <h3>Elíge la fecha de salida</h3>
-                    </caption>
-                    <colgroup span="7" style="width:14.29%; text-align:left; vertical-align:top; height:39px;">
-                    </colgroup>
+
+            <!-- calendar -->
+            <div class="col-md-12 col-lg-6 col-xl-6">
+                
+                <table class="table text-center">
+                    <caption class="text-center">Fechas Disponibles</caption>
                     <thead>
                         <tr>
-                            <th>
-                                <form role="form"
-                                    action="/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa"
-                                    method="post"><input type="submit" value="< <--"
-                                        title="Ver el mes anterior"><input type="hidden" name="mes"
-                                        value="1"><input type="hidden" name="anio" value="2024"></form>
-                            </th>
-                            <th colspan="5">S�bado 10 de Febrero del 2024</th>
-                            <th>
-                                <form role="form"
-                                    action="/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa"
-                                    method="post"><input type="submit" value="--> >"
-                                        title="Ver el mes anterior"><input type="hidden" name="mes"
-                                        value="3"><input type="hidden" name="anio" value="2024"></form>
-                            </th>
+                            <td colspan="7">
+                                <p class="text-center">Fechas Disponibles</p>
+                            </td>
                         </tr>
                         <tr>
-                            <th scope="col" abbr="Domingo">Dom</th>
-                            <th scope="col" abbr="Lunes">Lun</th>
-                            <th scope="col" abbr="Martes">Mar</th>
-                            <th scope="col" abbr="Miércoles">Mie</th>
-                            <th scope="col" abbr="Jueves">Jue</th>
-                            <th scope="col" abbr="Viernes">Vie</th>
-                            <th scope="col" abbr="Sábado">Sab</th>
+                            <td><button class="btn btn-primary"><i class="bi bi-arrow-left"></i></button></td>
+                            <td colspan="5" class="text-center"><h4>Septiembre 2024</h4></td>
+                            <td><button class="btn btn-primary"><i class="bi bi-arrow-right"></i></button></td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Lun</th>
+                            <th scope="col">Mar</th>
+                            <th scope="col">Mie</th>
+                            <th scope="col">Jue</th>
+                            <th scope="col">Vie</th>
+                            <th scope="col">Sab</th>
+                            <th scope="col">Dom</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>1 </td>
-                            <td>2 </td>
-                            <td>3 </td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
                         </tr>
                         <tr>
-                            <td>4 </td>
-                            <td>5 </td>
-                            <td>6 </td>
-                            <td>7 </td>
-                            <td>8 </td>
-                            <td>9 </td>
-                            <td style="background-color:#E2E2E2">10 </td>
+                            <td>8</td>
+                            <td>9</td>
+                            <td>10</td>
+                            <td>11</td>
+                            <td>12</td>
+                            <td>13</td>
+                            <td>14</td>
                         </tr>
                         <tr>
-                            <td>11 </td>
-                            <td>12 </td>
-                            <td>13 </td>
-                            <td>14 </td>
-                            <td>15 </td>
-                            <td>16 </td>
-                            <td>17 </td>
+                            <td>15</td>
+                            <td>16</td>
+                            <td class="table-active">17</td>
+                            <td>18</td>
+                            <td>19</td>
+                            <td>20</td>
+                            <td>21</td>
                         </tr>
                         <tr>
-                            <td>18 </td>
-                            <td>19 </td>
-                            <td>20 </td>
-                            <td>21 </td>
-                            <td>22 </td>
-                            <td>23 </td>
-                            <td>24 </td>
+                            <td>22</td>
+                            <td>23</td>
+                            <td>24</td>
+                            <td>25</td>
+                            <td>26</td>
+                            <td>27</td>
+                            <td>28</td>
                         </tr>
                         <tr>
-                            <td>25 </td>
-                            <td>26 </td>
-                            <td>27 </td>
-                            <td>28 </td>
-                            <td>29 </td>
+                            <td>29</td>
+                            <td>30</td>
+                            <td>31</td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <!-- /calendar -->
         </div>
-        <div class="clear"></div>
+        <!-- /itinerary and calendar -->
 
-        <div class="related-tours clearfix">
-            <div class="section-title">
-                <h2>Destinos Relacionados</h2>
-            </div>
+        <!-- related products -->
+        <div class="row">
+            <h4>Productos Relacionados</h4>
+            <hr>
 
-            <div class="items-grid">
-
-                @foreach($tour->related() as $index => $tourRelated)
-
-                <div class="column threecol @if(($index + 1) % 4 == 0) last @endif">
-                    <div class="tour-thumb-container">
-                        <div class="tour-thumb">
-                            <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                href="{{ route('destinos') }}/{{ $tourRelated->tourSlug() }}"
-                                title="{{ $tourRelated->name }}">
-                                <img width="440" height="330"
-                                    src="{{ asset( 'images/' . $tourRelated->mainImage?->path )}}"
-                                    class="attachment-preview wp-post-image"
-                                    alt="{{ $tourRelated->name }}">
-                            </a>
-                            <div class="tour-caption">
-                                <h5 class="tour-title">
-                                    <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                        href="{{ route('destinos') }}/{{ $tourRelated->tourSlug() }}">
-                                        {{ $tourRelated->name }}
-                                    </a>
-                                </h5>
-                                <div class="tour-meta">
-                                    <div class="tour-destination">
-                                        <div class="colored-icon icon-2"></div>
-                                        <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                            href="{{ route('destinos') }}/{{ $tourRelated->category->fullSlug() }}" rel="tag">
-                                            {{ $tourRelated->category->name }}
-                                        </a>
-                                    </div>
-                                    <div class="colored-icon icon-3"></div>1.126,40€
-                                </div>
-                            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
                         </div>
-                        <div class="block-background"></div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
                     </div>
-                </div>
-
-                @endforeach
-
-                <div class="clear"></div>
-
+                </a>
             </div>
-        </div>
-        <!-- related tours -->
-    </div>
 
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="card-img">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" class="card-img">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <!-- /related products -->        
+
+    </section>
+
+    <!-- /container -->
 @endsection
