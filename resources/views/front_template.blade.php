@@ -85,59 +85,71 @@
         <!-- container -->
         <div class="container py-4">
 
-            <!-- button-header -->
-            <div class="d-flex flex-wrap justify-content-center align-items-center py-3">
+            <!-- header -->
+            <nav class="navbar navbar-expand-lg bg-transparent py-3">
 
-                <a href="{{ route('inicio') }}" rel="home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                    <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo" title="CaribeTour Logo">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" href="{{ route('inicio') }}">
+                    <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo">
                 </a>
 
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a href="{{ route('inicio') }}"
-                        class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}">
-                        <strong>INICIO</strong>
-                        </a>
-                    </li>
+                <!-- Botón hamburguesa -->
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                    <li class="nav-item">
-                        <a href="{{ route('destinos') }}"
-                        class="nav-link {{ request()->routeIs('destinos*') ? 'active' : '' }}">
-                        <strong>DESTINOS</strong>
-                        </a>
-                    </li>
+                <!-- Menú -->
+                <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+                    <ul class="navbar-nav nav nav-pills gap-2">
 
-                    <li class="nav-item">
-                        <a href="{{ route('servicios') }}"
-                        class="nav-link {{ request()->routeIs('servicios*') ? 'active' : '' }}">
-                        <strong>SERVICIOS</strong>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('inicio') }}"
+                            class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}">
+                                <strong>INICIO</strong>
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('blogs') }}"
-                        class="nav-link {{ request()->routeIs('blogs*') ? 'active' : '' }}">
-                        <strong>BLOG</strong>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('destinos') }}"
+                            class="nav-link {{ request()->routeIs('destinos*') ? 'active' : '' }}">
+                                <strong>DESTINOS</strong>
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('galeria') }}"
-                        class="nav-link {{ request()->routeIs('galeria') ? 'active' : '' }}">
-                        <strong>GALERÍA</strong>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('servicios') }}"
+                            class="nav-link {{ request()->routeIs('servicios*') ? 'active' : '' }}">
+                                <strong>SERVICIOS</strong>
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('contacto') }}"
-                        class="nav-link {{ request()->routeIs('contacto') ? 'active' : '' }}">
-                        <strong>CONTACTOS</strong>
-                        </a>
-                    </li>
-                </ul>
+                        <li class="nav-item">
+                            <a href="{{ route('blogs') }}"
+                            class="nav-link {{ request()->routeIs('blogs*') ? 'active' : '' }}">
+                                <strong>BLOG</strong>
+                            </a>
+                        </li>
 
-            </div>
-            <!-- /button-header -->
+                        <li class="nav-item">
+                            <a href="{{ route('galeria') }}"
+                            class="nav-link {{ request()->routeIs('galeria') ? 'active' : '' }}">
+                                <strong>GALERÍA</strong>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('contacto') }}"
+                            class="nav-link {{ request()->routeIs('contacto') ? 'active' : '' }}">
+                                <strong>CONTACTOS</strong>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+            <!-- /header -->
 
             @yield('hero')
 
