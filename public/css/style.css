@@ -30,12 +30,19 @@ a:hover {
     background-image: url('../images/site_bg.jpg'); 
     background-color: #7da858;
     background-repeat: no-repeat; 
-    background-position: center; 
     background-size: cover;
     width: 100% !important; 
     margin: 0 auto; 
     left: 0; 
     right: 0;
+}
+
+header {
+    background-position: top;
+}
+
+footer {
+    background-position: bottom;
 }
 
 .top-shadow {
@@ -99,6 +106,11 @@ a:hover {
 
 .nav-link {
     color: #f8f9fa;
+}
+
+.navbar-nav .nav-link {
+    padding-right: 0;
+    padding-left: 1.5rem;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {

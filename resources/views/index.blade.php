@@ -52,7 +52,7 @@
     <!-- /testimonial -->
 
     <!-- tour-list -->
-    <section class="bg-palm py-4">
+    <section class="bg-palm py-4" style="background-position: center">
         <div class="container">
             <div class="row pt-4">
 
