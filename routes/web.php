@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\PostController;
+use App\Models\Image;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,7 +51,9 @@ Route::controller(DestinationController::class)->group(function() {
 });
 
 Route::get('/galeria', function() {
-    return view('galeria');
+    //$images = Image::all();
+    $images = Image::where('imageable_type', App\Models\Product::class)->paginate(12);
+    return view('galeria', compact('images'));
 })->name('galeria');
 
 Route::controller(ReservationController::class)->group(function() {

@@ -33,7 +33,7 @@
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
                                     <img src="{{ asset('images/i-love-bootstrap3.png') }}"
-                                        class="d-block w-100" alt="...">
+                                        class="d-block w-100" alt="..." width="662px">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h5>First slide label</h5>
                                         <p>Some representative placeholder content for the first slide.</p>
@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="carousel-item">
                                     <img src="{{ asset('images/i-love-bootstrap2.png') }}"
-                                        class="d-block w-100" alt="...">
+                                        class="d-block w-100" alt="..." width="662px">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h5>Second slide label</h5>
                                         <p>Some representative placeholder content for the second slide.</p>
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="carousel-item">
                                     <img src="{{ asset('images/i-love-bootstrap1.png') }}"
-                                        class="d-block w-100" alt="...">
+                                        class="d-block w-100" alt="..." width="662px">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h5>Third slide label</h5>
                                         <p>Some representative placeholder content for the third slide.</p>
@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="carousel-item">
                                     <img src="{{ asset('images/i-love-bootstrap4.png') }}"
-                                        class="d-block w-100" alt="...">
+                                        class="d-block w-100" alt="..." width="662px">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h5>Fourth slide label</h5>
                                         <p>Some representative placeholder content for the second slide.</p>
@@ -211,7 +211,7 @@
                 <a href="tour.html" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img"  width="482px">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -226,7 +226,7 @@
                 <a href="tour.html" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="card-img" width="482px">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -241,7 +241,7 @@
                 <a href="tour.html" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" class="card-img" width="482px">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -256,7 +256,7 @@
                 <a href="tour.html" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>

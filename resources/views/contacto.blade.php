@@ -21,7 +21,7 @@
         <div class="row pt-4">
 
             <div class="col-md-6 pb-4">
-                <h2>Formulario de contacto</h2>
+                <h2>Encantados de escucharte</h2>
                 <hr>
 
                 <form action="" method="post">

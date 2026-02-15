@@ -60,7 +60,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/site_bg.jpg') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img">
+                                <img src="{{ asset('images/site_bg.jpg') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title" title="Hotel Grand Palladium Punta Cana Resort & Spa">Grand Palladium Punta Cana Resort & Spa <span class="star-5 fs-6"></span></h5>
@@ -75,11 +75,8 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <div class="image-placeholder">
-                                    <img src="{{ asset('images/image_8.jpg') }}"
-                                        class="card-img"
-                                        onerror="this.parentNode.classList.add('img-error')">
-                                </div>
+                                <img src="{{ asset('images/image_8.jpg') }}"
+                                    class="card-img" alt="Imagen del hotel Ocean Blue & Sand Resort" title="Hotel Ocean Blue & Sand Resort" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Ocean Blue & Sand Resort <span class="star-5 fs-6"></span></h5>
@@ -94,7 +91,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-blue-sand-resort']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_9.jpg') }}" class="card-img">
+                                <img src="{{ asset('images/image_9.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -109,7 +106,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-el-faro-resort']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_10.jpg') }}" class="card-img">
+                                <img src="{{ asset('images/image_10.jpg') }}" class="card-img" alt="Imagen del hotel Ocean el Faro Resort" title="Hotel Ocean el Faro Resort" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Hotel Ocean el Faro Resort <span class="star-5 fs-6"></span></h5>
@@ -124,7 +121,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-vista-sol-punta-cana-beach-resort-spa']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_11.jpg') }}" class="card-img">
+                                <img src="{{ asset('images/image_11.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -195,7 +192,7 @@
                         <h4 class="border-bottom mb-4">Blog de Viajes</h4>
                     </a>
                     <div class="card">
-                        <img src="{{ asset('images/image_15.jpg') }}" class="card-img" alt="Cómo viajar sin miedo">
+                        <img src="{{ asset('images/image_15.jpg') }}" width="534" class="card-img" alt="Cómo viajar sin miedo">
                         <div class="card-body">
                             <h5 class="card-title">Cómo viajar sin miedo </h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of
@@ -216,7 +213,7 @@
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
                                 <img src="{{ asset('images/image_16.jpg') }}"
-                                    class="card-img mb-2" alt="Excursiones">
+                                    class="card-img mb-2" alt="Excursiones" width="534">
                                 <div class="card-body">
 
                                     <h6 class="card-subtitle mb-2 text-muted">Excusrsion al Páramo</h6>
@@ -227,7 +224,7 @@
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow  zoom-out">
                                     <img src="{{ asset('images/image_17.jpg') }}"
-                                        class="card-img mb-2" alt="Excursiones"
+                                        class="card-img mb-2" alt="Excursiones" width="534"
                                         onerror="this.classList.add('img-error')">
                                 <div class="card-body">
 
@@ -250,7 +247,7 @@
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
                                 <img src="{{ asset('images/image_9.jpg') }}"
-                                    class="card-img mb-2" alt="Excursion al Páramo">
+                                    class="card-img mb-2" alt="Excursion al Páramo" width="534">
                                 <div class="card-body">
 
                                     <h6 class="card-subtitle mb-2 text-muted">Excursion al Páramo</h6>
@@ -261,7 +258,7 @@
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
                                 <img src="{{ asset('images/image_10.jpg') }}"
-                                    class="card-img mb-2" alt="Galopando por el Caribe">
+                                    class="card-img mb-2" alt="Galopando por el Caribe" width="534">
                                 <div class="card-body">
 
                                     <h6 class="card-subtitle mb-2 text-muted">Galopando por el Caribe</h6>
@@ -273,7 +270,7 @@
                             <a href="#" class="text-decoration-none">
                             <div class="card shadow zoom-out">
                                 <img src="{{ asset('images/image_11.jpg') }}"
-                                    class="card-img mb-2" alt="Tocando el Cielo">
+                                    class="card-img mb-2" alt="Tocando el Cielo" width="534">
                                 <div class="card-body">
 
                                     <h6 class="card-subtitle mb-2 text-muted">Tocando el Cielo</h6>
@@ -293,7 +290,7 @@
 
                     <div id="tweets">
                         <div class="twitter-timeline twitter-timeline-rendered"
-                            style="display: flex; width: 520px; max-width: 100%; margin-top: 0px; margin-bottom: 0px;">
+                            style="display: flex; width: 520; max-width: 100%; margin-top: 0px; margin-bottom: 0px;">
                             <!-- <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true"
                                 allowfullscreen="true" class=""
                                 style="position: static; visibility: visible; width: 251px; height: 366px; display: block; flex-grow: 1;"
