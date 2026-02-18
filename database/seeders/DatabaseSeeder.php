@@ -30,10 +30,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             TypeSeeder::class,
-            CategorySeeder::class,
             StatusSeeder::class,
+            CategorySeeder::class,
+            SuplierSeeder::class,
             ProductSeeder::class,
             TerminalSeeder::class,
+            ImageSeeder::class,
         ]);
 
         Type::factory(20)->create();
