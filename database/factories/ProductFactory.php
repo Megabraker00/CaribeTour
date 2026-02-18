@@ -23,21 +23,21 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $categories = Category::whereNotNull('parent_id')->get();
+        $categories = Category::all();
         $types = Type::where('typeable', Product::class)->get();
-        $states = Status::where('statusable', Product::class )->get();
-        $suplier = Suplier::all();
-        $name = fake()->name();
+        $states = Status::where('statusable', Product::class)->get();
+        $supliers = Suplier::all();
         $users = User::all();
+        $name = fake()->name();
 
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'category_id' => fake()->randomElement($categories),
-            'type_id' => fake()->randomElement($types),
-            'status_id' => fake()->randomElement($states),
-            'suplier_id' => fake()->randomElement($suplier),
-            'created_user_id' => fake()->randomElement($users),
+            'category_id' => $categories->isNotEmpty() ? fake()->randomElement($categories)->id : Category::factory()->create()->id,
+            'type_id' => $types->isNotEmpty() ? fake()->randomElement($types)->id : Type::factory()->create(['typeable' => Product::class])->id,
+            'status_id' => $states->isNotEmpty() ? fake()->randomElement($states)->id : Status::factory()->create(['statusable' => Product::class])->id,
+            'suplier_id' => $supliers->isNotEmpty() ? fake()->randomElement($supliers)->id : Suplier::factory()->create()->id,
+            'created_user_id' => $users->isNotEmpty() ? fake()->randomElement($users)->id : User::factory()->create()->id,
         ];
     }
 }
