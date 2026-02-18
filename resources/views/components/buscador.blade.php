@@ -6,7 +6,7 @@
             <h5 class="text-center">Encuentra tu Destino</h5>
         </div>
 
-        <form action="{{ route('destinos.pais', 'republica-dominicana') }}">
+        <form action="{{ route('destinos.provincia', ['country' => 'republica-dominicana', 'province' => 'punta-cana']) }}">
             <div class="card-body">
 
                 <div class="mb-3">

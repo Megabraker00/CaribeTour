@@ -1,3 +1,3 @@
 <div class="card">
-    <img src="{{ asset('images/publi.jpg') }}" class="img-thumbnail" alt="...">
+    <img src="{{ asset('images/publi.jpg') }}" class="rounded img-thumbnail" alt="...">
 </div>

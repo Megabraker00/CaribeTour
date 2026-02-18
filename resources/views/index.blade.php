@@ -17,7 +17,7 @@
 @endsection
 
 @section('content')
-<!-- testimonial -->
+    <!-- testimonial -->
     <div class="bottom-shadow">
         <section class="container py-4">
             <div class="row">
@@ -60,7 +60,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/site_bg.jpg') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img" width="482">
+                                <img loading="lazy" src="{{ asset('images/site_bg.jpg') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title" title="Hotel Grand Palladium Punta Cana Resort & Spa">Grand Palladium Punta Cana Resort & Spa <span class="star-5 fs-6"></span></h5>
@@ -75,7 +75,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_8.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_8.jpg') }}"
                                     class="card-img" alt="Imagen del hotel Ocean Blue & Sand Resort" title="Hotel Ocean Blue & Sand Resort" width="482">
                             </div>
                             <div class="card-footer">
@@ -91,7 +91,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-blue-sand-resort']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_9.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
+                                <img loading="lazy" src="{{ asset('images/image_9.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -106,7 +106,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-el-faro-resort']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_10.jpg') }}" class="card-img" alt="Imagen del hotel Ocean el Faro Resort" title="Hotel Ocean el Faro Resort" width="482">
+                                <img loading="lazy" src="{{ asset('images/image_10.jpg') }}" class="card-img" alt="Imagen del hotel Ocean el Faro Resort" title="Hotel Ocean el Faro Resort" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Hotel Ocean el Faro Resort <span class="star-5 fs-6"></span></h5>
@@ -121,7 +121,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-vista-sol-punta-cana-beach-resort-spa']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_11.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
+                                <img loading="lazy" src="{{ asset('images/image_11.jpg') }}" class="card-img" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -136,7 +136,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-royal-sun-resort']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_12.jpg') }}" class="card-img">
+                                <img loading="lazy" src="{{ asset('images/image_12.jpg') }}" class="card-img">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -151,7 +151,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_8.jpg') }}" class="card-img">
+                                <img loading="lazy" src="{{ asset('images/image_8.jpg') }}" class="card-img">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -166,7 +166,7 @@
                     <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-catalonia-bavaro-beach-golf-casino-lujo']) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img src="{{ asset('images/image_14.jpg') }}" class="card-img">
+                                <img loading="lazy" src="{{ asset('images/image_14.jpg') }}" class="card-img">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>
@@ -192,7 +192,7 @@
                         <h4 class="border-bottom mb-4">Blog de Viajes</h4>
                     </a>
                     <div class="card">
-                        <img src="{{ asset('images/image_15.jpg') }}" width="534" class="card-img" alt="Cómo viajar sin miedo">
+                        <img loading="lazy" src="{{ asset('images/image_15.jpg') }}" width="534" class="card-img" alt="Cómo viajar sin miedo">
                         <div class="card-body">
                             <h5 class="card-title">Cómo viajar sin miedo </h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of
@@ -212,7 +212,7 @@
                     <div class="row">
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
-                                <img src="{{ asset('images/image_16.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_16.jpg') }}"
                                     class="card-img mb-2" alt="Excursiones" width="534">
                                 <div class="card-body">
 
@@ -223,7 +223,7 @@
 
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow  zoom-out">
-                                    <img src="{{ asset('images/image_17.jpg') }}"
+                                    <img loading="lazy" src="{{ asset('images/image_17.jpg') }}"
                                         class="card-img mb-2" alt="Excursiones" width="534"
                                         onerror="this.classList.add('img-error')">
                                 <div class="card-body">
@@ -235,7 +235,7 @@
 
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow  zoom-out">
-                                <img src="{{ asset('images/image_14.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_14.jpg') }}"
                                     class="card-img mb-2" alt="Tocando el Cielo">
                                 <div class="card-body">
 
@@ -246,7 +246,7 @@
 
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
-                                <img src="{{ asset('images/image_9.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_9.jpg') }}"
                                     class="card-img mb-2" alt="Excursion al Páramo" width="534">
                                 <div class="card-body">
 
@@ -257,7 +257,7 @@
 
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <div class="card shadow zoom-out">
-                                <img src="{{ asset('images/image_10.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_10.jpg') }}"
                                     class="card-img mb-2" alt="Galopando por el Caribe" width="534">
                                 <div class="card-body">
 
@@ -269,7 +269,7 @@
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
                             <a href="#" class="text-decoration-none">
                             <div class="card shadow zoom-out">
-                                <img src="{{ asset('images/image_11.jpg') }}"
+                                <img loading="lazy" src="{{ asset('images/image_11.jpg') }}"
                                     class="card-img mb-2" alt="Tocando el Cielo" width="534">
                                 <div class="card-body">
 

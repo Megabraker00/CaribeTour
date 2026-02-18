@@ -3,7 +3,7 @@
     $url = url('/');
 @endphp
 <section class="container pt-4">
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" style="min-height: 24px;">
         <ol class="breadcrumb">
 
             {{-- Home --}}

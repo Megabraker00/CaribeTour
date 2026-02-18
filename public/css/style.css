@@ -88,6 +88,12 @@ footer {
     border-color: #F38A00;
 } 
 
+.navbar-brand img {
+    width: 100%;
+}
+
+.navbar-toggler { min-height: 40px; }
+
 .navbar-toggler {
     border-color: rgba(255,255,255,0.6);
 }
@@ -121,6 +127,34 @@ footer {
     background-color: #ff9000;
     color: #f8f9fa;
 }
+
+.nav-tabs {
+  border-bottom: none;
+  border-right: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-radius: 0;
+  margin-bottom: 2px;
+  text-align: left;
+  color: black;
+  font-size: larger !important;
+  font-weight: bolder;
+}
+
+.nav-tabs .nav-link:hover {
+  box-shadow: 0 0 0 .25rem #ff900026;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #ff9000;
+  border: 1px solid transparent !important;
+  background-color: #fff;
+  font-weight: 600;
+  box-shadow: 0 0 0 .25rem #ff900026;
+}
+
 
 .flip-horizontal {
     transform: scaleX(-1);

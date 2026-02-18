@@ -15,7 +15,7 @@
             <div class="col-md-8">
 
                 <article>
-                    <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4">
+                    <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4" alt="..." width="822">
                     <h2>Título del post</h2>
                     <hr>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur qui provident, cumque quas quod quos quam eos aspernatur reiciendis dolorum culpa excepturi repellat vitae delectus expedita pariatur aliquam eligendi possimus?

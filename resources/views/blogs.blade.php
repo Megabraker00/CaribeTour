@@ -108,7 +108,7 @@
                 <article>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" width="100%" class="mb-4" alt="...">
+                            <img loading="lazy" src="{{ asset('images/i-love-bootstrap3.png') }}" width="100%" class="mb-4" alt="...">
 
                             <h4 class="card-title">
                                 Este es el título del blog
@@ -147,12 +147,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="row">
-                    <img src="{{ asset('images/publi.jpg') }}" width="100%" class="mb-4" alt="...">
-                </div>
-                <div class="row">
-                    <img src="{{ asset('images/publi.jpg') }}" width="100%" class="mb-4" alt="...">
-                </div>
+                @include('components.promo')
             </div>
         </div>
 

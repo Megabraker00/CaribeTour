@@ -52,12 +52,14 @@
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 
+    <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
+
+    <link rel="preload" as="image" href="{{ asset('images/logo.png') }}" fetchpriority="high">
+
     @yield('head')
 
 </head>
 <body class="min-vh-100 d-flex flex-column">
-
-    <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
 
     <!-- NOTA: añadir el atributo loading="lazy" y decoding="async" a las imágenes que no sean críticas para mejorar el rendimiento -->
 
@@ -71,7 +73,9 @@
 
                 <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" href="{{ route('inicio') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo">
+                    <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo"
+                    width="100%"
+                    fetchpriority="high">
                 </a>
 
                 <!-- Botón hamburguesa -->
