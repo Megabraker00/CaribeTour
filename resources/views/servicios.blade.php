@@ -75,7 +75,7 @@
                                 
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/ticket_aereo.jpg') }}" class="img-fluid rounded" alt="Vuelos al Caribe">
+                                <img src="{{ asset('images/ticket_aereo.jpg') }}" class="img-fluid" alt="Vuelos al Caribe">
                             </div>
                         </div>                        
                     </div>
@@ -88,7 +88,7 @@
                                 <p>Explora el Caribe a bordo de nuestros trenes de alta velocidad y regionales. Ofrecemos billetes para rutas panorámicas que te permitirán disfrutar de paisajes impresionantes mientras viajas cómodamente. Reserva ahora y descubre el Caribe de una manera única con CaribeTour.</p>
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/trenes.jpg') }}" class="img-fluid rounded" alt="Trenes en el Caribe">
+                                <img src="{{ asset('images/trenes.jpg') }}" class="img-fluid" alt="Trenes en el Caribe">
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                                 <p>Encuentra el alojamiento perfecto para tu viaje al Caribe con CaribeTour. Ofrecemos una amplia selección de hoteles, apartamentos y resorts en los destinos más populares del Caribe, desde playas paradisíacas hasta ciudades vibrantes. Reserva ahora y disfruta de ofertas exclusivas, atención personalizada y una experiencia inolvidable en el paraíso del Caribe.</p>
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/hoteles.jpg') }}" class="img-fluid rounded" alt="Hoteles en el Caribe">
+                                <img src="{{ asset('images/hoteles.jpg') }}" class="img-fluid" alt="Hoteles en el Caribe">
                             </div>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                                 <p>Descubre los mejores lugares del Caribe con nuestras excursiones personalizadas. Desde tours históricos hasta aventuras naturales, ofrecemos una amplia variedad de experiencias para que disfrutes de todo lo que el Caribe tiene que ofrecer.</p>
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/excursiones.jpg') }}" class="img-fluid rounded" alt="Hoteles en el Caribe">
+                                <img src="{{ asset('images/excursiones.jpg') }}" class="img-fluid " alt="Hoteles en el Caribe">
                             </div>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                                 <p>Viaja con tranquilidad al Caribe con nuestros seguros de viaje. Ofrecemos cobertura para cancelaciones, asistencia médica y protección contra imprevistos para que disfrutes de tu viaje sin preocupaciones. ¡Reserva ahora y viaja seguro con CaribeTour!</p>
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/seguros.jpg') }}" class="img-fluid rounded" alt="Seguros de viaje al Caribe">
+                                <img src="{{ asset('images/seguros.jpg') }}" class="img-fluid" alt="Seguros de viaje al Caribe">
                             </div>                            
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                                 <p>Explora el Caribe a bordo de un crucero de lujo con CaribeTour. Ofrecemos una amplia selección de cruceros que te llevarán a los destinos más impresionantes del Caribe, desde playas paradisíacas hasta ciudades vibrantes. Disfruta de experiencias marinas inolvidables, servicios exclusivos y atención personalizada mientras navegas por las aguas cristalinas del Caribe. Reserva ahora y vive la aventura de tu vida con CaribeTour.</p>
                             </div>
                             <div class="col-md-5 col-lg-5">
-                                <img src="{{ asset('images/cruceros.jpg') }}" class="img-fluid rounded" alt="Cruceros en el Caribe">
+                                <img src="{{ asset('images/cruceros.jpg') }}" class="img-fluid" alt="Cruceros en el Caribe">
                             </div>
                         </div>
                     </div>

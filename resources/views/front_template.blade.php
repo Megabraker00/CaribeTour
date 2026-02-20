@@ -66,7 +66,7 @@
     <header class="bg-palm">
 
         <!-- container -->
-        <div class="container py-2">
+        <div class="container py-3">
 
             <!-- header -->
             <nav class="navbar navbar-expand-lg bg-transparent">
@@ -153,7 +153,7 @@
     </main>
 
     <!-- footer -->
-    <footer class="py-2 bg-palm text-light">
+    <footer class="py-3 bg-palm text-light">
         <div class="container">
             <div class="row"><a>CaribeTour.es © 2024 - Todos los derechos reservados.</a></div>
             <div class="row"><a>Condiciones de uso | Aviso Legal | Política de Privacidad | Uso de Cookies</a></div>
