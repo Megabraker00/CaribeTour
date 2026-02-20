@@ -298,6 +298,18 @@ ul.tour-info .bi {
     margin-right: 0.6rem;
 }
 
+.img-aspect-1-1 {
+  aspect-ratio: 1 / 1;   /* o el que corresponda */
+}
+
+.img-aspect-4-3 {
+  aspect-ratio: 4 / 3;   /* o el que corresponda */
+}
+
+.img-aspect-16-9 {
+  aspect-ratio: 16 / 9;   /* o el que corresponda */
+}
+
 .image-placeholder {
     background-color: #e0e0e0; /* gris claro */
     width: 100%;
