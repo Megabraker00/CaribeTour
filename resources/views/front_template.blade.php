@@ -73,7 +73,7 @@
 
                 <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" href="{{ route('inicio') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="CaribeTour Logo"
+                    <img src="{{ asset('images/logo.png') }}" style="min-height: 62px" alt="CaribeTour Logo"
                     width="100%"
                     fetchpriority="high">
                 </a>
