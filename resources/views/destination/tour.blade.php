@@ -127,18 +127,27 @@
             <div class="col-md-12 col-lg-6 col-xl-6">
                 
                 <table class="table text-center">
-                    <caption class="text-center">Fechas Disponibles</caption>
+                    <caption class="text-center">Fechas disponibles</caption>
+
                     <thead>
                         <tr>
-                            <td colspan="7">
-                                <p class="text-center">Fechas Disponibles</p>
-                            </td>
+                            <th>
+                                <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
+                                <i class="bi bi-arrow-left"></i>
+                                </button>
+                            </th>
+
+                            <th colspan="5" class="text-center">
+                                <h4 id="monthTitle" class="mb-0">Septiembre 2024</h4>
+                            </th>
+
+                            <th>
+                                <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
+                                <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </th>
                         </tr>
-                        <tr>
-                            <td><button class="btn btn-primary"><i class="bi bi-arrow-left"></i></button></td>
-                            <td colspan="5" class="text-center"><h4>Septiembre 2024</h4></td>
-                            <td><button class="btn btn-primary"><i class="bi bi-arrow-right"></i></button></td>
-                        </tr>
+
                         <tr>
                             <th scope="col">Lun</th>
                             <th scope="col">Mar</th>
@@ -149,52 +158,9 @@
                             <th scope="col">Dom</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>9</td>
-                            <td>10</td>
-                            <td>11</td>
-                            <td>12</td>
-                            <td>13</td>
-                            <td>14</td>
-                        </tr>
-                        <tr>
-                            <td>15</td>
-                            <td>16</td>
-                            <td class="table-active">17</td>
-                            <td>18</td>
-                            <td>19</td>
-                            <td>20</td>
-                            <td>21</td>
-                        </tr>
-                        <tr>
-                            <td>22</td>
-                            <td>23</td>
-                            <td>24</td>
-                            <td>25</td>
-                            <td>26</td>
-                            <td>27</td>
-                            <td>28</td>
-                        </tr>
-                        <tr>
-                            <td>29</td>
-                            <td>30</td>
-                            <td>31</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+
+                    <tbody id="calendarBody" >
+                        <!-- JS pintará aquí -->
                     </tbody>
                 </table>
             </div>
@@ -273,4 +239,127 @@
     </section>
 
     <!-- /container -->
+@endsection
+
+@section('custom-js')
+<script>
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const monthTitle = document.getElementById('monthTitle');
+  const calendarBody = document.getElementById('calendarBody');
+  const prevBtn = document.getElementById('prevMonth');
+  const nextBtn = document.getElementById('nextMonth');
+
+  const today = new Date();
+  let currentMonth = today.getMonth();
+  let currentYear = today.getFullYear();
+
+  let viewMonth = currentMonth;
+  let viewYear = currentYear;
+
+  const monthNames = [
+    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+  ];
+
+
+  function getAdjacentMonth(month, year, direction) {
+    let newMonth = month + direction;
+    let newYear = year;
+
+    if (newMonth < 0) {
+        newMonth = 11;
+        newYear--;
+    }
+
+    if (newMonth > 11) {
+        newMonth = 0;
+        newYear++;
+    }
+
+    return { month: newMonth, year: newYear };
+  }
+
+    function renderCalendar() {
+
+  monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+  calendarBody.innerHTML = '';
+
+  const firstDay = new Date(viewYear, viewMonth, 1);
+  let startDay = firstDay.getDay();
+  startDay = (startDay === 0) ? 6 : startDay - 1;
+
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  let day = 1;
+
+  // 🔥 SIEMPRE 6 FILAS
+  for (let week = 0; week < 6; week++) {
+    let row = '<tr>';
+
+    for (let i = 0; i < 7; i++) {
+
+      if (week === 0 && i < startDay) {
+        row += '<td class="text-muted"></td>';
+      } 
+      else if (day > daysInMonth) {
+        row += '<td class="text-muted"></td>';
+      } 
+      else {
+
+        const isToday =
+          day === today.getDate() &&
+          viewMonth === today.getMonth() &&
+          viewYear === today.getFullYear();
+
+        row += `<td class="${isToday ? 'table-primary fw-bold' : ''}">
+                  ${day}
+                </td>`;
+        day++;
+      }
+    }
+
+    row += '</tr>';
+    calendarBody.innerHTML += row;
+  }
+
+    // bloquear mes anterior si estamos en el actual
+    prevBtn.disabled =
+        viewMonth === currentMonth &&
+        viewYear === currentYear;
+
+    // titles dinámicos
+    const prev = getAdjacentMonth(viewMonth, viewYear, -1);
+    const next = getAdjacentMonth(viewMonth, viewYear, 1);
+
+    prevBtn.title = `Mes anterior: ${monthNames[prev.month]} ${prev.year}`;
+    nextBtn.title = `Mes siguiente: ${monthNames[next.month]} ${next.year}`;
+
+    prevBtn.setAttribute('aria-label', prevBtn.title);
+    nextBtn.setAttribute('aria-label', nextBtn.title);
+  }
+
+  prevBtn.addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) {
+      viewMonth = 11;
+      viewYear--;
+    }
+    renderCalendar();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) {
+      viewMonth = 0;
+      viewYear++;
+    }
+    renderCalendar();
+  });
+
+  renderCalendar();
+});
+</script>
 @endsection

@@ -173,6 +173,7 @@
             });
         }
     </script>
+    @yield('custom-js')
 
 </body>
 </html>
