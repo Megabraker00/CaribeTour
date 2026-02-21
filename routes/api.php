@@ -37,4 +37,6 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class);
     Route::apiResource('types', App\Http\Controllers\Api\TypeController::class);
     Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class);
+    // Route for product itineraries
+    Route::get('products/{product}/itineraries', [App\Http\Controllers\Api\ProductController::class, 'tourItineraries'])->name('api.products.itineraries');
 });

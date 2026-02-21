@@ -95,7 +95,7 @@
                     <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> Sábado 15 de Septiempre 2024</li>
                     <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> Domingo 22 de Septiembre 2024</li>
                     <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> 8 Días - 7 Noches</li>
-                    <li title="Precio por persona"><span class="fs-4"><i class="bi bi-tag-fill"></i><strong>Precio por Persona:</strong> 507.65€</span></li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">507.65€</span></li>
                 </ul>
                 
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur aliquid officiis corrupti, sed laborum nesciunt possimus delectus. Officia sequi iste animi quidem nulla nobis explicabo impedit dolor iusto? Corrupti, inventore.</p>
@@ -133,17 +133,17 @@
                         <tr>
                             <th>
                                 <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
-                                <i class="bi bi-arrow-left"></i>
+                                    <i class="bi bi-arrow-left"></i>
                                 </button>
                             </th>
 
                             <th colspan="5" class="text-center">
-                                <h4 id="monthTitle" class="mb-0">Septiembre 2024</h4>
+                                <h4 id="monthTitle" class="mb-0">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
                             </th>
 
                             <th>
                                 <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
-                                <i class="bi bi-arrow-right"></i>
+                                    <i class="bi bi-arrow-right"></i>
                                 </button>
                             </th>
                         </tr>
@@ -159,7 +159,7 @@
                         </tr>
                     </thead>
 
-                    <tbody id="calendarBody" >
+                    <tbody id="calendarBody">
                         <!-- JS pintará aquí -->
                     </tbody>
                 </table>
@@ -177,7 +177,7 @@
                 <a href="tour.html" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img"  width="482px">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
@@ -234,7 +234,7 @@
             </div>
 
         </div>
-        <!-- /related products -->        
+        <!-- /related products -->
 
     </section>
 
@@ -242,124 +242,157 @@
 @endsection
 
 @section('custom-js')
-<script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
+            // Variables DOM
+            const monthTitle = document.getElementById('monthTitle');
+            const calendarBody = document.getElementById('calendarBody');
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
 
-document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let viewMonth = currentMonth;
+            let viewYear = currentYear;
 
-  const monthTitle = document.getElementById('monthTitle');
-  const calendarBody = document.getElementById('calendarBody');
-  const prevBtn = document.getElementById('prevMonth');
-  const nextBtn = document.getElementById('nextMonth');
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
 
-  const today = new Date();
-  let currentMonth = today.getMonth();
-  let currentYear = today.getFullYear();
+            // Mapa de precios
+            let priceMap = {};
 
-  let viewMonth = currentMonth;
-  let viewYear = currentYear;
+            // Función para crear mapa de precios de la API
+            function buildPriceMap(apiResponse) {
+                priceMap = {};
 
-  const monthNames = [
-    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-  ];
+                apiResponse.data.forEach(item => {
+                    const date = new Date(item.departure_date);
+                    const key =
+                        `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 
+                    priceMap[key] = item.price;
+                });
+            }
 
-  function getAdjacentMonth(month, year, direction) {
-    let newMonth = month + direction;
-    let newYear = year;
+            // Función para calcular mes anterior/siguiente
+            function getAdjacentMonth(month, year, direction) {
+                let newMonth = month + direction;
+                let newYear = year;
+                if (newMonth < 0) {
+                    newMonth = 11;
+                    newYear--;
+                }
+                if (newMonth > 11) {
+                    newMonth = 0;
+                    newYear++;
+                }
 
-    if (newMonth < 0) {
-        newMonth = 11;
-        newYear--;
-    }
+                return {
+                    month: newMonth,
+                    year: newYear
+                };
+            }
 
-    if (newMonth > 11) {
-        newMonth = 0;
-        newYear++;
-    }
+            // Función para pintar el calendario
+            function renderCalendar() {
+                monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+                calendarBody.innerHTML = '';
 
-    return { month: newMonth, year: newYear };
-  }
+                const firstDay = new Date(viewYear, viewMonth, 1);
+                let startDay = firstDay.getDay();
+                startDay = (startDay === 0) ? 6 : startDay - 1;
 
-    function renderCalendar() {
+                const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+                let day = 1;
 
-  monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
-  calendarBody.innerHTML = '';
+                for (let week = 0; week < 6; week++) {
+                    let row = '<tr>';
 
-  const firstDay = new Date(viewYear, viewMonth, 1);
-  let startDay = firstDay.getDay();
-  startDay = (startDay === 0) ? 6 : startDay - 1;
+                    for (let i = 0; i < 7; i++) {
+                        if (week === 0 && i < startDay) {
+                            row += '<td class="text-muted"></td>';
+                        } else if (day > daysInMonth) {
+                            row += '<td class="text-muted"></td>';
+                        } else {
+                            const isToday = day === today.getDate() &&
+                                viewMonth === today.getMonth() &&
+                                viewYear === today.getFullYear();
 
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+                            const key =
+                                `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                            const price = priceMap[key] || null;
 
-  let day = 1;
+                            row += `
+<td class="${isToday ? 'table-warning fw-bold' : ''}">
+    <div class="d-flex flex-column align-items-center">
+        <span>${day}</span>
+        ${price ? `<a href="#" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-5">${price} €</small></a>` : ''}
+    </div>
+</td>
+`;
+                            day++;
+                        }
+                    }
 
-  // 🔥 SIEMPRE 6 FILAS
-  for (let week = 0; week < 6; week++) {
-    let row = '<tr>';
+                    row += '</tr>';
+                    calendarBody.innerHTML += row;
+                }
 
-    for (let i = 0; i < 7; i++) {
+                // Bloquear mes anterior si estamos en el actual
+                prevBtn.disabled = viewMonth === currentMonth && viewYear === currentYear;
 
-      if (week === 0 && i < startDay) {
-        row += '<td class="text-muted"></td>';
-      } 
-      else if (day > daysInMonth) {
-        row += '<td class="text-muted"></td>';
-      } 
-      else {
+                // Actualizar tooltips dinámicos
+                const prev = getAdjacentMonth(viewMonth, viewYear, -1);
+                const next = getAdjacentMonth(viewMonth, viewYear, 1);
+                prevBtn.title = `${monthNames[prev.month]} ${prev.year}`;
+                nextBtn.title = `${monthNames[next.month]} ${next.year}`;
+                prevBtn.setAttribute('aria-label', prevBtn.title);
+                nextBtn.setAttribute('aria-label', nextBtn.title);
+            }
 
-        const isToday =
-          day === today.getDate() &&
-          viewMonth === today.getMonth() &&
-          viewYear === today.getFullYear();
+            // Función para cargar precios desde la API
+            async function loadPrices() {
+                try {
+                    // Cambia esta URL por tu endpoint real
+                    const product_id = 12; // ID del producto/tour
+                    const baseUrl = window.location.origin;
+                    const response = await fetch(`${baseUrl}/api/v1/products/${product_id}/itineraries?month=${viewMonth+1}&year=${viewYear}`);
+                    const data = await response.json();
+                    buildPriceMap(data);
+                    renderCalendar();
+                } catch (e) {
+                    console.error('Error cargando precios', e);
+                    // igual renderiza calendario sin precios
+                    priceMap = {};
+                    renderCalendar();
+                }
+            }
 
-        row += `<td class="${isToday ? 'table-primary fw-bold' : ''}">
-                  ${day}
-                </td>`;
-        day++;
-      }
-    }
+            // Eventos botones
+            prevBtn.addEventListener('click', () => {
+                viewMonth--;
+                if (viewMonth < 0) {
+                    viewMonth = 11;
+                    viewYear--;
+                }
+                loadPrices();
+            });
 
-    row += '</tr>';
-    calendarBody.innerHTML += row;
-  }
+            nextBtn.addEventListener('click', () => {
+                viewMonth++;
+                if (viewMonth > 11) {
+                    viewMonth = 0;
+                    viewYear++;
+                }
+                loadPrices();
+            });
 
-    // bloquear mes anterior si estamos en el actual
-    prevBtn.disabled =
-        viewMonth === currentMonth &&
-        viewYear === currentYear;
-
-    // titles dinámicos
-    const prev = getAdjacentMonth(viewMonth, viewYear, -1);
-    const next = getAdjacentMonth(viewMonth, viewYear, 1);
-
-    prevBtn.title = `Mes anterior: ${monthNames[prev.month]} ${prev.year}`;
-    nextBtn.title = `Mes siguiente: ${monthNames[next.month]} ${next.year}`;
-
-    prevBtn.setAttribute('aria-label', prevBtn.title);
-    nextBtn.setAttribute('aria-label', nextBtn.title);
-  }
-
-  prevBtn.addEventListener('click', () => {
-    viewMonth--;
-    if (viewMonth < 0) {
-      viewMonth = 11;
-      viewYear--;
-    }
-    renderCalendar();
-  });
-
-  nextBtn.addEventListener('click', () => {
-    viewMonth++;
-    if (viewMonth > 11) {
-      viewMonth = 0;
-      viewYear++;
-    }
-    renderCalendar();
-  });
-
-  renderCalendar();
-});
-</script>
+            // Inicializar calendario
+            loadPrices();
+        });
+    </script>
 @endsection

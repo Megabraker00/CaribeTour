@@ -221,4 +221,70 @@ class ProductController extends Controller
         json_decode($string);
         return json_last_error() === JSON_ERROR_NONE;
     }
+
+    /**
+     * Get all itineraries for a specific product.
+     *
+     * @OA\Get(
+     *     path="/api/v1/products/{id}/itineraries",
+     *     summary="Get all itineraries for a product",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the product",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="product_id", type="integer"),
+     *          @OA\Property(property="currency", type="string"),
+     *          @OA\Property(
+     *              property="data",
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/Itinerary")
+     *          )
+     *      )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found"
+     *     )
+     * )
+     */
+    public function tourItineraries(Request $request, Product $product)
+    {
+        $request->validate([
+            'month' => 'nullable|integer|between:1,12',
+            'year'  => 'nullable|integer|min:2000|max:2100',
+        ]);
+
+        $query = $product->itineraries()
+            ->select([
+                'id',
+                'product_id',
+                'departure_date',
+                'departure_terminal_id',
+                'arrival_date',
+                'arrival_terminal_id',
+                'price',
+                'taxes'
+            ]);
+
+        if ($request->has(['month', 'year'])) {
+            $query->whereYear('departure_date', $request->year)
+                ->whereMonth('departure_date', $request->month);
+        }
+
+        $ret = [
+            'product_id' => $product->id,
+            'currency' => 'EUR',
+            'data' => $query->get(),
+        ];
+
+        return response()->json($ret);
+    }
 }

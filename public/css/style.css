@@ -239,8 +239,16 @@ footer {
 }
 
 #calendarBody td {
-  height: 48px;
+  /*height: 48px;*/
   vertical-align: middle;
+}
+
+#calendarBody td {
+  height: 64px;
+}
+
+#calendarBody small {
+  line-height: 1;
 }
 
 .btn-check:focus+.btn-primary, .btn-primary:focus {
