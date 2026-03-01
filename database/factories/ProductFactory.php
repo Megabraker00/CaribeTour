@@ -25,10 +25,10 @@ class ProductFactory extends Factory
     {
         $categories = Category::whereNotNull('parent_id')->get();
         $types = Type::where('typeable', Product::class)->get();
-        $states = Status::where('statusable', Product::class )->get();
-        $suplier = Suplier::all();
-        $name = fake()->name();
+        $states = Status::where('statusable', Product::class)->get();
+        $supliers = Suplier::all();
         $users = User::all();
+        $name = 'Hotel ' . fake()->name();
 
         return [
             'name' => $name,

@@ -12,6 +12,10 @@ class Metadata extends Model {
 
     protected $fillable = ['meta_dataable_type', 'meta_dataable_id', 'meta_data'];
 
+    protected $casts = [
+        'meta_data' => 'array',
+    ];
+
     public function meta_dataable()
     {
         return $this->morphTo();
