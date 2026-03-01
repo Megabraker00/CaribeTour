@@ -1,317 +1,421 @@
-@extends('main_template')
+@extends('front_template')
+@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
+@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
+@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
+@section('og_image', asset('images/og-default.jpg'))
 
-@section('title', 'Unos destinos de puta madre')
+@section('content')
+    <!-- container -->
 
-@section('site-content')
+    <section class="container py-4">
 
-    <div class="row">
-        <div class="full-tour clearfix">
-            <div class="sixcol column">
-                <div class="content-slider-container tour-slider-container">
-                    <div class="content-slider tour-slider fade-effect">
-                        <ul style="height: 379px;">
-                            <li class="" style="display: none; position: relative; z-index: 1;"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
-                                    alt="Imagen de {{ $tour->name }}"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                            <li style="position: relative; z-index: 1; display: none;" class=""><img
-                                    src="img/natura-park-beach-eco-resort-y-spa_14694525191.jpg"
-                                    alt="Imagen de Natura Park Beach Eco Resort &amp; Spa"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                            <li style="position: relative; z-index: 1; display: none;" class=""><img
-                                    src="img/natura-park-beach-eco-resort-y-spa_14694525192.jpg"
-                                    alt="Imagen de Natura Park Beach Eco Resort &amp; Spa"
-                                    title="Natura Park Beach Eco Resort &amp; Spa"></li>
-                                    <!-- MAIN IMAGEN -->
-                            <li style="position: relative; z-index: 1; display: list-item;" class="current"><img
-                                    src="{{ asset( 'images/' . $tour->mainImage?->path )}}"
-                                    alt="Imagen de {{ $tour->name }}"
-                                    title="{{ $tour->name }}"></li>
-                                    <!-- \MAIN IMAGEN -->
-                        </ul>
-                        <div class="arrow arrow-left content-slider-arrow"></div>
-                        <div class="arrow arrow-right content-slider-arrow"></div>
-                        <input type="hidden" class="slider-speed" value="400">
-                        <input type="hidden" class="slider-pause" value="6000">
-                        <div class="controls">
-                            <a href="#" class=""></a><a href="#" class=""></a>
-                            <a href="#" class=""></a><a href="#" class="current"></a>
-                        </div>
-                    </div>
-                    <div class="block-background layer-1"></div>
-                    <div class="block-background layer-2"></div>
-                </div>
-            </div>
-            <div class="sixcol column last">
-                <div class="section-title">
-                    <h1>{{ $tour->name }}</h1>
-                </div>
-                <ul class="tour-meta">
-                    <li>
-                        <div class="colored-icon icon-2"></div>
-                        <strong>Destino:</strong> <a hreflang="es" type="text/html" charset="iso-8859-1"
-                            href="{{ route('destinos') }}/{{ $tour->category->fullSlug() }}" rel="tag"
-                            title="Ver destinos en {{ $tour->category->name }}">{{ $tour->category->name }}</a>
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-1"><span></span></div>
-                        <strong>Duracion:</strong> 8 Días
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-6"><span></span></div>
-                        <strong>Salida:</strong> Martes 02 de Agosto del 2016
-                    </li>
-                    <li>
-                        <div class="colored-icon icon-7"><span></span></div>
-                        <strong>Regreso:</strong> Martes 09 de Agosto del 2016
-                    </li>
-                    <li style="font-size:1.8em;">
-                        <div class="colored-icon icon-3"><span></span></div>
-                        <strong>Precio:</strong> {{ $firstDate->price + $firstDate->taxes }} &euro;
-                    </li>
-                </ul>
-                <p>En este resort se aprovechan los recursos naturales del área tales como las piedras, el coco, la madera y
-                    la caña, creando un ambiente de extraordinaria belleza natural que parece estar soñando...<br>
-                    <br>
-                    viva la experiencia de unas vacaciones en completa armonía con la naturaleza en el lujoso resort de
-                    punta cana, natura park. abundantes jardines tropicales que rebosan con una exótica vida de aves se
-                    mezclan con lagunas y puentes a lo largo de caminos serpenteantes que llevan a la playa. el hotel está
-                    ubicado en la maravillosa playa de , uno de los mejores en el caribe.<br>
-                    <br>
-                    el natura park beach eco resort se beneficia de un diseño arquitectónico original que utiliza los
-                    recursos naturales de la zona como la piedra, los cocoteros, la madera y la caña para crear un ambiente
-                    tranquilo y confortable. el natura park es un lugar idílico para unas vacaciones relajantes en el
-                    caribe. nuestra excelente ubicación del punta cana resort ofrece una completa selección de actividades y
-                    de servicios especiales.
-                </p>
-                <footer class="tour-footer">
-                    <a hreflang="es" type="text/html" charset="iso-8859-1"
-                        href="{{ route('reservation.create', ['producto' => $tour->slug, 'idD' => $firstDate->id]) }}"
-                        title="Solicitar la reserva de {{ $tour->name }}"
-                        class="button small">
-                        <span>Reservar Ahora</span>
-                    </a>
-                    <a href="#question-form"
-                        data-id="{{ $tour->slug }}" data-title="{{ $tour->name }}"
-                        class="button grey small colorbox inline cboxElement">
-                        <span>Consultar</span>
-                    </a> 
-                </footer>
-            </div>
-        </div>
+        <!-- carousel and description -->
+        <div class="row">
+            <!-- carousel -->
+            <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
 
-        <!-- question form -->
-        <div class="hidden">
-            <div class="question-form popup-form" id="question-form">
-                <div class="section-title popup-title">
-                    <h4></h4>
-                </div>
-                <form action="mail.php" method="POST" class="formatted-form" name="clientes"
-                    onsubmit="return validacion();">
-                    <div class="sixcol column ">
-                        <div class="field-container">
-                            <input type="text" id="nombre" name="nombre" title="Introduzca su nombtre completo."
-                                maxlength="50" value="" placeholder="Nombre Completo" required="">
-                        </div>
-                    </div>
-                    <div class="sixcol column last">
-                        <div class="clear"></div>
-                        <div class="field-container">
-                            <input type="email" id="email" name="email" title="Introduzca su email." maxlength="80"
-                                value="" placeholder="Email" required="">
-                        </div>
-                    </div>
-                    <div class="clear"></div>
-                    <div class="field-container">
-                        <textarea id="mensaje" name="mensaje" title="Indique su consulta." maxlength="500" placeholder="Consultas"
-                            required=""></textarea>
-                    </div>
-                    <input type="hidden" name="producto" id="producto" value="Natura Park Beach Eco Resort &amp; Spa"
-                        class="popup-id">
-                    <input type="hidden" name="volver"
-                        value="http://localhost/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa">
-                    <input type="submit" value="Enviar" title="Enviar la consulta">
-                    <!--<a class="submit-button button" href="#">Enviar</a> -->
-                </form>
-            </div>
-            <!-- /question form -->
+                <div class="card shadow">
 
-        </div>
-        <div class="sixcol column">
-            <div class="tour-itinerary">
-                <div class="tour-day">
-                    <div class="tour-day-number">
-                        <h5>Itinerario</h5>
-                    </div>
-                    <div class="tour-day-text clearfix">
-                        <div class="bubble-corner"></div>
-                        <div class="bubble-text">
-                            <div class="column twelvecol last">
-                                <h5>{{ $tour->name }}</h5>
-                                <p>{{ $tour->meta?->meta_data['itinerario'] }}</p>
+                    <div class="card-body">
+
+                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
+                                    aria-label="Slide 4"></button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tour-day">
-                    <div class="tour-day-number">
-                        <h5>Incluye</h5>
-                    </div>
-                    <div class="tour-day-text clearfix">
-                        <div class="bubble-corner"></div>
-                        <div class="bubble-text">
-                            <div class="column twelvecol last">
-                                <h5>¿Qué incluye {{ $tour->name }}?</h5>
-                                <p>-Vuelo directo con la compañía Evelop desde Madrid con destino Punta Cana.<br>
-                                    -Estancia en habitación Standard, 7 noches en régimen de todo incluído en el Hotel
-                                    Natura Park Eco - Resort &amp; Spa 5* - Punta Cana.<br>
-                                    -Traslados de entrada y salida Punta Cana.<br>
-                                    -Tasas aéreas incluidas.<br>
-                                    -Seguro obligatorio de Viaje.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="sixcol column last">
-            <div class="calendario">
-                <table summary="Calendario con las fechas de salida para el tour Natura Park Beach Eco Resort &amp; Spa">
-                    <caption>
-                        <h3>Elíge la fecha de salida</h3>
-                    </caption>
-                    <colgroup span="7" style="width:14.29%; text-align:left; vertical-align:top; height:39px;">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>
-                                <form role="form"
-                                    action="/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa"
-                                    method="post"><input type="submit" value="< <--"
-                                        title="Ver el mes anterior"><input type="hidden" name="mes"
-                                        value="1"><input type="hidden" name="anio" value="2024"></form>
-                            </th>
-                            <th colspan="5">S�bado 10 de Febrero del 2024</th>
-                            <th>
-                                <form role="form"
-                                    action="/caribetour/destinos/republica-dominicana/punta-cana/natura-park-beach-eco-resort-y-spa"
-                                    method="post"><input type="submit" value="--> >"
-                                        title="Ver el mes anterior"><input type="hidden" name="mes"
-                                        value="3"><input type="hidden" name="anio" value="2024"></form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th scope="col" abbr="Domingo">Dom</th>
-                            <th scope="col" abbr="Lunes">Lun</th>
-                            <th scope="col" abbr="Martes">Mar</th>
-                            <th scope="col" abbr="Miércoles">Mie</th>
-                            <th scope="col" abbr="Jueves">Jue</th>
-                            <th scope="col" abbr="Viernes">Vie</th>
-                            <th scope="col" abbr="Sábado">Sab</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>1 </td>
-                            <td>2 </td>
-                            <td>3 </td>
-                        </tr>
-                        <tr>
-                            <td>4 </td>
-                            <td>5 </td>
-                            <td>6 </td>
-                            <td>7 </td>
-                            <td>8 </td>
-                            <td>9 </td>
-                            <td style="background-color:#E2E2E2">10 </td>
-                        </tr>
-                        <tr>
-                            <td>11 </td>
-                            <td>12 </td>
-                            <td>13 </td>
-                            <td>14 </td>
-                            <td>15 </td>
-                            <td>16 </td>
-                            <td>17 </td>
-                        </tr>
-                        <tr>
-                            <td>18 </td>
-                            <td>19 </td>
-                            <td>20 </td>
-                            <td>21 </td>
-                            <td>22 </td>
-                            <td>23 </td>
-                            <td>24 </td>
-                        </tr>
-                        <tr>
-                            <td>25 </td>
-                            <td>26 </td>
-                            <td>27 </td>
-                            <td>28 </td>
-                            <td>29 </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="clear"></div>
-
-        <div class="related-tours clearfix">
-            <div class="section-title">
-                <h2>Destinos Relacionados</h2>
-            </div>
-
-            <div class="items-grid">
-
-                @foreach($tour->related() as $index => $tourRelated)
-
-                <div class="column threecol @if(($index + 1) % 4 == 0) last @endif">
-                    <div class="tour-thumb-container">
-                        <div class="tour-thumb">
-                            <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                href="{{ route('destinos') }}/{{ $tourRelated->tourSlug() }}"
-                                title="{{ $tourRelated->name }}">
-                                <img width="440" height="330"
-                                    src="{{ asset( 'images/' . $tourRelated->mainImage?->path )}}"
-                                    class="attachment-preview wp-post-image"
-                                    alt="{{ $tourRelated->name }}">
-                            </a>
-                            <div class="tour-caption">
-                                <h5 class="tour-title">
-                                    <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                        href="{{ route('destinos') }}/{{ $tourRelated->tourSlug() }}">
-                                        {{ $tourRelated->name }}
-                                    </a>
-                                </h5>
-                                <div class="tour-meta">
-                                    <div class="tour-destination">
-                                        <div class="colored-icon icon-2"></div>
-                                        <a hreflang="es" type="text/html" charset="iso-8859-1"
-                                            href="{{ route('destinos') }}/{{ $tourRelated->category->fullSlug() }}" rel="tag">
-                                            {{ $tourRelated->category->name }}
-                                        </a>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="{{ asset('images/i-love-bootstrap3.png') }}"
+                                        class="d-block w-100" alt="..." width="662px">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>First slide label</h5>
+                                        <p>Some representative placeholder content for the first slide.</p>
                                     </div>
-                                    <div class="colored-icon icon-3"></div>1.126,40€
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap2.png') }}"
+                                        class="d-block w-100" alt="..." width="662px">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Second slide label</h5>
+                                        <p>Some representative placeholder content for the second slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap1.png') }}"
+                                        class="d-block w-100" alt="..." width="662px">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Third slide label</h5>
+                                        <p>Some representative placeholder content for the third slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="{{ asset('images/i-love-bootstrap4.png') }}"
+                                        class="d-block w-100" alt="..." width="662px">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Fourth slide label</h5>
+                                        <p>Some representative placeholder content for the second slide.</p>
+                                    </div>
                                 </div>
                             </div>
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
-                        <div class="block-background"></div>
+
                     </div>
+
                 </div>
 
-                @endforeach
+            </div>
+            <!-- /carousel -->
 
-                <div class="clear"></div>
+            <!-- description -->
+            <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
+
+                <h2>{{$tour->name}} - {{$tour->id}}</h2>
+                <hr>
+                @php
+                    $meta = $tour->metadata->meta_data ?? [];
+                @endphp
+
+                <ul class="tour-info">
+                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
+                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}}</li>
+                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->departure_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->return_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> 8 Días - 7 Noches</li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}€</span></li>
+                </ul>
+                
+                <p>{{$meta['description'] ?? ''}}</p>
+
+                <div>
+                    <a href="{{ route('reservation.create', $tour->slug) }}?idIt={{$firstDate->id}}" class="btn btn-primary me-2">Reservar Fechas</a>
+                    <a href="consulta/23" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
+                </div>
+            </div>
+            <!-- /description -->
+
+        </div>
+        <!-- /carousel and description -->
+
+        <!-- itinerary and calendar -->
+        <div class="row">
+            <div class="col-md-12 col-lg-6 col-xl-6">
+
+                @if(!empty($meta['includes']))
+                    <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
+                    <ul>
+                        @foreach($meta['includes'] as $include)
+                            <li>{{ $include }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if(!empty($meta['itinerary']))
+                    <h5><i class="bi bi-card-list"></i> Itinerario</h5>
+                    @foreach($meta['itinerary'] as $day)
+                        <div class="mb-3">
+                            <h6>Día {{ $day['day'] }}</h6>
+                            <ul>
+                                @foreach($day['activities'] as $activity)
+                                    <li>{{ $activity }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                @endif                
 
             </div>
-        </div>
-        <!-- related tours -->
-    </div>
 
+            <!-- calendar -->
+            <div class="col-md-12 col-lg-6 col-xl-6">
+
+                <div class="table-responsive">
+                
+                    <table class="table text-center">
+                        <caption class="text-center">Fechas disponibles</caption>
+
+                        <thead>
+                            <tr>
+                                <th>
+                                    <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </button>
+                                </th>
+
+                                <th colspan="5" class="text-center">
+                                    <h4 id="monthTitle" class="mb-0">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
+                                </th>
+
+                                <th>
+                                    <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th scope="col">Lun</th>
+                                <th scope="col">Mar</th>
+                                <th scope="col">Mie</th>
+                                <th scope="col">Jue</th>
+                                <th scope="col">Vie</th>
+                                <th scope="col">Sab</th>
+                                <th scope="col">Dom</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="calendarBody">
+                            <!-- JS pintará aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /calendar -->
+        </div>
+        <!-- /itinerary and calendar -->
+
+        <!-- related products -->
+        <div class="row">
+            <h4>Productos Relacionados</h4>
+            <hr>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="card-img" width="482px">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" class="card-img" width="482px">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                <a href="tour.html" class="text-decoration-none">
+                    <div class="card shadow zoom">
+                        <div class="card-body">
+                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
+                        </div>
+                        <div class="card-footer">
+                            <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>
+                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
+                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <!-- /related products -->
+
+    </section>
+
+    <!-- /container -->
+@endsection
+
+@section('custom-js')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Variables DOM
+            const monthTitle = document.getElementById('monthTitle');
+            const calendarBody = document.getElementById('calendarBody');
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
+
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let viewMonth = currentMonth;
+            let viewYear = currentYear;
+
+            const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+
+            // Mapa de precios
+            let priceMap = {};
+
+            // Función para crear mapa de precios de la API
+            function buildPriceMap(apiResponse) {
+                priceMap = {};
+
+                apiResponse.data.forEach(item => {
+                    const date = new Date(item.departure_date);
+                    const key =
+                        `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+
+                    let finalPrice = Number(item.price) + Number(item.taxes);
+                    priceMap[key] = finalPrice.toFixed(2);
+                });
+            }
+
+            // Función para calcular mes anterior/siguiente
+            function getAdjacentMonth(month, year, direction) {
+                let newMonth = month + direction;
+                let newYear = year;
+                if (newMonth < 0) {
+                    newMonth = 11;
+                    newYear--;
+                }
+                if (newMonth > 11) {
+                    newMonth = 0;
+                    newYear++;
+                }
+
+                return {
+                    month: newMonth,
+                    year: newYear
+                };
+            }
+
+            // Función para pintar el calendario
+            function renderCalendar() {
+                monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+                calendarBody.innerHTML = '';
+
+                const firstDay = new Date(viewYear, viewMonth, 1);
+                let startDay = firstDay.getDay();
+                startDay = (startDay === 0) ? 6 : startDay - 1;
+
+                const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+                let day = 1;
+
+                for (let week = 0; week < 6; week++) {
+                    let row = '<tr>';
+
+                    for (let i = 0; i < 7; i++) {
+                        if (week === 0 && i < startDay) {
+                            row += '<td class="text-muted"></td>';
+                        } else if (day > daysInMonth) {
+                            row += '<td class="text-muted"></td>';
+                        } else {
+                            const isToday = day === today.getDate() &&
+                                viewMonth === today.getMonth() &&
+                                viewYear === today.getFullYear();
+
+                            const key =
+                                `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                            const price = priceMap[key] || null;
+
+                            row += `
+<td class="${isToday ? 'table-warning fw-bold' : ''}">
+    <div class="d-flex flex-column align-items-center">
+        <span>${day}</span>
+        ${price ? `<a href="#" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${price}€</small></a>` : ''}
+    </div>
+</td>
+`;
+                            day++;
+                        }
+                    }
+
+                    row += '</tr>';
+                    calendarBody.innerHTML += row;
+                }
+
+                // Bloquear mes anterior si estamos en el actual
+                prevBtn.disabled = viewMonth === currentMonth && viewYear === currentYear;
+
+                // Actualizar tooltips dinámicos
+                const prev = getAdjacentMonth(viewMonth, viewYear, -1);
+                const next = getAdjacentMonth(viewMonth, viewYear, 1);
+                prevBtn.title = `${monthNames[prev.month]} ${prev.year}`;
+                nextBtn.title = `${monthNames[next.month]} ${next.year}`;
+                prevBtn.setAttribute('aria-label', prevBtn.title);
+                nextBtn.setAttribute('aria-label', nextBtn.title);
+            }
+
+            // Función para cargar precios desde la API
+            async function loadPrices() {
+                try {
+                    // Cambia esta URL por tu endpoint real
+                    const product_id = {{$tour->id}}; // ID del producto/tour
+                    const baseUrl = window.location.origin;
+                    const response = await fetch(`${baseUrl}/api/v1/products/${product_id}/itineraries?month=${viewMonth+1}&year=${viewYear}`);
+                    const data = await response.json();
+                    buildPriceMap(data);
+                    renderCalendar();
+                } catch (e) {
+                    console.error('Error cargando precios', e);
+                    // igual renderiza calendario sin precios
+                    priceMap = {};
+                    renderCalendar();
+                }
+            }
+
+            // Eventos botones
+            prevBtn.addEventListener('click', () => {
+                viewMonth--;
+                if (viewMonth < 0) {
+                    viewMonth = 11;
+                    viewYear--;
+                }
+                loadPrices();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                viewMonth++;
+                if (viewMonth > 11) {
+                    viewMonth = 0;
+                    viewYear++;
+                }
+                loadPrices();
+            });
+
+            // Inicializar calendario
+            loadPrices();
+        });
+    </script>
 @endsection

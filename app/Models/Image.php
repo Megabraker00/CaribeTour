@@ -10,6 +10,13 @@ class Image extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'is_main',
+        'path',
+        'uploaded_user_id',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

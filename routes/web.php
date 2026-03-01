@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\PostController;
+use App\Models\Image;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,22 +36,24 @@ Route::controller(ServiceController::class)->group(function() {
 
 Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
 
-Route::get('/blogs/{post}', [PostController::class, 'show'])->name('blog.show');
+Route::get('/blogs/{post}', [PostController::class, 'show'])->name('blogs.show');
 
 Route::get('/contacto', function() {
-    return view('contact');
+    return view('contacto');
 })->name('contacto');
 
 Route::controller(DestinationController::class)->group(function() {
     Route::get('/destinos', 'countryIndex')->name('destinos');
-    Route::get('/destinos/{country}', 'provinceIndex')->name('destinos.pais');
-    Route::get("/destinos/{country}/{province}", 'tourIndex')->name('destinos.provincia');
+    Route::get('/destinos/{country}', 'countryShow')->name('destinos.pais');
+    Route::get("/destinos/{country}/{province}", 'provinceShow')->name('destinos.provincia');
     Route::get("/destinos/{country}/{province}/{tour}", 'tourShow')->name('destinos.tour');
     Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
 });
 
 Route::get('/galeria', function() {
-    return view('gallery');
+    //$images = Image::all();
+    $images = Image::where('imageable_type', App\Models\Product::class)->paginate(12);
+    return view('galeria', compact('images'));
 })->name('galeria');
 
 Route::controller(ReservationController::class)->group(function() {

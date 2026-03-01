@@ -30,7 +30,6 @@ a:hover {
     background-image: url('../images/site_bg.jpg'); 
     background-color: #7da858;
     background-repeat: no-repeat; 
-    background-position: center; 
     background-size: cover;
     width: 100% !important; 
     margin: 0 auto; 
@@ -38,16 +37,26 @@ a:hover {
     right: 0;
 }
 
-.shadow-top {
-    box-shadow: 0 -10px 10px -3px rgba(0, 0, 0, 0.5);
-    height: 10px;
+header {
+    background-position: top;
 }
 
-.shadow-bottom {
-    box-shadow: 0 10px 10px -3px rgba(0, 0, 0, 0.5);
-    height: 10px;
-    z-index: auto;
-    position: relative;
+footer {
+    background-position: bottom;
+}
+
+.top-shadow {
+    box-shadow: inset 0 18px 22px -18px rgba(0,0,0,.55);
+}
+
+.bottom-shadow {
+    box-shadow: inset 0 -18px 22px -18px rgba(0,0,0,.55);
+}
+
+.top-bottom-shadow {
+  box-shadow: 
+    inset 0 18px 22px -18px rgba(0,0,0,.55), 
+    inset 0 -18px 22px -18px rgba(0,0,0,.55);
 }
 
 /* zoom */
@@ -72,12 +81,33 @@ a:hover {
 .btn-primary {
     background-color: #ff9000;
     border-color: #ff9000;
+    color: #fff;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    background-color: #ff9000;
+    border-color: #ff9000;
+    color: #fff;
 }
 
 .btn-primary:hover {
     background-color: #F38A00;
     border-color: #F38A00;
 } 
+
+.navbar-brand img {
+    width: 100%;
+}
+
+.navbar-toggler { min-height: 40px; }
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.6);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
 
 .nav-pills {
     gap: 0.5rem; /* separa los elementos entre sí */
@@ -91,6 +121,11 @@ a:hover {
     color: #f8f9fa;
 }
 
+.navbar-nav .nav-link {
+    padding-right: 0;
+    padding-left: 1.5rem;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     background-color: #ff9000;
 }
@@ -98,6 +133,41 @@ a:hover {
 .nav-pills .nav-link:hover {
     background-color: #ff9000;
     color: #f8f9fa;
+}
+
+.nav-link:focus {
+    color: #f8f9fa;
+}
+
+.nav-tabs {
+  border-bottom: none;
+  border-right: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-radius: 0;
+  margin-bottom: 2px;
+  text-align: left;
+  color: black;
+  font-size: larger !important;
+  font-weight: bolder;
+}
+
+.nav-tabs .nav-link:hover {
+  box-shadow: 0 0 0 .25rem #ff900026;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #ff9000;
+  border: 1px solid transparent !important;
+  background-color: #fff;
+  font-weight: 600;
+  box-shadow: 0 0 0 .25rem #ff900026;
+}
+
+td:hover { /* TODO: resaltar sólo la celdas con precios */
+    background-color: #fff3cd;
 }
 
 .flip-horizontal {
@@ -171,6 +241,19 @@ a:hover {
     display: inline-block;
 }
 
+#calendarBody td {
+  /*height: 48px;*/
+  vertical-align: middle;
+}
+
+#calendarBody td {
+  height: 64px;
+}
+
+#calendarBody small {
+  line-height: 1;
+}
+
 .btn-check:focus+.btn-primary, .btn-primary:focus {
     color: #fff;
     background-color: #ff9000;
@@ -240,6 +323,18 @@ ul.tour-info li {
 
 ul.tour-info .bi {
     margin-right: 0.6rem;
+}
+
+.img-aspect-1-1 {
+  aspect-ratio: 1 / 1;   /* o el que corresponda */
+}
+
+.img-aspect-4-3 {
+  aspect-ratio: 4 / 3;   /* o el que corresponda */
+}
+
+.img-aspect-16-9 {
+  aspect-ratio: 16 / 9;   /* o el que corresponda */
 }
 
 .image-placeholder {

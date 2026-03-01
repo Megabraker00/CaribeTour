@@ -8,12 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    const TYPE_TOUR = 1;
+    const TYPE_SERVICE = 2;
+    const STATUS_AVAILABLE = 1;
+    const STATUS_UNAVAILABLE = 2;
 
     public function __toString()
     {
@@ -38,6 +44,18 @@ class Product extends Model
     public function itineraries(): HasMany
     {
         return $this->hasMany(Itinerary::class);
+    }
+
+    public function segments(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Segment::class,
+            Itinerary::class,
+            'product_id',
+            'itinerary_id',
+            'id',
+            'id'
+        );
     }
 
     public function images(): MorphMany
@@ -97,7 +115,7 @@ class Product extends Model
         return $productRelated;
     }
 
-    public function meta()
+    public function metaData()
     {
         return $this->morphOne(Metadata::class, 'meta_dataable');
     }
