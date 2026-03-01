@@ -262,21 +262,23 @@ class ProductController extends Controller
             'year'  => 'nullable|integer|min:2000|max:2100',
         ]);
 
-        $query = $product->itineraries()
+        $query = $product->segments()
             ->select([
-                'id',
-                'product_id',
-                'departure_date',
-                'departure_terminal_id',
-                'arrival_date',
-                'arrival_terminal_id',
-                'price',
-                'taxes'
+                'segments.id',
+                'itineraries.product_id',
+                'segments.departure_date',
+                'segments.departure_terminal_id',
+                'segments.arrival_date',
+                'segments.arrival_terminal_id',
+                'itineraries.price',
+                'itineraries.taxes'
             ]);
 
-        if ($request->has(['month', 'year'])) {
-            $query->whereYear('departure_date', $request->year)
-                ->whereMonth('departure_date', $request->month);
+        $query->whereDate('segments.departure_date', '>=', now());
+
+        if ($request->filled(['month', 'year'])) {
+            $query->whereYear('segments.departure_date', $request->year)
+                ->whereMonth('segments.departure_date', $request->month);
         }
 
         $ret = [

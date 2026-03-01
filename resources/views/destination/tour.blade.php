@@ -86,24 +86,26 @@
             <!-- description -->
             <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
 
-                <h2>Hotel Carolina</h2>
+                <h2>{{$tour->name}} - {{$tour->id}}</h2>
                 <hr>
+                @php
+                    $meta = $tour->metadata->meta_data ?? [];
+                @endphp
 
                 <ul class="tour-info">
                     <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
-                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> Punta Cana</li>
-                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> Sábado 15 de Septiempre 2024</li>
-                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> Domingo 22 de Septiembre 2024</li>
+                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}}</li>
+                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->departure_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->return_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
                     <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> 8 Días - 7 Noches</li>
-                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">507.65€</span></li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}€</span></li>
                 </ul>
                 
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur aliquid officiis corrupti, sed laborum nesciunt possimus delectus. Officia sequi iste animi quidem nulla nobis explicabo impedit dolor iusto? Corrupti, inventore.</p>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Modi nisi minima sapiente soluta cum a aspernatur repudiandae quos dolorum obcaecati inventore, illo quis. Molestias voluptatibus harum eveniet illum necessitatibus magnam.</p>
+                <p>{{$meta['description'] ?? ''}}</p>
 
                 <div>
-                    <button class="btn btn-primary me-2">Reservar Fechas</button>
-                    <button class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</button>
+                    <a href="{{ route('reservation.create', $tour->slug) }}?idIt={{$firstDate->id}}" class="btn btn-primary me-2">Reservar Fechas</a>
+                    <a href="consulta/23" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
                 </div>
             </div>
             <!-- /description -->
@@ -114,55 +116,75 @@
         <!-- itinerary and calendar -->
         <div class="row">
             <div class="col-md-12 col-lg-6 col-xl-6">
-                <h5><i class="bi bi-card-list"></i> Itinerario</h5>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex quo reiciendis eius sunt quia debitis accusamus fugiat est veritatis fugit ducimus voluptatem, quas dolorum temporibus tempore cupiditate nesciunt nobis quibusdam.
-                Nemo sit cupiditate eaque eveniet alias esse, aperiam vitae voluptatem! Consequatur, in? Porro laborum dolor similique vitae officia cupiditate obcaecati repudiandae, distinctio rem ratione, sunt, dolores et maxime culpa vero?</p>
 
-                <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque ut neque placeat impedit, aliquid perferendis at ipsum minima quidem ea eaque id vero voluptates aperiam. Architecto delectus maxime perspiciatis obcaecati.</p>
+                @if(!empty($meta['includes']))
+                    <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
+                    <ul>
+                        @foreach($meta['includes'] as $include)
+                            <li>{{ $include }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if(!empty($meta['itinerary']))
+                    <h5><i class="bi bi-card-list"></i> Itinerario</h5>
+                    @foreach($meta['itinerary'] as $day)
+                        <div class="mb-3">
+                            <h6>Día {{ $day['day'] }}</h6>
+                            <ul>
+                                @foreach($day['activities'] as $activity)
+                                    <li>{{ $activity }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                @endif                
 
             </div>
 
             <!-- calendar -->
             <div class="col-md-12 col-lg-6 col-xl-6">
+
+                <div class="table-responsive">
                 
-                <table class="table text-center">
-                    <caption class="text-center">Fechas disponibles</caption>
+                    <table class="table text-center">
+                        <caption class="text-center">Fechas disponibles</caption>
 
-                    <thead>
-                        <tr>
-                            <th>
-                                <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
-                                    <i class="bi bi-arrow-left"></i>
-                                </button>
-                            </th>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
+                                        <i class="bi bi-arrow-left"></i>
+                                    </button>
+                                </th>
 
-                            <th colspan="5" class="text-center">
-                                <h4 id="monthTitle" class="mb-0">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
-                            </th>
+                                <th colspan="5" class="text-center">
+                                    <h4 id="monthTitle" class="mb-0">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
+                                </th>
 
-                            <th>
-                                <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </th>
-                        </tr>
+                                <th>
+                                    <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </th>
+                            </tr>
 
-                        <tr>
-                            <th scope="col">Lun</th>
-                            <th scope="col">Mar</th>
-                            <th scope="col">Mie</th>
-                            <th scope="col">Jue</th>
-                            <th scope="col">Vie</th>
-                            <th scope="col">Sab</th>
-                            <th scope="col">Dom</th>
-                        </tr>
-                    </thead>
+                            <tr>
+                                <th scope="col">Lun</th>
+                                <th scope="col">Mar</th>
+                                <th scope="col">Mie</th>
+                                <th scope="col">Jue</th>
+                                <th scope="col">Vie</th>
+                                <th scope="col">Sab</th>
+                                <th scope="col">Dom</th>
+                            </tr>
+                        </thead>
 
-                    <tbody id="calendarBody">
-                        <!-- JS pintará aquí -->
-                    </tbody>
-                </table>
+                        <tbody id="calendarBody">
+                            <!-- JS pintará aquí -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /calendar -->
         </div>
@@ -274,7 +296,8 @@
                     const key =
                         `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 
-                    priceMap[key] = item.price;
+                    let finalPrice = Number(item.price) + Number(item.taxes);
+                    priceMap[key] = finalPrice.toFixed(2);
                 });
             }
 
@@ -330,7 +353,7 @@
 <td class="${isToday ? 'table-warning fw-bold' : ''}">
     <div class="d-flex flex-column align-items-center">
         <span>${day}</span>
-        ${price ? `<a href="#" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-5">${price} €</small></a>` : ''}
+        ${price ? `<a href="#" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${price}€</small></a>` : ''}
     </div>
 </td>
 `;
@@ -358,7 +381,7 @@
             async function loadPrices() {
                 try {
                     // Cambia esta URL por tu endpoint real
-                    const product_id = 12; // ID del producto/tour
+                    const product_id = {{$tour->id}}; // ID del producto/tour
                     const baseUrl = window.location.origin;
                     const response = await fetch(`${baseUrl}/api/v1/products/${product_id}/itineraries?month=${viewMonth+1}&year=${viewYear}`);
                     const data = await response.json();
