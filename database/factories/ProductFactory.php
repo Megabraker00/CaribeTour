@@ -28,7 +28,7 @@ class ProductFactory extends Factory
         $states = Status::where('statusable', Product::class)->get();
         $supliers = Suplier::all();
         $users = User::all();
-        $name = fake()->name();
+        $name = 'Hotel ' . fake()->name();
 
         return [
             'name' => $name,

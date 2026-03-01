@@ -14,12 +14,16 @@ class Type extends Model
     // from 1 to 9 belongs to Product model
     const TOUR = 1;
     const EXCURSION = 2;
-    const SEGURO = 3;
-    const FREETOUR = 4;
+    const HOTEL = 3;
+    const INSURANCE = 4;
+    const CRUISE = 5;
+    const FLIGHT = 6;
+    const TRANSFER = 7;
+    const FREETOUR = 8;
 
     // from 10 to 19 belongs to Payment model
     const CARD = 10;
-    const TRANSFER = 11;
+    const MONETARY_TRANSFER = 11;
     const STRIPE = 12;
     const PAYPAL = 13;
     const CASH = 14;

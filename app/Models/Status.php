@@ -11,17 +11,39 @@ class Status extends Model
     use HasFactory;
 
     // from 1 to 9 belongs to Product model
-    const TOUR_DRAFT = 1;
-    const TOUR_ACTIVE = 2;
-    const TOUR_NOT_ACTIVE = 3;
+    const TOUR_ACTIVE = 1;
+    const TOUR_NOT_ACTIVE = 2;
+    const TOUR_DRAFT = 3;
 
     // from 10 to 19 belongs to Booking model
     const BOOKING_PENDING_PAYMENT = 10;
     const BOOKING_PAID = 11;
-    const BOOKING_CANCELLED = 12;
+    const BOOKING_PENDING = 12;
+    const BOOKING_CONFIRMED = 13;
+    const BOOKING_COMPLETED = 14;
+    const BOOKING_CANCELLED = 15;
+    const BOOKING_REFUNDED = 16;
+    const BOOKING_NO_SHOW = 17;
 
     // from 20 to 29 belongs to Client model
     const CLIENT_ACTIVE = 20;
+
+    // from 30 to 39 belongs to Category model
+    const CATEGORY_ACTIVE = 30;
+    const CATEGORY_INACTIVE = 31;
+
+    // from 40 to 49 belongs to Suplier model
+    const SUPLIER_ACTIVE = 40;
+    const SUPLIER_INACTIVE = 41;
+
+    // from 50 to 59 belongs to Payment model
+    public const PAYMENT_PENDING   = 50;
+    public const PAYMENT_PAID      = 51;
+    public const PAYMENT_CANCELLED = 52;
+
+    // from 60 to 69 belongs to Blog model
+    public const BLOG_PUBLISHED = 60;
+    public const BLOG_DRAFT = 61;
 
     /**
      * The table associated with the model.
