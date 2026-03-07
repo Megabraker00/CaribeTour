@@ -2,7 +2,7 @@
     $segments = request()->segments();
     $url = url('/');
 @endphp
-<section class="container pt-4">
+<section class="container mt-4">
     <nav aria-label="breadcrumb" style="min-height: 24px;">
         <ol class="breadcrumb">
 

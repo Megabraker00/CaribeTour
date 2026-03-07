@@ -8,7 +8,7 @@
 @section('content')
     <!-- container -->
 
-    <section class="container py-4">
+    <section class="container my-4">
 
         <!-- carousel and description -->
         <div class="row">
@@ -19,58 +19,34 @@
 
                     <div class="card-body">
 
-                        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div id="carouselTourCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel">
                             <div class="carousel-indicators">
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
-                                    class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                                    aria-label="Slide 2"></button>
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                                    aria-label="Slide 3"></button>
-                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
-                                    aria-label="Slide 4"></button>
+                                @foreach ($tour->images as $image)
+                                    <button type="button" data-bs-target="#carouselTourCaptions" data-bs-slide-to="{{$loop->index}}"
+                                        class="{{ $image->is_main == 1 ? 'active' : '' }}" aria-current="{{ $image->is_main == 1 ? 'true' : 'false' }}" aria-label="Slide {{ $loop->index + 1 }}"></button>
+                                @endforeach
                             </div>
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="{{ asset('images/i-love-bootstrap3.png') }}"
-                                        class="d-block w-100" alt="..." width="662px">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5>First slide label</h5>
-                                        <p>Some representative placeholder content for the first slide.</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="{{ asset('images/i-love-bootstrap2.png') }}"
-                                        class="d-block w-100" alt="..." width="662px">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5>Second slide label</h5>
-                                        <p>Some representative placeholder content for the second slide.</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="{{ asset('images/i-love-bootstrap1.png') }}"
-                                        class="d-block w-100" alt="..." width="662px">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5>Third slide label</h5>
-                                        <p>Some representative placeholder content for the third slide.</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="{{ asset('images/i-love-bootstrap4.png') }}"
-                                        class="d-block w-100" alt="..." width="662px">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5>Fourth slide label</h5>
-                                        <p>Some representative placeholder content for the second slide.</p>
-                                    </div>
-                                </div>
+
+                                @foreach ($tour->images as $image)
+                                    <div class="carousel-item {{ $image->is_main == 1 ? 'active' : '' }}">
+                                        <img src="{{ asset($image->path) }}"
+                                            class="d-block w-100" alt="Imagen de {{$image->name}}" width="662px">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            {{-- <h5>{{$image->name}}</h5> --}}
+                                            <p>{{$image->name}}</p>
+                                        </div>
+                                    </div>                                    
+                                @endforeach
+                                
                             </div>
                             <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                data-bs-target="#carouselTourCaptions" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
                             <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                data-bs-target="#carouselTourCaptions" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
@@ -88,24 +64,19 @@
 
                 <h2>{{$tour->name}} - {{$tour->id}}</h2>
                 <hr>
-                @php
-                    $meta = $tour->metadata->meta_data ?? [];
-                @endphp
 
                 <ul class="tour-info">
                     <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
                     <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}}</li>
-                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->departure_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($firstDate->return_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> 8 Días - 7 Noches</li>
-                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}€</span></li>
+                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }} {{$tour->cheapestItinerary()->id}}</li>
+                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
                 </ul>
-                
-                <p>{{$meta['description'] ?? ''}}</p>
 
                 <div>
-                    <a href="{{ route('reservation.create', $tour->slug) }}?idIt={{$firstDate->id}}" class="btn btn-primary me-2">Reservar Fechas</a>
-                    <a href="consulta/23" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
+                    <a href="{{ route('reservation.create', ['product' => $tour->slug, 'itinerary' => $firstDate->id]) }}" class="btn btn-primary me-2">Reservar Fechas</a>
+                    <a href="{{ route('contacto', ['tour' => $tour->slug]) }}" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
                 </div>
             </div>
             <!-- /description -->
@@ -114,31 +85,22 @@
         <!-- /carousel and description -->
 
         <!-- itinerary and calendar -->
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-md-12 col-lg-6 col-xl-6">
 
-                @if(!empty($meta['includes']))
+                @if (!empty($tour->meta['description']))
+                    <h5><i class="bi bi-card-text"></i> Descripción</h5>
+                    <p>{{ $tour->meta['description'] }}</p>                    
+                @endif
+
+                @if(!empty($tour->meta['includes']))
                     <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
                     <ul>
-                        @foreach($meta['includes'] as $include)
+                        @foreach($tour->meta['includes'] as $include)
                             <li>{{ $include }}</li>
                         @endforeach
                     </ul>
                 @endif
-
-                @if(!empty($meta['itinerary']))
-                    <h5><i class="bi bi-card-list"></i> Itinerario</h5>
-                    @foreach($meta['itinerary'] as $day)
-                        <div class="mb-3">
-                            <h6>Día {{ $day['day'] }}</h6>
-                            <ul>
-                                @foreach($day['activities'] as $activity)
-                                    <li>{{ $activity }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endforeach
-                @endif                
 
             </div>
 
@@ -191,7 +153,7 @@
         <!-- /itinerary and calendar -->
 
         <!-- related products -->
-        <div class="row">
+        <div class="row my-4">
             <h4>Productos Relacionados</h4>
             <hr>
 
@@ -297,7 +259,14 @@
                         `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 
                     let finalPrice = Number(item.price) + Number(item.taxes);
-                    priceMap[key] = finalPrice.toFixed(2);
+
+                    // Configuramos el formateador para España (es-ES)
+                    const formatter = new Intl.NumberFormat('es-ES', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                    priceMap[key] = formatter.format(finalPrice);
                 });
             }
 

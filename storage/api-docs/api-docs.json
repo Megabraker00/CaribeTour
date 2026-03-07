@@ -237,7 +237,7 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "suplier_id": {
+                                    "supplier_id": {
                                         "type": "integer",
                                         "example": 1
                                     }
@@ -315,7 +315,7 @@
                                         "type": "integer",
                                         "example": 2
                                     },
-                                    "suplier_id": {
+                                    "supplier_id": {
                                         "type": "integer",
                                         "example": 2
                                     }

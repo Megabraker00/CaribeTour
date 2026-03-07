@@ -31,9 +31,9 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function suplier(): BelongsTo
+    public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Suplier::class);
+        return $this->belongsTo(Supplier::class);
     }
 
     public function category(): BelongsTo
@@ -118,5 +118,23 @@ class Product extends Model
     public function metaData()
     {
         return $this->morphOne(Metadata::class, 'meta_dataable');
+    }
+
+    public function getMetaAttribute()
+    {
+        return $this->metaData?->meta_data ?? [];
+    }
+
+    public function cheapestItinerary()
+    {
+        return $this->itineraries()
+            ->whereHas('segments', function ($q) {
+                $q->where('departure_date', '>', now());
+            })
+            ->with(['segments' => function ($q) {
+                $q->orderBy('sort_order', 'asc');
+            }])
+            ->orderByRaw('price + taxes ASC')
+            ->first();
     }
 }

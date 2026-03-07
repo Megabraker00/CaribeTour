@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- container -->
-    <section class="container py-4">
+    <section class="container my-4">
 
         <!-- Destination -->
         <div class="row">
@@ -34,7 +34,7 @@
         </div>
         <!-- /Destination -->
 
-        <div class="row pt-4">
+        <div class="row mt-4">
 
             @forelse ($subCategories as $subCategory)
                 <div class="col-md-6 col-lg-4 col-xl-4 mb-4">

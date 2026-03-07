@@ -32,9 +32,9 @@ class Status extends Model
     const CATEGORY_ACTIVE = 30;
     const CATEGORY_INACTIVE = 31;
 
-    // from 40 to 49 belongs to Suplier model
-    const SUPLIER_ACTIVE = 40;
-    const SUPLIER_INACTIVE = 41;
+    // from 40 to 49 belongs to Supplier model
+    const SUPPLIER_ACTIVE = 40;
+    const SUPPLIER_INACTIVE = 41;
 
     // from 50 to 59 belongs to Payment model
     public const PAYMENT_PENDING   = 50;
@@ -82,9 +82,9 @@ class Status extends Model
         return $this->morphMany(Client::class, 'statusable');
     }
 
-    public function supliers(): MorphMany
+    public function suppliers(): MorphMany
     {
-        return $this->morphMany(Suplier::class, 'statusable');
+        return $this->morphMany(Supplier::class, 'statusable');
     }
 
     public function products(): MorphMany

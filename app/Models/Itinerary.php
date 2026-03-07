@@ -16,6 +16,8 @@ class Itinerary extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['days', 'nights'];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -38,11 +40,58 @@ class Itinerary extends Model
 
     public function segments(): HasMany
     {
-        return $this->hasMany(Segment::class)->orderBy('sort_order');
+        return $this->hasMany(Segment::class);
+    }
+
+    public function firstSegment()
+    {
+        return $this->segments()->orderBy('sort_order')->first();
+    }
+
+    public function lastSegment()
+    {
+        return $this->segments()->orderBy('sort_order', 'desc')->first();
+    }
+
+    public function days(): int
+    {
+        $first = $this->firstSegment();
+        $last = $this->lastSegment();
+
+        if (!$first || !$last || !$first->departure_date || !$last->arrival_date) {
+            return 0;
+        }
+
+        $start = \Carbon\Carbon::parse($first->departure_date);
+        $end = \Carbon\Carbon::parse($last->arrival_date);
+
+        // +1 porque si sale el día 1 y llega el día 3 son 3 días (1,2,3)
+        return $start->diffInDays($end) + 1;
+    }
+
+    public function nights(): int
+    {
+        $days = $this->days();
+        return max(0, $days - 1);
     }
 
     public function __toString()
     {
         return "Itinerario de {$this->product->name} desde {$this->departure_t->name} hasta {$this->arrival_t->name}";
+    }
+
+    public function fullPrice()
+    {
+        return $this->price + $this->taxes;
+    }
+
+    public function getDaysAttribute()
+    {
+        return $this->days();
+    }
+
+    public function getNightsAttribute()
+    {
+        return $this->nights();
     }
 }

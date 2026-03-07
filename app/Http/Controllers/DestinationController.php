@@ -34,7 +34,8 @@ class DestinationController extends Controller
 
     public function provinceShow($slugCategory, $slugSubCategoy)
     {
-        $subCategory = Category::where('slug', $slugSubCategoy)->first();
+        $subCategory = Category::with('parentCategory')->
+                        where('slug', $slugSubCategoy)->first();
 
         if (!$subCategory) {
             abort(404);
@@ -60,7 +61,8 @@ class DestinationController extends Controller
         $tour = Product::query()
                 ->where('slug', $slugTour)
                 ->where('status_id', Status::TOUR_ACTIVE)
-                ->where('type_id', Type::TOUR) 
+                ->where('type_id', Type::TOUR)
+                ->with('metaData')
                 ->with(['itineraries' => function ($query) {
                     $query->whereHas('segments', function ($q) {
                         $q->where('departure_date', '>', now());
@@ -127,14 +129,29 @@ class DestinationController extends Controller
             abort(404);
         }
 
-        $firstDate = $tour->itineraries->sortBy('id')->first();
-        //$firstDate = $tour->itineraries()->whereDate('departure_date', '>=', now())->orderBy('departure_date')->first();
+        $firstItinerary = $tour->cheapestItinerary();
         
-        if (!$firstDate) {
-            $firstDate = new Itinerary();
-        }
+        $price = $firstItinerary
+            ? $firstItinerary->fullPrice()
+            : null;
+        
+        $days = $firstItinerary?->days;
+        $nights = $firstItinerary?->nights;
+        $departure = $firstItinerary->firstSegment()->departure_date;
+        $return = $firstItinerary->lastSegment()->departure_date;
+    
             
-        $price = $firstDate->price + $firstDate->taxes; // blade $tour->itineraries->sortBy('id')->first()->price
-        return view('destination.tour', ['tour' => $tour, 'firstDate' => $firstDate, 'price' => $price, 'countrySlug' => $category, 'provinceSlug' => $subCategory]);
+        //$price = number_format($firstDate->price + $firstDate->taxes, 2, ',', '.');
+        return view('destination.tour', [
+            'tour' => $tour, 
+            'firstDate' => $firstItinerary,
+            'tourDeparture' => $departure,
+            'tourReturn' => $return,
+            'days' => $days,
+            'nights' => $nights,
+            'price' => $price, 
+            'countrySlug' => $category, 
+            'provinceSlug' => $subCategory,
+        ]);
     }
 }

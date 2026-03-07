@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Status;
-use App\Models\Suplier;
+use App\Models\Supplier;
 use App\Models\Terminal;
 use App\Models\Type;
 use Illuminate\Http\Request;
@@ -24,12 +24,12 @@ class ProductController extends Controller
 
         $parentCategories = Category::whereNull('parent_id')->get();
 
-        $supliers = Suplier::all();
+        $suppliers = Supplier::all();
         
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
-            'supliers' => $supliers,
+            'suppliers' => $suppliers,
             'terminals' => [],
             'new' => true,
         ]);
@@ -41,7 +41,7 @@ class ProductController extends Controller
             'name' => 'required|min:3',
             'slug' => 'required|min:3',
             'category_id' => 'required|integer',
-            'suplier_id' => 'required|integer',
+            'supplier_id' => 'required|integer',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',
@@ -63,14 +63,14 @@ class ProductController extends Controller
 
         $parentCategories = Category::whereNull('parent_id')->get();
 
-        $supliers = Suplier::all();
+        $suppliers = Supplier::all();
 
         $terminals = Terminal::all();
 
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
-            'supliers' => $supliers,
+            'suppliers' => $suppliers,
             'terminals' => $terminals,
             'show' => true,
         ]);
@@ -82,14 +82,14 @@ class ProductController extends Controller
 
         $parentCategories = Category::whereNull('parent_id')->get();
 
-        $supliers = Suplier::all();
+        $suppliers = Supplier::all();
 
         $terminals = Terminal::all();
         
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
-            'supliers' => $supliers,
+            'suppliers' => $suppliers,
             'terminals' => $terminals,
             'edit' => true,
         ]);
@@ -101,7 +101,7 @@ class ProductController extends Controller
             'name' => 'required|min:3',
             'slug' => 'required|min:3',
             'category_id' => 'required|integer',
-            'suplier_id' => 'required|integer',
+            'supplier_id' => 'required|integer',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',

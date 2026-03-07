@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Status;
-use App\Models\Suplier;
+use App\Models\Supplier;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Type;
@@ -26,18 +26,48 @@ class ProductFactory extends Factory
         $categories = Category::all();
         $types = Type::where('typeable', Product::class)->get();
         $states = Status::where('statusable', Product::class)->get();
-        $supliers = Suplier::all();
+        $suppliers = Supplier::all();
         $users = User::all();
-        $name = 'Hotel ' . fake()->name();
+        $name = fake()->randomElement([
+            'Tour por la ciudad',
+            'Excursión a la playa',
+            'Hotel en el centro',
+            'Hotel frente al mar',
+            'Hotel todo incluido',
+            'Hotel boutique',
+            'Hotel de lujo',
+            'Hotel económico',
+            'Seguro de viaje',
+            'Crucero por el Caribe',
+            'Vuelo a Cancún',
+            'Traslado al aeropuerto',
+            'Free Tour por el casco antiguo'
+        ]);
 
+        $name .= '-' . fake()->unique()->numberBetween(1, 1000);
+        
         return [
             'name' => $name,
             'slug' => Str::slug($name),
             'category_id' => $categories->isNotEmpty() ? fake()->randomElement($categories)->id : Category::factory()->create()->id,
             'type_id' => $types->isNotEmpty() ? fake()->randomElement($types)->id : Type::factory()->create(['typeable' => Product::class])->id,
             'status_id' => $states->isNotEmpty() ? fake()->randomElement($states)->id : Status::factory()->create(['statusable' => Product::class])->id,
-            'suplier_id' => $supliers->isNotEmpty() ? fake()->randomElement($supliers)->id : Suplier::factory()->create()->id,
+            'supplier_id' => $suppliers->isNotEmpty() ? fake()->randomElement($suppliers)->id : Supplier::factory()->create()->id,
             'created_user_id' => $users->isNotEmpty() ? fake()->randomElement($users)->id : User::factory()->create()->id,
         ];
+    }
+
+    public function tour(): static
+    {
+        return $this->state(fn () => [
+            'type_id' => Type::TOUR,
+        ]);
+    }
+
+    public function active(): static
+    {
+        return $this->state(fn () => [
+            'status_id' => Status::TOUR_ACTIVE,
+        ]);
     }
 }

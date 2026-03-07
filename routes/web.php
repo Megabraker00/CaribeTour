@@ -30,13 +30,13 @@ Route::get('/', HomeController::class)->name('inicio');
 
 Route::controller(ServiceController::class)->group(function() {
     Route::get('/servicios', 'index')->name('servicios');
-    Route::get('/servicios/{servicio}', 'show')->name('servicios.detalle');
-    Route::get('/servicios/{cat}', 'categoryIndex');
+    Route::get('/servicios/{servicio:slug}', 'show')->name('servicios.detalle');
+    Route::get('/servicios/{cat:slug}', 'categoryIndex');
 });
 
 Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
 
-Route::get('/blogs/{post}', [PostController::class, 'show'])->name('blogs.show');
+Route::get('/blogs/{post:slug}', [PostController::class, 'show'])->name('blogs.show');
 
 Route::get('/contacto', function() {
     return view('contacto');
@@ -44,9 +44,9 @@ Route::get('/contacto', function() {
 
 Route::controller(DestinationController::class)->group(function() {
     Route::get('/destinos', 'countryIndex')->name('destinos');
-    Route::get('/destinos/{country}', 'countryShow')->name('destinos.pais');
-    Route::get("/destinos/{country}/{province}", 'provinceShow')->name('destinos.provincia');
-    Route::get("/destinos/{country}/{province}/{tour}", 'tourShow')->name('destinos.tour');
+    Route::get('/destinos/{country:slug}', 'countryShow')->name('destinos.pais');
+    Route::get("/destinos/{country:slug}/{province:slug}", 'provinceShow')->name('destinos.provincia');
+    Route::get("/destinos/{country:slug}/{province:slug}/{tour:slug}", 'tourShow')->name('destinos.tour');
     Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
 });
 
@@ -56,12 +56,12 @@ Route::get('/galeria', function() {
     return view('galeria', compact('images'));
 })->name('galeria');
 
-Route::controller(ReservationController::class)->group(function() {
-    Route::get("/reserva/{producto}", 'create')->name('reservation.create');
-    Route::post("/reserva/{producto}", 'store')->name('reservation.store');
-    Route::get("/reserva/{producto}/pago", 'payment')->name('payment');
-    Route::get("/reserva/{producto}/pago/ok", 'paymentOk');
-    Route::get("/reserva/{producto}/pago/no-ok", 'paymentNoOk');
+Route::controller(ReservationController::class)->scopeBindings()->group(function() {
+    Route::get("/reserva/{product:slug}/{itinerary}", 'create')->name('reservation.create');
+    Route::post("/reserva/{product:slug}/{itinerary}", 'store')->name('reservation.store');
+    Route::get("/reserva/{product:slug}/pago", 'payment')->name('payment');
+    Route::get("/reserva/{product:slug}/pago/ok", 'paymentOk');
+    Route::get("/reserva/{product:slug}/pago/no-ok", 'paymentNoOk');
 });
 
 //Auth::routes();

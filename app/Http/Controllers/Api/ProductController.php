@@ -94,7 +94,7 @@ class ProductController extends Controller
      *             @OA\Property(property="category_id", type="integer", example=1),
      *             @OA\Property(property="type_id", type="integer", example=1),
      *             @OA\Property(property="status_id", type="integer", example=1),
-     *             @OA\Property(property="suplier_id", type="integer", example=1)
+     *             @OA\Property(property="supplier_id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(
@@ -111,7 +111,7 @@ class ProductController extends Controller
             'category_id' => 'required|integer|exists:categories,id',
             'type_id' => 'required|integer|exists:types,id',
             'status_id' => 'required|integer|exists:statuses,id',
-            'suplier_id' => 'required|integer|exists:supliers,id',
+            'supplier_id' => 'required|integer|exists:suppliers,id',
         ]);
 
         $product = Product::create($validatedData);
@@ -163,7 +163,7 @@ class ProductController extends Controller
      *             @OA\Property(property="category_id", type="integer", example=2),
      *             @OA\Property(property="type_id", type="integer", example=2),
      *             @OA\Property(property="status_id", type="integer", example=2),
-     *             @OA\Property(property="suplier_id", type="integer", example=2)
+     *             @OA\Property(property="supplier_id", type="integer", example=2)
      *         )
      *     ),
      *     @OA\Response(
@@ -180,7 +180,7 @@ class ProductController extends Controller
             'category_id' => 'sometimes|required|integer|exists:categories,id',
             'type_id' => 'sometimes|required|integer|exists:types,id',
             'status_id' => 'sometimes|required|integer|exists:statuses,id',
-            'suplier_id' => 'sometimes|required|integer|exists:supliers,id',
+            'supplier_id' => 'sometimes|required|integer|exists:suppliers,id',
         ]);
 
         $product->update($validatedData);

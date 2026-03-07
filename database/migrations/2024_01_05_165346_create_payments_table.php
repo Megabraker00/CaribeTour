@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('type_id')->constrained(); // e.g. "deposit", "final_payment", "refund", "cancellation_fee", "partial_payment", etc.
             $table->foreignId('status_id')->constrained('statuses');
             $table->foreignId('booking_id')->constrained();
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 10, 2)->unsigned();
             $table->string('currency', 3)->default('EUR');
             $table->string('payment_method')->nullable();
             $table->string('transaction_id')->nullable();

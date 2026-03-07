@@ -7,7 +7,7 @@
 @section('og_image', asset('images/og-default.jpg'))
 
 @section('hero')
-    <div class="row pt-4">
+    <div class="row mt-4">
         @include('components.carousel')
         
         <div class="col-md-12 col-lg-4">
@@ -62,16 +62,17 @@
                     <a href="{{ route('destinos.tour', [
                     'country' => $tour->category->parentCategory->slug ?? 'sin-pais', 
                     'province' => $tour->category->slug ?? 'sin-provincia', 
-                    'tour' => $tour->slug
+                    'tour' => $tour->slug,
+                    'idIt' => $tour->cheapestItinerary()->id,
                     ]) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/site_bg.jpg') }}" alt="Imagen del {{$tour->name}}" title="{{$tour->name}}" class="img-aspect-4-3 card-img img-fluid">
+                                <img loading="lazy" src="{{ asset($tour->mainImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del {{$tour->name}}" title="{{$tour->name}}" class="img-aspect-4-3 card-img img-fluid">
                             </div>
                             <div class="card-footer">
                                 <h5 class="card-title" title="{{$tour->name}}">{{$tour->name}} <span class="star-5 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$tour->category?->parentCategory?->name}} - {{$tour->category?->parentCategory?->country}}"><i class="bi bi-geo-alt-fill"></i> <small> {{$tour->category?->parentCategory?->name}} - {{$tour->category?->parentCategory?->country}}</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                                <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$tour->category}} - {{$tour->category?->parentCategory}}"><i class="bi bi-geo-alt-fill"></i> <small>{{$tour->category}} - {{$tour->category?->parentCategory}}</small></div>
+                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde {{$tour->cheapestItinerary()->fullPrice()}}&euro;">{{$tour->cheapestItinerary()->fullPrice()}}&euro;</span>
                             </div>
                         </div>
                     </a>
