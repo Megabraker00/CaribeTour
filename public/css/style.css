@@ -1,9 +1,14 @@
 body {
-    font-family: Open Sans, Arial, Helvetica, sans-serif;
+    font-family: 'Signika', 'Open Sans', 'Arial', 'Helvetica', sans-serif;
+    
+}
+
+p {
+    font-size: 1.05rem;
 }
 
 h1, h2, h3, h4, h5, h6, .nav-item {
-    font-family: Signika, Arial, Helvetica, sans-serif;
+    font-family: 'Signika', 'Arial', 'Helvetica', sans-serif;
     font-weight: normal;
     color: #444;
 }

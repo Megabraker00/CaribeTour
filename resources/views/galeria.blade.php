@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- container -->
-    <section class="container py-4">
+    <section class="container my-4">
 
         <div class="row">
 

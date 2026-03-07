@@ -103,16 +103,16 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="proveedor">Proveedor</label>
-                                        <select name="suplier_id" id="proveedor"
-                                            class="form-control @error('suplier_id') is-invalid @enderror">
+                                        <select name="supplier_id" id="proveedor"
+                                            class="form-control @error('supplier_id') is-invalid @enderror">
                                             <option> - </option>
-                                            @foreach ($supliers as $suplier)
-                                                <option value="{{ $suplier->id }}"
-                                                    {{ old('suplier_id', $tour->suplier_id) == $suplier->id ? 'selected' : '' }}>
-                                                    {{ $suplier }}</option>
+                                            @foreach ($suppliers as $supplier)
+                                                <option value="{{ $supplier->id }}"
+                                                    {{ old('supplier_id', $tour->supplier_id) == $supplier->id ? 'selected' : '' }}>
+                                                    {{ $supplier }}</option>
                                             @endforeach
                                         </select>
-                                        @error('suplier_id')
+                                        @error('supplier_id')
                                             <div class="error invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>

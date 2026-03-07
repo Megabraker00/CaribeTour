@@ -9,7 +9,7 @@ use App\Models\Client;
 use App\Models\Employee;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Suplier;
+use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Status;
 
@@ -33,7 +33,7 @@ class StatusFactory extends Factory
             Employee::class,
             User::class,
             Category::class,
-            Suplier::class
+            Supplier::class
         ];
 
         return [
@@ -76,11 +76,11 @@ class StatusFactory extends Factory
         );
     }    
 
-    public function forSuplier(): static
+    public function forSupplier(): static
     {
         return $this->sequence(
-            ['id' => Status::SUPLIER_ACTIVE, 'name' => 'Activo', 'statusable' => Suplier::class],
-            ['id' => Status::SUPLIER_INACTIVE, 'name' => 'Inactivo', 'statusable' => Suplier::class],
+            ['id' => Status::SUPPLIER_ACTIVE, 'name' => 'Activo', 'statusable' => Supplier::class],
+            ['id' => Status::SUPPLIER_INACTIVE, 'name' => 'Inactivo', 'statusable' => Supplier::class],
         );
     }
 

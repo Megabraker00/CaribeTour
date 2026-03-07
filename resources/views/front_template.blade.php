@@ -48,9 +48,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&family=Signika:wght@400;600&display=swap" media="print" onload="this.media='all'">
+    {{-- <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'"> --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" fetchpriority="high">
 
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
 
     <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
 
@@ -66,7 +67,7 @@
     <header class="bg-palm">
 
         <!-- container -->
-        <div class="container py-3">
+        <div class="container my-3">
 
             <!-- header -->
             <nav class="navbar navbar-expand-lg bg-transparent">

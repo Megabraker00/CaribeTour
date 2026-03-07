@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Suplier;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 
-class SuplierSeeder extends Seeder
+class SupplierSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Suplier::factory(10)->create();
+        Supplier::factory(10)->create();
     }
 }

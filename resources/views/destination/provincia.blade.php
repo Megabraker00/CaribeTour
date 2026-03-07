@@ -8,7 +8,7 @@
 
 @section('content')
     <!-- container -->
-    <section class="container py-4">        
+    <section class="container my-4">        
 
         <div class="row">
 
@@ -38,7 +38,7 @@
 
                             <ul class="tour-info">
                                 <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
-                                <li title="{{$province->name}}"><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$province->name}}</li>
+                                <li title="{{$province->name}}"><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$province->name}} - {{$province->parentCategory}}</li>
                                 <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> Sábado 15 de Septiempre 2024</li>
                                 <li title="Precio por persona"><span class="fs-4"><i class="bi bi-tag-fill"></i><strong>Desde:</strong> 507.65€</span></li>
                             </ul>
