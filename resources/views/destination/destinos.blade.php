@@ -7,51 +7,40 @@
 
 @section('content')
     <!-- container -->
-    <section class="container py-4">
+    <section class="container my-4">
 
         <div class="row">
 
+            @forelse($categories as $category)
+
             <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="{{ route('destinos.pais', 'republica-dominicana') }}" class="text-decoration-none">
+                <a href="{{ route('destinos.pais', $category->slug) }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa" class="card-img">
+                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" alt="Imagen de {{$category->name}}" title="{{$category->name}}" class="card-img">
                         </div>
                         <div class="card-footer">
-                            <h5 class="card-title" title="Hotel Grand Palladium Punta Cana Resort & Spa"><i class="bi bi-geo-alt-fill"></i> República. Dominicana</h5>
+                            <h5 class="card-title" title="{{$category->name}}"><i class="bi bi-geo-alt-fill"></i>{{$category->name}}</h5>
                             <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="{{ route('destinos.pais', 'mexico') }}" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap1.png') }}" class="card-img">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title"><i class="bi bi-geo-alt-fill"></i> Mexico</h5>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
-                <a href="{{ route('destinos.pais', 'cuba') }}" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title"><i class="bi bi-geo-alt-fill"></i> Cuba</h5>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            @empty
+                {{-- Esto se mostrará si NO hay tours --}}
+                <div class="alert alert-info text-center shadow-sm">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Actualmente no hay paises disponibles en estos momentos. 
+                    ¡Vuelve pronto o consulta otras provincias!
+                </div>
+                
+                {{-- Opcional: Mostrar tours recomendados o un botón de volver --}}
+                <div class="text-center">
+                    <a href="{{ url('/') }}" class="btn btn-primary">Ver otros destinos</a>
+                </div>
+            @endforelse
+            
         </div>
 
     </section>

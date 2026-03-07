@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Category;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -19,14 +18,25 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $states = Status::where('statusable', Category::class )->get();
         $name = fake()->words(2, true);
-        $parentCategory = Category::whereNull('parent_id')->get();
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'status_id' => fake()->randomElement($states),
-            'parent_id' => fake()->randomElement($parentCategory),
+            'status_id' => Status::CATEGORY_ACTIVE,
+            'parent_id' => null,
         ];
+    }
+
+    /**
+     * Indicate that the model's default state should be a specific country.
+     */
+    public function countries(): static
+    {
+        return $this->sequence(
+            ['id' => 1, 'name' => 'República Dominicana', 'slug' => 'republica-dominicana'],
+            ['id' => 2, 'name' => 'México', 'slug' => 'mexico'],
+            ['id' => 3, 'name' => 'Cuba', 'slug' => 'cuba'],
+            ['id' => 4, 'name' => 'Colombia', 'slug' => 'colombia'],
+        );
     }
 }

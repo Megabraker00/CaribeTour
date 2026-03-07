@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Product;
-use App\Models\Terminal;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,22 +17,15 @@ class ItineraryFactory extends Factory
      */
     public function definition(): array
     {
-        $products = Product::all();
-        $terminals = Terminal::all();
-
-        //$departureDate = fake()->date('Y-m-d H:i:s');
-        $departureDate = fake()->dateTimeBetween('2023-01-01', '2023-12-31');
-        $carbonReturnDate = Carbon::parse($departureDate);
-        $arrivalDate = $carbonReturnDate->addDays(7)->format('Y-m-d H:i:s');
+        $totalStock = $this->faker->numberBetween(10, 50);
 
         return [
-            'product_id' => fake()->randomElement($products),
-            'departure_date' => $departureDate,
-            'departure_terminal_id' => fake()->randomElement($terminals),
-            'arrival_date' => $arrivalDate,
-            'arrival_terminal_id' => fake()->randomElement($terminals),
-            'price' => fake()->randomFloat(2, 600, 200),
-            'taxes' => fake()->randomFloat(2, 50, 100),
+            'product_id' => Product::inRandomOrder()->first()->id ?? Product::factory(),
+            'total_stock' => $totalStock,
+            'available_stock' => $this->faker->numberBetween(0, $totalStock),
+            'price' => $this->faker->randomFloat(2, 200, 1000),
+            'taxes' => $this->faker->randomFloat(2, 10, 50),
+            'currency' => 'EUR',
         ];
     }
 }

@@ -7,7 +7,7 @@
 
 @section('content')
     <!-- container -->
-    <section class="container py-4">
+    <section class="container my-4">
 
         <!-- mapa -->
         <div class="row">
@@ -18,7 +18,7 @@
         <!-- /mapa -->
 
         <!-- formulario de contacto -->
-        <div class="row pt-4">
+        <div class="row mt-4">
 
             <div class="col-md-6 pb-4">
                 <h2>Encantados de escucharte</h2>

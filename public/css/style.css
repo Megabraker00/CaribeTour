@@ -1,9 +1,14 @@
 body {
-    font-family: Open Sans, Arial, Helvetica, sans-serif;
+    font-family: 'Signika', 'Open Sans', 'Arial', 'Helvetica', sans-serif;
+    
+}
+
+p {
+    font-size: 1.05rem;
 }
 
 h1, h2, h3, h4, h5, h6, .nav-item {
-    font-family: Signika, Arial, Helvetica, sans-serif;
+    font-family: 'Signika', 'Arial', 'Helvetica', sans-serif;
     font-weight: normal;
     color: #444;
 }
@@ -81,6 +86,13 @@ footer {
 .btn-primary {
     background-color: #ff9000;
     border-color: #ff9000;
+    color: #fff;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    background-color: #ff9000;
+    border-color: #ff9000;
+    color: #fff;
 }
 
 .btn-primary:hover {
@@ -128,6 +140,10 @@ footer {
     color: #f8f9fa;
 }
 
+.nav-link:focus {
+    color: #f8f9fa;
+}
+
 .nav-tabs {
   border-bottom: none;
   border-right: 1px solid #dee2e6;
@@ -155,6 +171,9 @@ footer {
   box-shadow: 0 0 0 .25rem #ff900026;
 }
 
+td:hover { /* TODO: resaltar sólo la celdas con precios */
+    background-color: #fff3cd;
+}
 
 .flip-horizontal {
     transform: scaleX(-1);
@@ -225,6 +244,19 @@ footer {
     box-shadow: 0 1px 0 rgba(255,255,255,0.1)!important;
     border: 4px solid #333;
     display: inline-block;
+}
+
+#calendarBody td {
+  /*height: 48px;*/
+  vertical-align: middle;
+}
+
+#calendarBody td {
+  height: 64px;
+}
+
+#calendarBody small {
+  line-height: 1;
 }
 
 .btn-check:focus+.btn-primary, .btn-primary:focus {

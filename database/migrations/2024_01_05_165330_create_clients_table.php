@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('last_name', 100);
+            $table->string('email')->nullable()->index();
+            $table->string('phone', 30)->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('dni_passport', 20);
+            $table->string('nationality', 20)->nullable();
             $table->foreignId('type_id')->constrained();
             $table->foreignId('status_id')->constrained('statuses');
-            $table->foreignId('booking_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

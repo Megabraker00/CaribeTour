@@ -4,12 +4,12 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Status;
-use App\Models\Suplier;
+use App\Models\Supplier;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Suplier>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Supplier>
  */
-class SuplierFactory extends Factory
+class SupplierFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class SuplierFactory extends Factory
      */
     public function definition(): array
     {
-        $states = Status::where('statusable', Suplier::class )->get();
+        $states = Status::where('statusable', Supplier::class )->get();
         return [
             'name' => fake()->company(),
             'status_id' => fake()->randomElement($states),

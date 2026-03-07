@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payment_type_id')->constrained('types');
+            $table->string('external_ref', 20)->nullable()->comment('Referencia o localizador externo');
+            $table->foreignId('client_id')->constrained();
             $table->foreignId('status_id')->constrained('statuses');
-            $table->decimal('total_amount');
+            $table->decimal('total_price', 10, 2)->unsigned()->comment('Precio total de la reserva incluyendo impuestos y tasas');
+            $table->string('currency', 3)->default('EUR');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

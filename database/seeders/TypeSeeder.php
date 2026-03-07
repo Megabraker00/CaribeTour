@@ -12,6 +12,8 @@ class TypeSeeder extends Seeder
      */
     public function run(): void
     {
-        Type::factory(20)->create();
+        Type::factory()->count(8)->forProduct()->create();
+        Type::factory()->count(5)->forPayment()->create();
+        Type::factory()->count(2)->forClient()->create();
     }
 }
