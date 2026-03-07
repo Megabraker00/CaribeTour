@@ -28,9 +28,11 @@ class Type extends Model
     const PAYPAL = 13;
     const CASH = 14;
 
-    // from 20 to 29 belongs to Client model
-    const HOLDER = 20;
-    const PASSENGER = 21;
+    // from 20 to 29 belongs to Passenger
+    const INFANT = 20;
+    const CHILD = 21;
+    const ADULT = 22;
+    const SENIOR = 23;
 
     public function typeable()
     {
@@ -40,11 +42,6 @@ class Type extends Model
     public function payments(): MorphMany
     {
         return $this->morphMany(Payment::class, 'typeable');
-    }
-
-    public function clients(): MorphMany
-    {
-        return $this->morphMany(Client::class, 'typeable');
     }
 
     public function products(): MorphMany

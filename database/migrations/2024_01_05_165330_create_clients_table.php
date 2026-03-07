@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('dni_passport', 20);
             $table->string('nationality', 20)->nullable();
-            $table->foreignId('type_id')->constrained();
             $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
             $table->softDeletes();

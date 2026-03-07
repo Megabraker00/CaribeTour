@@ -49,7 +49,7 @@
 
     <!-- Google Fonts -->
     {{-- <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'"> --}}
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" fetchpriority="high">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap">
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
 

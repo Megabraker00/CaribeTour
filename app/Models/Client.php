@@ -11,6 +11,16 @@ class Client extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'last_name',
+        'phone',
+        'email',
+        'dni_passport',
+        'nationality',
+        'status_id', 
+    ];
+
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);

@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             TypeSeeder::class,
             StatusSeeder::class,
             CategorySeeder::class,
-            Supplierseeder::class,
+            SupplierSeeder::class,
             ProductSeeder::class,
             ProductMetadataSeeder::class,
             TerminalSeeder::class,
