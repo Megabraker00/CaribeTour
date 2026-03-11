@@ -267,6 +267,7 @@
                     });
 
                     priceMap[key] = formatter.format(finalPrice);
+                    //priceMap[key]['idIt'] = item.id;
                 });
             }
 
@@ -317,12 +318,13 @@
                             const key =
                                 `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                             const price = priceMap[key] || null;
+                            const idIt = 5;//priceMap[key]['idIt']
 
                             row += `
 <td class="${isToday ? 'table-warning fw-bold' : ''}">
     <div class="d-flex flex-column align-items-center">
         <span>${day}</span>
-        ${price ? `<a href="#" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${price}€</small></a>` : ''}
+        ${price ? `<a href="?idIt=${day}" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${price}€</small></a>` : ''}
     </div>
 </td>
 `;

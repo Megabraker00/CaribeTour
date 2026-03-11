@@ -4,15 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\Passenger;
 use App\Models\Itinerary;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use App\Http\Requests\StoreReservationRequest;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
+    /**
+     * Muestra el formulario para crear una nueva reserva
+     */
     public function create(Product $product, Itinerary $itinerary)
     {
         //abort_unless($itinerary->product_id === $product->id, 404);
@@ -35,28 +44,129 @@ class ReservationController extends Controller
 
     }
 
-    /*
-    public function create(Request $request, $producSlug)
+    /**
+     * Almacena los datos de la reserva, el titular y los pasajeros y redije a la ruta que muestra el formulario de stripe
+     */
+    public function store(StoreReservationRequest $request, Product $product, Itinerary $itinerary)
     {
-        $product = Product::query()
-            ->where('slug', $producSlug)
-            ->where('status_id', Status::TOUR_ACTIVE)
-            ->where('type_id', Type::TOUR)
-            ->firstOrFail();
+        $validated = $request->validated();
 
-        // TODO: redirigir a un vista que diga "El producto parece que ya no estar disponible"
-        if ($product === null) {
-            abort(404);
+        return DB::transaction(function () use ($request, $product, $itinerary, $validated) {
+
+            $client = $this->createClient($validated);
+
+            $booking = $this->createBooking($client->id);
+
+            $totalBookingPrice = $this->createPassengersAndCalculateBookingPrice($validated, $itinerary, $booking->id);
+
+            $booking->update(['total_price' => $totalBookingPrice]);
+                
+            $itinerary->decrement('available_stock', $request->quantity);
+
+            $booking->itineraries()->attach($itinerary->id, [
+                'itinerary_order' => 1
+            ]);
+
+            session(['booking_id' => $booking->id]);
+
+            return redirect()->route('reservation.payment', [$product, $itinerary])
+                                ->with('success', 'Reserva creada correctamente.');
+
+        });        
+    }
+
+    private function createClient(array $validated)
+    {
+        $client = Client::updateOrCreate(
+            ['email' => $validated['customer_email']],
+            [
+                'name' => $validated['customer_name'],
+                'last_name' => $validated['customer_last_name'],
+                'phone' => $validated['customer_phone'] ?? null,
+                'dni_passport' => $validated['customer_document'],
+                'nationality' => $validated['customer_nationality'],
+                'status_id' => Status::CLIENT_ACTIVE,
+            ]
+        );
+
+        return $client;
+    }
+
+    private function createBooking($clientId) 
+    {
+        // 3. RESERVA
+        $booking = Booking::create([
+            'client_id' => $clientId,
+            'external_ref' => 'LOC-' . Str::upper(Str::random(8)),
+            'status_id' => Status::BOOKING_PENDING,
+            'total_price' => 0, // Se calcula con createPassengersAndCalculateBookingPrice
+            'currency' => 'EUR',
+        ]);
+
+        return $booking;
+    }
+
+    private function createPassengersAndCalculateBookingPrice($validated, Itinerary $itinerary, $bookingId)
+    {
+        $totalBookingPrice = 0;
+
+        // 4. PASAJEROS
+        foreach ($validated['passengers'] as $passenger) {
+            $age = \Carbon\Carbon::parse($passenger['birth_date'])->age;
+            $typeId = Passenger::getPassengerTypeIdByAge($age);
+
+            // Buscamos el precio específico para este tipo de pasajero en este itinerario
+            $priceRow = DB::table('itinerary_prices')
+                ->where('itinerary_id', $itinerary->id)
+                ->where('passenger_type_id', $typeId)
+                ->first();
+
+            // Fallback al precio base si no existe tarifa especial
+            $price = $priceRow ? $priceRow->price : $itinerary->price;
+            $taxes = $priceRow ? $priceRow->taxes : $itinerary->taxes;
+
+            Passenger::create([
+                'booking_id' => $bookingId,
+                'name' => $passenger['first_name'],
+                'last_name' => $passenger['last_name'],
+                'date_of_birth' => $passenger['birth_date'],
+                'dni_passport' => $passenger['document'],
+                'nationality' => $passenger['nationality'],
+                'gender' => $passenger['gender'],
+                'passenger_type_id' => $typeId,
+                'status_id' => Status::CLIENT_ACTIVE,
+                'price_at_booking' => $price,
+                'taxes_at_booking' => $taxes,
+            ]);
+
+            $totalBookingPrice += ($price + $taxes);
         }
 
-        $data = $request->validate([
-            'idIt' => ['required', 'integer', 'exists:itineraries,id']
-        ]);
-        $itineraryId = $data['idIt'];
+        return $totalBookingPrice;
+    }
 
-        $itinerary = $product->itineraries()
-            ->where('id', $itineraryId)
-            ->firstOrFail();
+    /**
+     * Muestra los datos de la reserva y el formulario de stripe
+     */
+    public function payment(Request $request, Product $product, Itinerary $itinerary)
+    {    
+        $bookingId = session('booking_id');
+        
+        $booking = Booking::findOrFail($bookingId);
+
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY_TEST'));
+
+        // 2. Crear el Intento de Pago
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $booking->total_price * 100, // Stripe usa céntimos (10€ = 1000)
+            'currency' => strtolower($booking->currency),
+            'metadata' => [
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'booking_id' => $booking->id,
+                'external_ref' => $booking->external_ref
+            ],
+        ]);  
 
         $days = $itinerary?->days;
         $nights = $itinerary?->nights;
@@ -64,277 +174,85 @@ class ReservationController extends Controller
         $return = $itinerary->lastSegment()->departure_date;
         $price = $itinerary->fullPrice();
 
-        //$itinerary = Itinerary::where('id', $request->idIt)->first();
-
-        //dd($product);
-
-        //$itinerary = Itinerary::findOrFail($request->query('idD'));
-
-        //return view('reservation.new', ['product' => $product, 'itinerary' => $itinerary]);
-        return view('reservation.new', [
-            'tour' => $product,
-            'tourDeparture' => $departure,
-            'tourReturn' => $return,
+        return view('reservation.payment', [
+            'product' => $product,
+            'itinerary' => $itinerary,
+            'booking' => $booking,
+            'clientSecret' => $paymentIntent->client_secret, // Clave para el JS
+            'productDeparture' => $departure,
+            'productReturn' => $return,
             'days' => $days,
             'nights' => $nights,
             'price' => $price,
         ]);
     }
-        */
 
-    public function store(Request $request, Product $product, Itinerary $itinerary)
+    /**
+     * procesa si el pago se ha efectuado correctamente y muestra la pagina de exito o fracaso según el caso
+     */
+    public function paymentCallback(Request $request, Product $product, Itinerary $itinerary)
     {
+        
+        // 1. Configuramos la llave secreta
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY_TEST'));
 
+        try {
+            // 2. Recuperamos el ID del pago que Stripe nos manda por la URL
+            $paymentIntentId = $request->query('payment_intent');
+            
+            if (!$paymentIntentId) {
+                
+                return redirect()->route('reservation.payment', [
+                        $product->slug, 
+                        $itinerary->id,
+                    ])->with('error', 'No se encontró información del pago.');
+            }
+            
+            // 3. Consultamos el estado real en los servidores de Stripe
+            $intent = PaymentIntent::retrieve($paymentIntentId);
+            
+            // 4. Recuperamos la reserva de la base de datos (usando el metadata que enviamos al crear el intent)
+            $booking = Booking::findOrFail($intent->metadata->booking_id);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 1. VALIDACIÓN
-        |--------------------------------------------------------------------------
-        */
+            // Variables comunes para las vistas
+            $days = $itinerary->days;
+            $nights = $itinerary->nights;
+            $productDeparture = $itinerary->firstSegment()->departure_date;
+            $productReturn = $itinerary->lastSegment()->departure_date;
+            $price = $itinerary->fullPrice();
 
-        $validated = $request->validate([
-            'itId' => ['required','integer','exists:itineraries,id'],
-            'quantity' => ['required','integer','min:1','max:20'],
+            // --- CASO ÉXITO ---
+            if ($intent->status === Status::PAYMENT_STRIPE_SUCCEEDED) {
+                
+                // Si la reserva aún no está pagada en nuestra DB, la actualizamos
+                if ($booking->status_id != Status::PAYMENT_PAID) {
+                    $booking->update(['status_id' => Status::PAYMENT_PAID]);
+                    
+                    // Registramos el pago exitoso
+                    $booking->payments()->create([
+                        'amount' => $intent->amount / 100,
+                        'transaction_id' => $intent->id,
+                        'payment_method' => 'stripe', // TODO: borrar este campo de la tabla, el tipo de pago ya se especifica con el campo type_id
+                        'status_id' => Status::PAYMENT_PAID,// Exitoso
+                        'type_id' => Type::PAID_BY_STRIPE,
+                    ]);
+                }
 
-            'customer_name' => ['required','string','max:100'],
-            'customer_last_name' => ['required','string','max:100'],
-            'customer_nationality' => ['required','string','max:100'],
-            'customer_document' => ['required','string','max:50'],
-            'customer_email' => ['required','email','max:150'],
-            'customer_phone' => ['nullable','string','max:30'],
+                session()->forget('booking_id'); // Limpiamos sesión
 
-            'passengers' => ['required','array'],
-            'passengers.*.first_name' => ['required','string','max:100'],
-            'passengers.*.last_name' => ['required','string','max:100'],
-            'passengers.*.nationality' => ['required','string','max:100'],
-            'passengers.*.document' => ['required','string','max:50'],
-            'passengers.*.gender' => ['required','in:male,female'],
-            'passengers.*.birth_date' => ['required','date','before:today'],
-
-            'notes' => ['nullable','string','max:1000']
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. VERIFICAR PRODUCTO ACTIVO
-        |--------------------------------------------------------------------------
-        */
-
-        if (!$product->is_active) {
-            abort(404, 'Producto no disponible');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. VERIFICAR ITINERARIO
-        |--------------------------------------------------------------------------
-        */
-
-        if ($itinerary->product_id !== $product->id) {
-            abort(404);
-        }
-
-        if (!$itinerary->is_active) {
-            abort(404, 'Itinerario no disponible');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4. VERIFICAR DISPONIBILIDAD
-        |--------------------------------------------------------------------------
-        */
-
-        $availableSeats = $itinerary->capacity - $itinerary->booked_seats;
-
-        if ($validated['quantity'] > $availableSeats) {
-            return back()->withErrors([
-                'quantity' => 'No quedan suficientes plazas disponibles.'
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 5. GUARDAR TODO EN TRANSACCIÓN
-        |--------------------------------------------------------------------------
-        */
-
-        DB::transaction(function () use ($validated, $product, $itinerary) {
-
-            /*
-            |---------------------------------
-            | Crear booking
-            |---------------------------------
-            */
-
-            $booking = Booking::create([
-                'product_id' => $product->id,
-                'status_id' => 1, // pending
-                'customer_name' => $validated['customer_name'],
-                'customer_last_name' => $validated['customer_last_name'],
-                'customer_email' => $validated['customer_email'],
-                'customer_phone' => $validated['customer_phone'],
-                'notes' => $validated['notes'] ?? null
-            ]);
-
-            /*
-            |---------------------------------
-            | Guardar itinerario reservado
-            |---------------------------------
-            */
-
-            $booking->itineraries()->attach($itinerary->id, [
-                'price_at_booking' => $itinerary->price,
-                'taxes_at_booking' => $itinerary->taxes,
-                'pax' => $validated['quantity'],
-                'itinerary_order' => 1
-            ]);
-
-            /*
-            |---------------------------------
-            | Guardar pasajeros
-            |---------------------------------
-            */
-
-            foreach ($validated['passengers'] as $passenger) {
-
-                Passenger::create([
-                    'booking_id' => $booking->id,
-                    'first_name' => $passenger['first_name'],
-                    'last_name' => $passenger['last_name'],
-                    'nationality' => $passenger['nationality'],
-                    'document' => $passenger['document'],
-                    'gender' => $passenger['gender'],
-                    'birth_date' => $passenger['birth_date']
-                ]);
-
+                return view('reservation.payment_ok', compact('product', 'itinerary', 'booking', 'price', 'days', 'nights', 'productDeparture', 'productReturn'));
             }
 
-            /*
-            |---------------------------------
-            | Actualizar plazas ocupadas
-            |---------------------------------
-            */
+            // --- CASO ERROR / CANCELADO ---
+            // Si el pago no fue 'succeeded', registramos el intento fallido (opcional)
+            return view('reservation.payment_no_ok', compact('product', 'itinerary', 'booking', 'price', 'days', 'nights', 'productDeparture', 'productReturn'));
 
-            $itinerary->increment('booked_seats', $validated['quantity']);
-
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | 6. REDIRECCIÓN
-        |--------------------------------------------------------------------------
-        */
-
-        return redirect()->route('reservation.success');
-
-
-
-
-        /*dd($request);
-        try {
-            // validate form
-            $request->validate(
-                [
-                    "nombreT" => "required",
-                    "apellidosT" => "required",
-                    "dniT" => "required",
-                    "telefono" => "required",
-                    "mail" => "required",
-                ]
-            );
-
-            // validate itinerary is still available
-            $itinerary = Itinerary::findOrFail($request->idD);
-
-            DB::beginTransaction();
-
-            // create a new reservation
-            $booking = $this->createNewReservation($request);
-
-            // link reservation to itinerary
-            $booking->itineraries()->attach($itinerary, ['itinerary_order' => 1]);
-
-            // store reservation holder
-            $this->createClientReservation($request, $booking->id);
-
-            // store reservation passengers
-            $this->createPassengersReservation($request, $booking->id);
-
-            DB::commit();
-
-            // redirect to payment
-            return redirect()->route('payment', [
-                'producto' => $producSlug,
-                'idB' => $booking->id,
-                'idIt' => $request->idIt,
-                'idP' => $request->formaPago,
-            ]);
-
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
+        } catch (\Exception $e) {
+            // Si algo falla técnicamente (error de API, etc.)
+            //dd($e);
+            Log::error($e->getMessage(), ['exception' => $e]);
+            return redirect()->route('reservation.payment', [$product->slug, $itinerary->id])
+                            ->with('error', '[ERROR]: Vuelva a intentar');
         }
-            */
-    }
-
-    public function payment(Request $request, $producSlug)
-    {
-        $request->validate([
-            'idB' => 'required',
-            'idIt' => 'required',
-            'idP' => 'required',
-        ]);
-
-        $product = Product::where('slug', $producSlug)->first();
-
-        return view('reservation.payment', ['product' => $product]);
-    }
-
-    private function createNewReservation(Request $request)
-    {
-        $booking = new Booking();
-        $booking->payment_type_id = $request->formaPago; // validar que sea una forma de pago existente (con una funcion y dentro switch case o posición de array)
-        $booking->total_amount = $request->totalAmount;
-        $booking->status_id = Status::BOOKING_PENDING_PAYMENT;
-        $booking->save();
-
-        return $booking;
-    }
-
-    private function createClientReservation($request, $booking_id)
-    {
-        // validar los datos del cliente (tipos, longitud, requeridos)
-        $client = new Client();
-        $client->name = $request->customer_name;
-        $client->last_name = $request->customer_last_name;
-        $client->dni_passport = $request->dniT;
-        $client->email = $request->customer_email;
-        $client->type_id = Type::HOLDER;
-        $client->status_id = Status::CLIENT_ACTIVE;
-        $client->booking_id = $booking_id;
-        $client->save();
-
-        return $client;
-    }
-
-    private function createPassengersReservation($request, $booking_id)
-    {
-        $ret = [];
-
-        for ($i = 0; $i <= 1; $i++) {
-            $p = new Client();
-            $p->name = $request->nombreP[$i];
-            $p->last_name = $request->apellidosP[$i];
-            $p->dni_passport = $request->dniP[$i];
-            $birthdate = date('d/m/Y H:i:s', strtotime("{$request->diaP[$i]}.{$request->mesP[$i]}.{$request->anioP[$i]}"));
-            //$p->meta()->create(['meta_dataable_id' => $p->id, 'meta_data' => json_encode(['birthdate' => $birthdate])]);
-            $p->booking_id = $booking_id;
-            $p->type_id = Type::PASSENGER;
-            $p->status_id = Status::CLIENT_ACTIVE;
-            $p->save();
-            $ret[] = $p;
-        }
-
-        return $ret;
     }
 }

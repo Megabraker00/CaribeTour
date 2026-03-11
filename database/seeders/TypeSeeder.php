@@ -14,6 +14,6 @@ class TypeSeeder extends Seeder
     {
         Type::factory()->count(8)->forProduct()->create();
         Type::factory()->count(5)->forPayment()->create();
-        Type::factory()->count(2)->forClient()->create();
+        Type::factory()->count(4)->forPassenger()->create();
     }
 }

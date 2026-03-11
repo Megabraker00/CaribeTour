@@ -8,10 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Booking extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'external_ref',
+        'client_id',
+        'status_id',
+        'total_price',
+        'currency',
+    ];
 
     public function client(): BelongsTo
     {
@@ -23,9 +32,15 @@ class Booking extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function itineraries(): HasMany
+    public function passengers(): HasMany
     {
-        return $this->hasMany(Itinerary::class);
+        return $this->hasMany(Passenger::class);
+    }
+
+    public function itineraries(): BelongsToMany
+    {
+        return $this->BelongsToMany(Itinerary::class, 'booking_itinerary')
+                    ->withPivot('price_at_booking', 'taxes_at_booking', 'itinerary_order');
     }
 
     public function documents(): MorphMany

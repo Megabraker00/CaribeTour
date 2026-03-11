@@ -364,3 +364,34 @@ ul.tour-info .bi {
     width: 164px;
 }
 
+@media print {
+    /* 1. Escondemos TODO: header, footer, botones, barras laterales... */
+    body * {
+        visibility: hidden;
+    }
+
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 2. Hacemos visible SOLO el área que queremos y sus hijos */
+    #printable-area, #printable-area * {
+        visibility: visible;
+    }
+
+    /* 3. Ajustamos el área para que empiece arriba a la izquierda del papel */
+    #printable-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    /* 4. Opcional: Ocultar botones específicos que no queremos en el papel */
+    .btn, .no-print {
+        display: none !important;
+    }
+}

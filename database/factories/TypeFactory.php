@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\Employee;
+use App\Models\Passenger;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Type;
@@ -53,22 +54,24 @@ class TypeFactory extends Factory
     public function forPayment(): static
     {
         return $this->sequence(
-            ['id' => Type::CARD, 'name' => 'Tarjeta', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_CARD, 'name' => 'Tarjeta', 'typeable' => Payment::class],
             ['id' => Type::MONETARY_TRANSFER, 'name' => 'Transferencia', 'typeable' => Payment::class],
-            ['id' => Type::STRIPE, 'name' => 'Stripe', 'typeable' => Payment::class],
-            ['id' => Type::PAYPAL, 'name' => 'Paypal', 'typeable' => Payment::class],
-            ['id' => Type::CASH, 'name' => 'Efectivo', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_STRIPE, 'name' => 'Stripe', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_PAYPAL, 'name' => 'Paypal', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_CASH, 'name' => 'Efectivo', 'typeable' => Payment::class],
         );
     }
 
     /**
      * Indica que el tipo pertenece al modelo Client, con nombres específicos para cada tipo de cliente.
      */
-    public function forClient(): static
+    public function forPassenger(): static
     {
         return $this->sequence(
-            ['id' => Type::HOLDER, 'name' => 'Titular', 'typeable' => Client::class],
-            ['id' => Type::PASSENGER, 'name' => 'Pasajero', 'typeable' => Client::class],
+            ['id' => Type::ADULT, 'name' => 'Adulto', 'typeable' => Passenger::class],
+            ['id' => Type::CHILD, 'name' => 'Niño/a', 'typeable' => Passenger::class],
+            ['id' => Type::INFANT, 'name' => 'Bebé', 'typeable' => Passenger::class],
+            ['id' => Type::SENIOR, 'name' => 'Mayor', 'typeable' => Passenger::class],
         );
     }
 }

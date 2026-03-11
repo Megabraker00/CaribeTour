@@ -35,7 +35,7 @@ class Itinerary extends Model
 
     public function bookings(): BelongsToMany
     {
-        return $this->belongsToMany(Booking::class);
+        return $this->belongsToMany(Booking::class, 'booking_itinerary');
     }
 
     public function segments(): HasMany

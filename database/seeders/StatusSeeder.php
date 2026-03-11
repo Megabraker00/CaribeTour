@@ -14,9 +14,10 @@ class StatusSeeder extends Seeder
     {
         Status::factory()->count(3)->forProduct()->create();
         Status::factory()->count(2)->forCategory()->create();
-        Status::factory()->count(3)->forBooking()->create();
+        Status::factory()->count(8)->forBooking()->create();
         Status::factory()->count(1)->forClient()->create();
         Status::factory()->count(3)->forPayment()->create();
         Status::factory()->count(2)->forSupplier()->create();
+        Status::factory()->count(2)->forBlog()->create();
     }
 }

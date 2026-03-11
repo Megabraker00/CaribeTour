@@ -12,6 +12,14 @@ class Payment extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'amount',
+        'transaction_id',
+        'payment_method',
+        'status_id',
+        'type_id',
+    ];
+
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
