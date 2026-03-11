@@ -48,7 +48,7 @@ class ProductController extends Controller
         ]); // añadir la validación
 
         $validatedFields['type_id'] = Type::TOUR;
-        $validatedFields['status_id'] = Status::TOUR_DRAFT;
+        $validatedFields['status_id'] = Status::PRODUCT_DRAFT;
         $validatedFields['created_user_id'] = 1; // set default value
 
         $tour = Product::create($validatedFields);
@@ -108,7 +108,7 @@ class ProductController extends Controller
         ]); // añadir la validación
 
         //$validatedFields['type_id'] = Type::TOUR;
-        //$validatedFields['status_id'] = Status::TOUR_DRAFT;
+        //$validatedFields['status_id'] = Status::PRODUCT_DRAFT;
         //$validatedFields['created_user_id'] = 1; // set default value
 
         $tour = Product::findOrFail($id);

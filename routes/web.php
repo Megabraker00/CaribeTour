@@ -60,8 +60,7 @@ Route::controller(ReservationController::class)->scopeBindings()->group(function
     Route::get("/reserva/{product:slug}/{itinerary}", 'create')->name('reservation.create');
     Route::post("/reserva/{product:slug}/{itinerary}", 'store')->name('reservation.store');
     Route::get("/reserva/{product:slug}/{itinerary}/pago", 'payment')->name('reservation.payment');
-    Route::get("/reserva/{product:slug}/{itinerary}/pago/ok", 'paymentOk');
-    Route::get("/reserva/{product:slug}/{itinerary}/pago/no-ok", 'paymentNoOk');
+    Route::get("/reserva/{product:slug}/{itinerary}/pago/finalizar", 'paymentCallback')->name('reservation.payment.callback');
 });
 
 //Auth::routes();

@@ -67,7 +67,7 @@ class ProductFactory extends Factory
     public function active(): static
     {
         return $this->state(fn () => [
-            'status_id' => Status::TOUR_ACTIVE,
+            'status_id' => Status::PRODUCT_ACTIVE,
         ]);
     }
 }

@@ -21,6 +21,11 @@ class Client extends Model
         'status_id', 
     ];
 
+    public function __toString()
+    {
+        return \ucwords($this->name ." ". $this->last_name);
+    }
+
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);

@@ -42,7 +42,7 @@ class DestinationController extends Controller
         }
 
         $tours = $subCategory->products()
-            ->where('status_id', Status::TOUR_ACTIVE)
+            ->where('status_id', Status::PRODUCT_ACTIVE)
             ->where('type_id', Type::TOUR)
             ->paginate(4);
 
@@ -60,7 +60,7 @@ class DestinationController extends Controller
         
         $tour = Product::query()
                 ->where('slug', $slugTour)
-                ->where('status_id', Status::TOUR_ACTIVE)
+                ->where('status_id', Status::PRODUCT_ACTIVE)
                 ->where('type_id', Type::TOUR)
                 ->with('metaData')
                 ->with(['itineraries' => function ($query) {

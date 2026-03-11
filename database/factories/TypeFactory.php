@@ -54,11 +54,11 @@ class TypeFactory extends Factory
     public function forPayment(): static
     {
         return $this->sequence(
-            ['id' => Type::CARD, 'name' => 'Tarjeta', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_CARD, 'name' => 'Tarjeta', 'typeable' => Payment::class],
             ['id' => Type::MONETARY_TRANSFER, 'name' => 'Transferencia', 'typeable' => Payment::class],
-            ['id' => Type::STRIPE, 'name' => 'Stripe', 'typeable' => Payment::class],
-            ['id' => Type::PAYPAL, 'name' => 'Paypal', 'typeable' => Payment::class],
-            ['id' => Type::CASH, 'name' => 'Efectivo', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_STRIPE, 'name' => 'Stripe', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_PAYPAL, 'name' => 'Paypal', 'typeable' => Payment::class],
+            ['id' => Type::PAID_BY_CASH, 'name' => 'Efectivo', 'typeable' => Payment::class],
         );
     }
 

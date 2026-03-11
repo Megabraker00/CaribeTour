@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Status;
+use App\Models\Blog;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Status>
@@ -52,9 +53,9 @@ class StatusFactory extends Factory
     public function forProduct(): static
     {
         return $this->sequence(
-            ['id' => Status::TOUR_ACTIVE, 'name' => 'Activo', 'statusable' => Product::class],
-            ['id' => Status::TOUR_NOT_ACTIVE, 'name' => 'Inactivo', 'statusable' => Product::class],
-            ['id' => Status::TOUR_DRAFT, 'name' => 'Borrador', 'statusable' => Product::class],
+            ['id' => Status::PRODUCT_ACTIVE, 'name' => 'Activo', 'statusable' => Product::class],
+            ['id' => Status::PRODUCT_NOT_ACTIVE, 'name' => 'Inactivo', 'statusable' => Product::class],
+            ['id' => Status::PRODUCT_DRAFT, 'name' => 'Borrador', 'statusable' => Product::class],
         );
     }
 
@@ -64,6 +65,11 @@ class StatusFactory extends Factory
             ['id' => Status::BOOKING_PENDING_PAYMENT, 'name' => 'Pendiente de Pago', 'statusable' => Booking::class],
             ['id' => Status::BOOKING_PAID, 'name' => 'Pagado', 'statusable' => Booking::class],
             ['id' => Status::BOOKING_CANCELLED, 'name' => 'Cancelado', 'statusable' => Booking::class],
+            ['id' => Status::BOOKING_PENDING, 'name' => 'Pendiente', 'statusable' => Booking::class],
+            ['id' => Status::BOOKING_CONFIRMED, 'name' => 'Confirmado', 'statusable' => Booking::class],
+            ['id' => Status::BOOKING_COMPLETED, 'name' => 'Completado', 'statusable' => Booking::class],
+            ['id' => Status::BOOKING_REFUNDED, 'name' => 'Reembolsado', 'statusable' => Booking::class],
+            ['id' => Status::BOOKING_NO_SHOW, 'name' => 'No presentado', 'statusable' => Booking::class],
         );
     }
 
@@ -89,6 +95,14 @@ class StatusFactory extends Factory
         return $this->sequence(
             ['id' => Status::CATEGORY_ACTIVE, 'name' => 'Activo', 'statusable' => Category::class],
             ['id' => Status::CATEGORY_INACTIVE, 'name' => 'Inactivo', 'statusable' => Category::class],
+        );
+    }
+
+    public function forBlog(): static
+    {
+        return $this->sequence(
+            ['id' => Status::BLOG_PUBLISHED, 'name' => 'Publicado', 'statusable' => Blog::class],
+            ['id' => Status::BLOG_DRAFT, 'name' => 'Borrador', 'statusable' => Blog::class],
         );
     }
 }

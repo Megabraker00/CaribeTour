@@ -32,6 +32,11 @@ class Booking extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function passengers(): HasMany
+    {
+        return $this->hasMany(Passenger::class);
+    }
+
     public function itineraries(): BelongsToMany
     {
         return $this->BelongsToMany(Itinerary::class, 'booking_itinerary')

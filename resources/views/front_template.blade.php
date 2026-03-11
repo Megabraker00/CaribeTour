@@ -175,6 +175,7 @@
         }
     </script>
     @yield('custom-js')
+    @stack('scripts')
 
 </body>
 </html>
