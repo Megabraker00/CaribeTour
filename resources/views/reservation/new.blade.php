@@ -64,7 +64,7 @@
                     {{-- 1. DATOS DEL TOUR (CAMPOS OCULTOS) --}}
                     {{-- Estos datos vienen de la selección previa del usuario --}}
                     <input type="hidden" name="itId" value="{{ $itinerary->id }}">
-                    <input type="hidden" name="quantity" value="{{-- $quantity --}}"> {{-- Cantidad de plazas bloqueadas --}}
+                    <input type="hidden" name="quantity" value="{{ $quantity }}"> {{-- Cantidad de plazas bloqueadas --}}
 
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header">

@@ -12,7 +12,7 @@ class ProductMetadataSeeder extends Seeder
     public function run(): void
     {
         $tours = Product::where('type_id', Type::TOUR)
-            ->where('status_id', Status::TOUR_ACTIVE)
+            ->where('status_id', Status::PRODUCT_ACTIVE)
             ->get();
 
         foreach ($tours as $tour) {

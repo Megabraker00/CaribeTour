@@ -11,9 +11,9 @@ class Status extends Model
     use HasFactory;
 
     // from 1 to 9 belongs to Product model
-    const TOUR_ACTIVE = 1;
-    const TOUR_NOT_ACTIVE = 2;
-    const TOUR_DRAFT = 3;
+    const PRODUCT_ACTIVE = 1;
+    const PRODUCT_NOT_ACTIVE = 2;
+    const PRODUCT_DRAFT = 3;
 
     // from 10 to 19 belongs to Booking model
     const BOOKING_PENDING_PAYMENT = 10;
@@ -40,6 +40,7 @@ class Status extends Model
     public const PAYMENT_PENDING   = 50;
     public const PAYMENT_PAID      = 51;
     public const PAYMENT_CANCELLED = 52;
+    public const PAYMENT_STRIPE_SUCCEEDED = 'succeeded';
 
     // from 60 to 69 belongs to Blog model
     public const BLOG_PUBLISHED = 60;

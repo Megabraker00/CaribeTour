@@ -18,7 +18,7 @@ class HomeController extends Controller
         ->select('products.*')
         ->selectRaw('SUM(itineraries.price + itineraries.taxes) as total')
         ->join('itineraries', 'products.id', '=', 'itineraries.product_id')
-        ->where('status_id', Status::TOUR_ACTIVE) // Solo activos
+        ->where('status_id', Status::PRODUCT_ACTIVE) // Solo activos
         ->groupBy('products.id')
         ->orderBy('total')
         ->take(5)
@@ -27,7 +27,7 @@ class HomeController extends Controller
         // TODO: hacer la consultas para productos que tengan fechas disponibles y la categoría y el producto estén activos
         $tours = Product::with(['category.parentCategory', 'mainImage'])
         ->where('type_id', Type::TOUR)
-        ->where('status_id', Status::TOUR_ACTIVE)
+        ->where('status_id', Status::PRODUCT_ACTIVE)
         ->whereHas('itineraries.segments', function($q) {
             $q->where('departure_date', '>', now());
         })
@@ -41,7 +41,7 @@ class HomeController extends Controller
 
        $featured_excursions = Product::with('category.parentCategory')
         ->where('type_id', Type::EXCURSION)
-        ->where('status_id', Status::TOUR_ACTIVE)
+        ->where('status_id', Status::PRODUCT_ACTIVE)
         ->take(6)
         ->get();
 

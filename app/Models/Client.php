@@ -11,6 +11,21 @@ class Client extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'last_name',
+        'phone',
+        'email',
+        'dni_passport',
+        'nationality',
+        'status_id', 
+    ];
+
+    public function __toString()
+    {
+        return \ucwords($this->name ." ". $this->last_name);
+    }
+
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);

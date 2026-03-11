@@ -208,7 +208,6 @@
                                 the card's content...</p>
                         </div>
                         <div class="card-footer">
-                            <h6 class="card-subtitle mb-2 text-muted">Categoría</h6>
                             <a class="btn btn-primary stretched-link" href="#">Saber más</a>
                         </div>
                     </div>
