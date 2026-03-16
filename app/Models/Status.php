@@ -53,6 +53,11 @@ class Status extends Model
      */
     protected $table = 'statuses';
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function statusable()
     {
         return $this->morphTo();

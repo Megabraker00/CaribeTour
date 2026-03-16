@@ -2,29 +2,38 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
 
 class ReservationController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
-        //$this->middleware('auth');
+        // $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
         return view('admin.booking.index');
+    }
+
+    public function show(Booking $booking)
+    {
+        $booking->load([
+            'client',
+            'statusRecord',
+            'payments.type',
+            'payments.statusRecord',
+            'passengers.type',
+            'itineraries' => function ($q) {
+                $q->orderBy('booking_itinerary.itinerary_order')
+                    ->with(['product', 'departure_t', 'arrival_t', 'segments' => function ($sq) {
+                        $sq->orderBy('sort_order')->with(['departureTerminal', 'arrivalTerminal', 'type']);
+                    }]);
+            },
+        ]);
+
+        return view('admin.booking.show', ['booking' => $booking]);
     }
 }
