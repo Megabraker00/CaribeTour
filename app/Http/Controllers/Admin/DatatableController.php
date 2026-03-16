@@ -23,9 +23,46 @@ class DatatableController extends Controller
      */
     public function bookings()
     {
-        $bookings = Booking::select('id', 'status_id', 'total_amount', DB::raw('"R titular" as titular'), DB::raw('"15/06/24" as f_salida'))->get();
+        $bookings = Booking::with(['client', 'statusRecord', 'itineraries' => function ($q) {
+            $q->orderBy('booking_itinerary.itinerary_order')->with(['segments' => function ($sq) {
+                $sq->orderBy('sort_order');
+            }]);
+        }])
+            ->get();
 
-        return DataTables::make($bookings)->toJson();
+        $rows = $bookings->map(function ($booking) {
+            $titular = '—';
+            if ($booking->relationLoaded('client') && $booking->client) {
+                $titular = trim(($booking->client->name ?? '') . ' ' . ($booking->client->last_name ?? ''));
+            }
+            if ($titular === '') {
+                $titular = '—';
+            }
+
+            $fSalida = '—';
+            $firstItinerary = $booking->itineraries->first();
+            if ($firstItinerary && $firstItinerary->relationLoaded('segments') && $firstItinerary->segments->isNotEmpty()) {
+                $firstSegment = $firstItinerary->segments->sortBy('sort_order')->first();
+                if ($firstSegment && $firstSegment->departure_date) {
+                    $fSalida = \Carbon\Carbon::parse($firstSegment->departure_date)->format('d/m/Y');
+                }
+            }
+
+            $totalPrice = $booking->total_price !== null ? (float) $booking->total_price : 0;
+            $totalAmount = number_format($totalPrice, 2, ',', '.') . ' ' . ($booking->currency ?? 'EUR');
+
+            return [
+                'id' => $booking->id,
+                'external_ref' => $booking->external_ref ?? '—',
+                'titular' => $titular,
+                'f_salida' => $fSalida,
+                'total_amount' => $totalAmount,
+                'status_id' => $booking->status_id,
+                'status_name' => $booking->statusRecord->name ?? (string) $booking->status_id,
+            ];
+        });
+
+        return DataTables::of($rows)->toJson();
     }
 
     public function invoices()
@@ -37,7 +74,7 @@ class DatatableController extends Controller
 
     public function clients()
     {
-        $clients = Client::select('id', 'name', 'last_name', 'dni_passport', 'booking_id')->get();
+        $clients = Client::select('id', 'name', 'last_name', 'dni_passport')->get();
 
         return DataTables::make($clients)->toJson();
     }

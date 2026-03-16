@@ -34,6 +34,11 @@ class Type extends Model
     const ADULT = 22;
     const SENIOR = 23;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
     public function typeable()
     {
         return $this->morphTo();

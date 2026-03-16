@@ -24,6 +24,7 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Ref. externa</th>
                             <th scope="col">Titular</th>
                             <th scope="col" nowrap>Fecha de Salida</th>
                             <th scope="col">Precio</th>
@@ -34,6 +35,7 @@
                     <tfoot>
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Ref. externa</th>
                             <th scope="col">Titular</th>
                             <th scope="col" nowrap>Fecha de Salida</th>
                             <th scope="col">Precio</th>
@@ -56,16 +58,21 @@
         properties.ajax = "{{ route('api.datatable.bookings') }}"
         properties.columns = [
             {data: 'id'},
+            {data: 'external_ref'},
             {data: 'titular'},
             {data: 'f_salida'},
             {data: 'total_amount'},
             {
-                data: 'status_id',
-                render: (data, type, row) => row.status_id == 1 ? '<span class="badge badge-success"> Pagada </span>' : '<span class="badge badge-warning"> Pendiente </span>',
+                data: 'status_name',
+                render: (data) => data ? '<span class="badge badge-secondary">' + data + '</span>' : '—',
             },
             {
                 data: null,
-                defaultContent: '<a class="btn btn-sm btn-info" href="reserva/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="reserva/3/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>'
+                orderable: false,
+                render: function(data, type, row) {
+                    let showUrl = "{{ url('admin/reservas') }}/" + row.id;
+                    return '<a class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información"><i class="fa fa-info"></i> Más Info</a>';
+                }
             }
         ]
 

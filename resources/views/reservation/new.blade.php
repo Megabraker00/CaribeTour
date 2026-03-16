@@ -108,8 +108,11 @@
 
                     {{-- 2. DATOS DE LOS PASAJEROS --}}
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <h5 class="mb-0">Pasajeros</h5>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="copy-holder-to-passenger-1" title="Rellenar el primer pasajero con los datos del titular">
+                                <i class="bi bi-person-down"></i> Copiar titular al pasajero 1
+                            </button>
                         </div>
                         <div class="card-body">
                             {{-- Generamos tantos bloques de pasajeros como 'quantity' se haya elegido --}}
@@ -170,4 +173,20 @@
 
     </section>
     <!-- /container -->
+
+    @push('scripts')
+    <script>
+        document.getElementById('copy-holder-to-passenger-1').addEventListener('click', function () {
+            let name = document.getElementById('customer_name').value.trim();
+            let lastName = document.getElementById('customer_last_name').value.trim();
+            let nationality = document.getElementById('customer_nationality').value.trim();
+            let documentId = document.getElementById('customer_document').value.trim();
+
+            document.querySelector('input[name="passengers[1][first_name]"]').value = name;
+            document.querySelector('input[name="passengers[1][last_name]"]').value = lastName;
+            document.querySelector('input[name="passengers[1][nationality]"]').value = nationality;
+            document.querySelector('input[name="passengers[1][document]"]').value = documentId;
+        });
+    </script>
+    @endpush
 @endsection

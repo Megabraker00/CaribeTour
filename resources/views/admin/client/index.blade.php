@@ -27,7 +27,6 @@
                             <th scope="col">Nombre</th>
                             <th scope="col" nowrap>Apellidos</th>
                             <th scope="col" nowrap>DNI o Pasaporte</th>
-                            <th scope="col">Reserva</th>
                             <th nowrap></th>
                         </tr>
                     </thead>
@@ -37,7 +36,6 @@
                             <th scope="col">Nombre</th>
                             <th scope="col" nowrap>Apellidos</th>
                             <th scope="col" nowrap>DNI o Pasaporte</th>
-                            <th scope="col">Reserva</th>
                             <th nowrap></th>
                         </tr>
                     </tfoot>
@@ -59,7 +57,6 @@
             {data: 'name'},
             {data: 'last_name'},
             {data: 'dni_passport'},
-            {data: 'booking_id'},
             {
                 data: null,
                 render: (data, type, row) => '<div class="row" role="group">' +

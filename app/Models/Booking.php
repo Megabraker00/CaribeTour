@@ -39,8 +39,8 @@ class Booking extends Model
 
     public function itineraries(): BelongsToMany
     {
-        return $this->BelongsToMany(Itinerary::class, 'booking_itinerary')
-                    ->withPivot('price_at_booking', 'taxes_at_booking', 'itinerary_order');
+        return $this->belongsToMany(Itinerary::class, 'booking_itinerary')
+                    ->withPivot('itinerary_order');
     }
 
     public function documents(): MorphMany
@@ -51,5 +51,11 @@ class Booking extends Model
     public function status(): MorphOne
     {
         return $this->morphOne(Status::class, 'statusable');
+    }
+
+    /** Estado por FK status_id (para mostrar nombre en vistas). */
+    public function statusRecord(): BelongsTo
+    {
+        return $this->belongsTo(Status::class, 'status_id');
     }
 }

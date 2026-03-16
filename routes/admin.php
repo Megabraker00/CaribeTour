@@ -19,11 +19,14 @@ Route::get('', [HomeController::class, 'index'])->name('admin');
 
 Route::controller(ReservationController::class)->group(function() {
     Route::get("/reservas", 'index')->name('admin.booking.index');
+    Route::get("/reservas/{booking}", 'show')->name('admin.booking.show');
 });
 
 Route::controller(ClientController::class)->group(function() {
     Route::get("/clientes", 'index')->name('admin.client.index');
-    Route::get("/clientes/{id}", 'show')->name('admin.client.show');
+    Route::get("/clientes/{client}", 'show')->name('admin.client.show');
+    Route::get("/clientes/{client}/edit", 'edit')->name('admin.client.edit');
+    Route::put("/clientes/{client}", 'update')->name('admin.client.update');
 });
 
 Route::controller(ProductController::class)->group(function() {

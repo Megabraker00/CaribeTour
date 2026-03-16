@@ -39,4 +39,9 @@ class Payment extends Model
     {
         return $this->morphOne(Status::class, 'statusable');
     }
+
+    public function statusRecord(): BelongsTo
+    {
+        return $this->belongsTo(Status::class, 'status_id');
+    }
 }
