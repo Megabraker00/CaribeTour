@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('booking_id')->constrained();
             $table->decimal('amount', 10, 2)->unsigned();
             $table->string('currency', 3)->default('EUR');
-            $table->string('payment_method')->nullable();
             $table->string('transaction_id')->nullable();
             $table->timestamps();
         });

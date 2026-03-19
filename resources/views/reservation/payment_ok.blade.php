@@ -91,7 +91,7 @@
                                             <span class="fw-bold"></span>{{$booking->client}}
                                         </li>
                                         <li class="mb-3 d-flex justify-content-between border-bottom pb-2">
-                                            <span class="text-muted">Email de notificacion:</span>
+                                            <span class="text-muted">Email de notificaci&oacute;n:</span>
                                             <span class="fw-bold">{{$booking->client->email}}</span>
                                         </li>
                                         <li class="mb-3 d-flex justify-content-between border-bottom pb-2">
