@@ -70,8 +70,8 @@
                                 Esto puede deberse a fondos insuficientes, tarjeta caducada o un bloqueo de seguridad de tu banco.
                             </p>
 
-                            <div class="badge bg-light fs-5 text-danger border border-danger p-2 mt-2">
-                                Referencia de intento: <span class="fw-bold">{{ $booking->external_ref }}</span>
+                            <div class="badge bg-light fs-5 text-dark border p-2 mt-2">
+                                Número de reserva: <span class="fw-bold">{{ $booking->external_ref }}</span>
                             </div>
                         </div>
                     </div>
@@ -89,15 +89,19 @@
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-3 d-flex justify-content-between border-bottom pb-2">
                                             <span class="text-muted">Titular:</span>
-                                            <span class="fw-bold">{{ $booking->client->name }} {{ $booking->client->last_name }}</span>
+                                            <span class="fw-bold">{{ $booking->client }}</span>
                                         </li>
                                         <li class="mb-3 d-flex justify-content-between border-bottom pb-2">
-                                            <span class="text-muted">Email:</span>
+                                            <span class="text-muted">Email de notificaci&oacute;n:</span>
                                             <span class="fw-bold">{{ $booking->client->email }}</span>
                                         </li>
                                         <li class="mb-3 d-flex justify-content-between border-bottom pb-2">
                                             <span class="text-muted">Pasajeros:</span>
-                                            <span class="fw-bold text-end">{{ $booking->passengers->count() }} personas</span>
+                                            <ol>
+                                            @foreach ($booking->passengers as $passenger)
+                                                <li>{{$passenger}} | {{$passenger->dni_passport}}</li>
+                                            @endforeach
+                                            </ol>
                                         </li>
                                     </ul>
                                 </div>
@@ -146,59 +150,3 @@
     </section>
     <!-- /container -->
 @endsection
-@push('scripts')
-<script src="https://js.stripe.com/v3/"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-
-        console.log('[PRODUCTO SLUG] {{ $product->slug }}')
-
-        const stripeKey = "{{ env('STRIPE_KEY_TEST') }}";
-
-        if (!stripeKey) {
-            console.error("Error: STRIPE_KEY no detectada.");
-            return;
-        }
-
-        const stripe = Stripe(stripeKey);
-        
-        const options = {
-            clientSecret: "{{ $clientSecret }}",
-            //appearance: { theme: 'flat' },
-        };
-
-        const elements = stripe.elements(options);
-        const paymentElement = elements.create("payment");
-        
-        setTimeout(() => {            
-        
-            // Verificamos si el elemento existe antes de montar
-            const el = document.getElementById("payment-element");
-            if (el) {
-                paymentElement.mount("#payment-element");
-                console.log('si se encontro el payment-element');
-            } else {
-                console.error("No se encontró el elemento #payment-element");
-            }
-
-            const form = document.getElementById('payment-form');
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                const {error} = await stripe.confirmPayment({
-                    elements,
-                    confirmParams: {
-                        return_url: "{{ url('/reserva/' . $product->slug . '/pago/ok') }}",
-                    },
-                });
-
-                if (error) {
-                    const messageContainer = document.querySelector('#error-message');
-                    messageContainer.textContent = error.message;
-                }
-            });
-
-        }, 100);
-    });
-</script>
-@endpush

@@ -232,7 +232,6 @@ class ReservationController extends Controller
                     $booking->payments()->create([
                         'amount' => $intent->amount / 100,
                         'transaction_id' => $intent->id,
-                        'payment_method' => 'stripe', // TODO: borrar este campo de la tabla, el tipo de pago ya se especifica con el campo type_id
                         'status_id' => Status::PAYMENT_PAID,// Exitoso
                         'type_id' => Type::PAID_BY_STRIPE,
                     ]);
