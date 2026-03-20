@@ -18,7 +18,7 @@ class ItineraryController extends Controller
         $date->segments()->delete();
         $date->delete();
 
-        return redirect()->route('admin.tour.show', $productId)
+        return redirect()->to(route('admin.tour.show', $productId).'#tour-itineraries')
             ->with('success', 'Fecha de salida eliminada.');
     }
 }
