@@ -56,7 +56,7 @@ class SegmentController extends Controller
             ]);
         });
 
-        return redirect()->route('admin.tour.show', $productId)
+        return redirect()->to(route('admin.tour.show', $productId).'#tour-itineraries')
             ->with('success', 'Fecha de salida añadida correctamente.');
     }
 }

@@ -12,6 +12,7 @@ use App\Models\Terminal;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
@@ -28,11 +29,16 @@ class ProductController extends Controller
         $parentCategories = Category::whereNull('parent_id')->get();
 
         $suppliers = Supplier::all();
-        
+
+        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
+        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
+
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'suppliers' => $suppliers,
+            'productTypes' => $productTypes,
+            'productStatuses' => $productStatuses,
             'terminals' => [],
             'new' => true,
         ]);
@@ -43,19 +49,28 @@ class ProductController extends Controller
         $validatedFields = $request->validate([
             'name' => 'required|min:3',
             'slug' => 'required|min:3',
+            'type_id' => [
+                'required',
+                'integer',
+                Rule::exists('types', 'id')->where('typeable', Product::class),
+            ],
             'category_id' => 'required|integer',
             'supplier_id' => 'required|integer',
+            'status_id' => [
+                'required',
+                'integer',
+                Rule::exists('statuses', 'id')->where('statusable', Product::class),
+            ],
             'meta_description' => 'nullable|string',
             'meta_includes' => 'nullable|string',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',
+            'type_id.required' => 'Selecciona un tipo de producto',
+            'status_id.required' => 'Selecciona un estado del producto',
         ]); // añadir la validación
 
         unset($validatedFields['meta_description'], $validatedFields['meta_includes']);
-
-        $validatedFields['type_id'] = Type::TOUR;
-        $validatedFields['status_id'] = Status::PRODUCT_DRAFT;
         $validatedFields['created_user_id'] = 1; // set default value
 
         $tour = Product::create($validatedFields);
@@ -76,10 +91,15 @@ class ProductController extends Controller
 
         $terminals = Terminal::all();
 
+        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
+        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
+
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'suppliers' => $suppliers,
+            'productTypes' => $productTypes,
+            'productStatuses' => $productStatuses,
             'terminals' => $terminals,
             'show' => true,
         ]);
@@ -95,10 +115,15 @@ class ProductController extends Controller
 
         $terminals = Terminal::all();
 
+        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
+        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
+
         return view('admin.tour.form', [
             'tour' => $tour,
             'parentCategories' => $parentCategories,
             'suppliers' => $suppliers,
+            'productTypes' => $productTypes,
+            'productStatuses' => $productStatuses,
             'terminals' => $terminals,
             'edit' => true,
         ]);
@@ -109,13 +134,25 @@ class ProductController extends Controller
         $validatedFields = $request->validate([
             'name' => 'required|min:3',
             'slug' => 'required|min:3',
+            'type_id' => [
+                'required',
+                'integer',
+                Rule::exists('types', 'id')->where('typeable', Product::class),
+            ],
             'category_id' => 'required|integer',
             'supplier_id' => 'required|integer',
+            'status_id' => [
+                'required',
+                'integer',
+                Rule::exists('statuses', 'id')->where('statusable', Product::class),
+            ],
             'meta_description' => 'nullable|string',
             'meta_includes' => 'nullable|string',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',
+            'type_id.required' => 'Selecciona un tipo de producto',
+            'status_id.required' => 'Selecciona un estado del producto',
         ]); // añadir la validación
 
         unset($validatedFields['meta_description'], $validatedFields['meta_includes']);
