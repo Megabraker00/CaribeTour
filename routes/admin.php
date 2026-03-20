@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
+use App\Http\Controllers\Admin\SegmentController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\InvoiceController;
@@ -36,10 +37,15 @@ Route::controller(ProductController::class)->group(function() {
     Route::get("/tours/{id}", "showTour")->name('admin.tour.show');
     Route::get("/tours/{id}/edit", "editTour")->name('admin.tour.edit');
     Route::put("/tours/{id}", "updateTour")->name('admin.tour.update');
+    Route::post("/tours/{id}/images", "storeTourImages")->name('admin.tour.images.store');
+    Route::post("/tours/{id}/images/names", "updateTourImagesNames")->name('admin.tour.images.names');
+    Route::post("/tours/{id}/images/{image}/main", "setMainTourImage")->name('admin.tour.images.main');
+    Route::delete("/tours/{id}/images/{image}", "destroyTourImage")->name('admin.tour.images.destroy');
 });
 
-Route::controller(ItineraryController::class)->group(function() {
-    Route::post("/tourDate", "storeTourDate")->name('admin.tour.date.store');
+Route::post("/tourDate", [SegmentController::class, 'storeTourDate'])->name('admin.tour.date.store');
+
+Route::controller(ItineraryController::class)->group(function () {
     Route::delete("/tourDate/{id}/destroy", "destroyTourDate")->name('admin.tour.date.destroy');
 });
 

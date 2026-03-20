@@ -24,7 +24,7 @@
                             
                                 <div class="card">
                                     <div class="card-body">
-                                        <img src="{{ asset('images/i-love-bootstrap2.png') }}"alt="Imagen del tour {{$tour->name}}" loading="lazy" decoding="async" title="{{$tour->name}}" class="card-img img-aspect-16-9">
+                                        <img src="{{ asset($tour?->mainImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del tour {{$tour->name}}" loading="lazy" decoding="async" title="{{$tour->name}}" class="card-img img-aspect-16-9">
                                     </div>
                                 </div>
 

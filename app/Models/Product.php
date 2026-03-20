@@ -60,7 +60,9 @@ class Product extends Model
 
     public function images(): MorphMany
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable')
+            ->orderByDesc('is_main')
+            ->orderBy('id');
     }
 
     public function mainImage()

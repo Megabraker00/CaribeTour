@@ -2,11 +2,72 @@
 
 @section('title', 'Tour')
 
+@section('css')
+    @parent
+    <style>
+        /* Misma lógica que el frontend (tarjetas 4:3): caja con relación fija + imagen sin recorte ni distorsión */
+        .admin-tour-media-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .admin-tour-media-box img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+        .admin-tour-image-card .card-footer {
+            background: #fff;
+        }
+        .admin-tour-carousel-inner .carousel-item {
+            background: #f0f0f0;
+        }
+        .admin-tour-thumb-trigger {
+            cursor: pointer;
+            transition: box-shadow 0.2s ease;
+        }
+        .admin-tour-thumb-trigger:hover {
+            box-shadow: inset 0 0 0 3px rgba(0, 123, 255, 0.35);
+        }
+        .admin-tour-thumb-trigger.admin-tour-thumb-active {
+            box-shadow: inset 0 0 0 3px #007bff;
+        }
+    </style>
+@endsection
+
 @section('content_header')
     <h1>Tour</h1>
 @stop
 
 @section('content')
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0 pl-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
 
     <div class="row">
         <div class="col-12">
@@ -119,6 +180,33 @@
 
                                 </fieldset>
 
+                                <fieldset {{ isset($show) ? 'disabled' : '' }} class="col-12 mt-3">
+                                    <legend class="text-secondary border-bottom w-100 pb-2">Contenido público (meta_data)</legend>
+                                    <p class="text-muted small">Se muestra en la ficha del tour (<code>destination/tour</code>): descripción e ítems &quot;Incluye&quot;.</p>
+
+                                    <div class="form-group">
+                                        <label for="meta_description">Descripción del tour</label>
+                                        <textarea name="meta_description" id="meta_description" rows="6"
+                                            class="form-control @error('meta_description') is-invalid @enderror"
+                                            placeholder="Texto descriptivo del viaje…">{{ old('meta_description', $tour->meta['description'] ?? '') }}</textarea>
+                                        @error('meta_description')
+                                            <div class="error invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Equivale a <code>$tour-&gt;meta['description']</code></small>
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <label for="meta_includes">Incluye (lista del itinerario / servicios)</label>
+                                        <textarea name="meta_includes" id="meta_includes" rows="10"
+                                            class="form-control @error('meta_includes') is-invalid @enderror"
+                                            placeholder="Una línea por cada elemento de la lista.&#10;Ej.: Vuelos de ida y vuelta&#10;Traslados aeropuerto - hotel">{{ old('meta_includes', isset($tour->meta['includes']) && is_array($tour->meta['includes']) ? implode("\n", $tour->meta['includes']) : '') }}</textarea>
+                                        @error('meta_includes')
+                                            <div class="error invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Cada línea será un <code>&lt;li&gt;</code> en la web. Equivale a <code>$tour-&gt;meta['includes']</code></small>
+                                    </div>
+                                </fieldset>
+
 
                                 @if (isset($show))
                                         <a href="{{ route('admin.tour.edit', $tour->id) }}"
@@ -134,67 +222,159 @@
 
 
                         <div class="tab-pane fade" id="tour-images" role="tabpanel" aria-labelledby="tour-images-tab">
-                            <div class="col-12">
-
-                                <form>
-                                <div class="form-group">
-                                    <label for="exampleInputFile">Selecionar Imágenes</label>
-                                    <div class="input-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="exampleInputFile">
-                                            <label class="custom-file-label" for="exampleInputFile">Selecionar Imágenes</label>
+                            @if (! $tour->id)
+                                <p class="text-muted">Guarda el tour primero (pestaña Información) para poder subir imágenes.
+                                    Se guardarán en <code>public/images/{{ '{slug-del-tour}' }}/</code> con el nombre
+                                    <code>slug-milisegundos.ext</code> (JPEG, PNG, GIF, WebP).</p>
+                            @else
+                                <div class="col-12 mb-4">
+                                    <form action="{{ route('admin.tour.images.store', $tour->id) }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="tour_images_input">Seleccionar imágenes</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" name="images[]" class="custom-file-input"
+                                                        id="tour_images_input" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp"
+                                                        multiple required>
+                                                    <label class="custom-file-label" for="tour_images_input">Elegir
+                                                        archivos…</label>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-upload"></i> Subir
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">Formatos: JPG, PNG, GIF, WebP. Máx. 10 MB
+                                                por archivo. Hasta 30 archivos por envío.</small>
+                                            <p class="form-text text-muted mb-0 mt-2">
+                                                <i class="fas fa-star text-warning"></i> La <strong>imagen principal</strong> es la que se muestra en listados y reservas; puedes cambiarla con el botón en cada miniatura.
+                                            </p>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
-                                </form>
 
+                                <div class="col-12">
+                                    @if ($tour->images->isEmpty())
+                                        <p class="text-muted">Aún no hay imágenes para este tour.</p>
+                                    @else
+                                        <p class="text-muted small mb-2">Vista previa (misma ruta que usa el frontend:
+                                            <code>asset('…')</code>). Edita los títulos en las tarjetas y pulsa <strong>Guardar nombres de todas las imágenes</strong> una sola vez.</p>
 
-                            </div>
-                            <div class="col-12">
-                                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="">
-                                        </li>
-                                        <li data-target="#carouselExampleIndicators" data-slide-to="1" class="active">
-                                        </li>
-                                        <li data-target="#carouselExampleIndicators" data-slide-to="2" class="">
-                                        </li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active carousel-item-left">
-                                            <img class="d-block w-100"
-                                                src="https://placehold.it/900x500/39CCCC/ffffff&amp;text=I+Love+Bootstrap"
-                                                alt="First slide">
+                                        {{-- Formulario vacío: los inputs usan form="tour-images-names-form" para no anidar <form> con principal/eliminar --}}
+                                        <form action="{{ route('admin.tour.images.names', $tour->id) }}" method="POST"
+                                            id="tour-images-names-form" class="d-none" aria-hidden="true">
+                                            @csrf
+                                        </form>
+
+                                        <div id="adminTourImagesCarousel" class="carousel slide" data-ride="carousel"
+                                            data-interval="false">
+                                            <ol class="carousel-indicators">
+                                                @foreach ($tour->images as $img)
+                                                    <li data-target="#adminTourImagesCarousel"
+                                                        data-slide-to="{{ $loop->index }}"
+                                                        class="{{ $img->is_main ? 'active' : '' }}"></li>
+                                                @endforeach
+                                            </ol>
+                                            <div class="carousel-inner rounded border admin-tour-carousel-inner">
+                                                @foreach ($tour->images as $img)
+                                                    <div class="carousel-item {{ $img->is_main ? 'active' : '' }}">
+                                                        <div class="admin-tour-media-box rounded-top">
+                                                            <img src="{{ asset($img->path) }}" alt="{{ $img->name }}">
+                                                        </div>
+                                                        <div class="carousel-caption d-none d-md-block bg-dark"
+                                                            style="opacity: .85;">
+                                                            <strong>{{ $img->name }}</strong>
+                                                            <br><small>{{ $img->path }}</small>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <a class="carousel-control-prev" href="#adminTourImagesCarousel"
+                                                role="button" data-slide="prev">
+                                                <span class="carousel-control-custom-icon" aria-hidden="true">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </span>
+                                                <span class="sr-only">Anterior</span>
+                                            </a>
+                                            <a class="carousel-control-next" href="#adminTourImagesCarousel"
+                                                role="button" data-slide="next">
+                                                <span class="carousel-control-custom-icon" aria-hidden="true">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </span>
+                                                <span class="sr-only">Siguiente</span>
+                                            </a>
                                         </div>
-                                        <div class="carousel-item carousel-item-next carousel-item-left">
-                                            <img class="d-block w-100"
-                                                src="https://placehold.it/900x500/3c8dbc/ffffff&amp;text=I+Love+Bootstrap"
-                                                alt="Second slide">
+
+                                        @error('image_names')
+                                            <div class="alert alert-danger small mt-2 mb-0">{{ $message }}</div>
+                                        @enderror
+
+                                        <div class="row mt-3">
+                                            @foreach ($tour->images as $img)
+                                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                                    <div class="card h-100 shadow-sm admin-tour-image-card">
+                                                        <div class="card-body p-0">
+                                                            <div class="admin-tour-media-box admin-tour-thumb-trigger rounded-top {{ $img->is_main ? 'admin-tour-thumb-active' : '' }}"
+                                                                role="button"
+                                                                tabindex="0"
+                                                                data-carousel-index="{{ $loop->index }}"
+                                                                title="Ver esta imagen en el carrusel (clic)">
+                                                                <img src="{{ asset($img->path) }}"
+                                                                    alt="{{ $img->name }}"
+                                                                    loading="lazy">
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-footer p-2 border-top-0 pt-2">
+                                                            <label class="small text-muted d-block mb-0" for="img-name-{{ $img->id }}">Título / zona</label>
+                                                            <input type="text" name="image_names[{{ $img->id }}]" id="img-name-{{ $img->id }}"
+                                                                form="tour-images-names-form"
+                                                                class="form-control form-control-sm mb-2 @error('image_names.'.$img->id) is-invalid @enderror"
+                                                                value="{{ old('image_names.'.$img->id, $img->name) }}"
+                                                                maxlength="255"
+                                                                placeholder="Ej.: Piscina, habitación deluxe…"
+                                                                title="Texto que verá el usuario en la galería (no cambia el archivo)">
+                                                            @error('image_names.'.$img->id)
+                                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                            @enderror
+                                                            @if ($img->is_main)
+                                                                <span class="badge badge-success mb-1 d-inline-block"><i class="fas fa-star"></i> Principal</span>
+                                                            @else
+                                                                <form action="{{ route('admin.tour.images.main', [$tour->id, $img->id]) }}"
+                                                                    method="POST" class="mb-1">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-sm btn-outline-primary btn-block"
+                                                                        title="Usar esta imagen en listados y página de reserva">
+                                                                        <i class="far fa-star"></i> Usar como principal
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                            <form
+                                                                action="{{ route('admin.tour.images.destroy', [$tour->id, $img->id]) }}"
+                                                                method="POST" class="d-inline mt-1"
+                                                                onsubmit="return confirm('¿Eliminar esta imagen del disco y de la base de datos?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                    <i class="fas fa-trash"></i> Eliminar
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                        <div class="carousel-item">
-                                            <img class="d-block w-100"
-                                                src="https://placehold.it/900x500/f39c12/ffffff&amp;text=I+Love+Bootstrap"
-                                                alt="Third slide">
+
+                                        <div class="mt-2 mb-3">
+                                            <button type="submit" class="btn btn-secondary" form="tour-images-names-form">
+                                                <i class="fas fa-save"></i> Guardar nombres de todas las imágenes
+                                            </button>
                                         </div>
-                                    </div>
-                                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
-                                        data-slide="prev">
-                                        <span class="carousel-control-custom-icon" aria-hidden="true">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
-                                        data-slide="next">
-                                        <span class="carousel-control-custom-icon" aria-hidden="true">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
+                                    @endif
                                 </div>
-                            </div>
-
-
+                            @endif
                         </div>
 
 
@@ -433,6 +613,20 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
+            $(document).on('change', '#tour_images_input', function () {
+                var label = $(this).next('.custom-file-label');
+                if (this.files && this.files.length > 1) {
+                    label.html(this.files.length + ' archivos seleccionados');
+                } else if (this.files && this.files.length === 1) {
+                    label.html(this.files[0].name);
+                } else {
+                    label.html('Elegir archivos…');
+                }
+            });
+
+            @if (! $tour->id)
+                return;
+            @endif
             let properties = dtProperties()
             properties.ajax = "{{ route('api.datatable.tours.itineraries', $tour->id) }}"
             properties.columns = [{
@@ -441,22 +635,27 @@
                 {
                     data: 'departure_date',
                     render: (data) => {
-                        // TODO: Pasar esta funcion a un js externo (util o helper)
-                        // Parsear la fecha y la hora
+                        if (!data || typeof data !== 'string') return '—';
                         const [datePart, timePart] = data.split(' ');
-
-                        // Extraer el año, mes y día
+                        if (!datePart) return '—';
                         const [year, month, day] = datePart.split('-');
-
-                        // Formatear la nueva fecha
-                        return `${day}-${month}-${year} ${timePart}`;
+                        if (!year || !month || !day) return data;
+                        return `${day}-${month}-${year}${timePart ? ' ' + timePart : ''}`;
                     }
                 },
                 {
                     data: 'departure_t.name'
                 },
                 {
-                    data: 'arrival_date'
+                    data: 'arrival_date',
+                    render: (data) => {
+                        if (!data || typeof data !== 'string') return '—';
+                        const [datePart, timePart] = data.split(' ');
+                        if (!datePart) return '—';
+                        const [year, month, day] = datePart.split('-');
+                        if (!year || !month || !day) return data;
+                        return `${day}-${month}-${year}${timePart ? ' ' + timePart : ''}`;
+                    }
                 },
                 {
                     data: 'arrival_t.name'
@@ -477,14 +676,41 @@
                         return `<form method="POST" action="${newRoute}">
                         @csrf @method('DELETE')
                         <input type="submit" onclick="return confirm('¿Seguro de que deseas eliminar este registro?');" value="Eliminar" class="btn btn-sm btn-danger">
-                        <input type="hidden" name="date_id" value="${row.id}">
-                        <input type="hidden" name="product_id" value="{{ $tour->id }}">
                       </form>`
                     }
                 }
             ]
 
             $('#the_table').DataTable(properties)
+
+            var $adminCarousel = $('#adminTourImagesCarousel')
+            if ($adminCarousel.length) {
+                $adminCarousel.carousel({ interval: false })
+
+                function syncAdminTourThumbHighlight() {
+                    var idx = $adminCarousel.find('.carousel-item.active').index()
+                    $('.admin-tour-thumb-trigger').removeClass('admin-tour-thumb-active')
+                    $('.admin-tour-thumb-trigger[data-carousel-index="' + idx + '"]').addClass('admin-tour-thumb-active')
+                }
+
+                $(document).on('click', '.admin-tour-thumb-trigger', function () {
+                    var idx = $(this).data('carousel-index')
+                    $adminCarousel.carousel(idx)
+                    var el = document.getElementById('adminTourImagesCarousel')
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                    }
+                })
+
+                $(document).on('keydown', '.admin-tour-thumb-trigger', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        $(this).trigger('click')
+                    }
+                })
+
+                $adminCarousel.on('slid.bs.carousel', syncAdminTourThumbHighlight)
+            }
         });
     </script>
 @stop
