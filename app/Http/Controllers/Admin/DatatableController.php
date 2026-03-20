@@ -99,8 +99,40 @@ class DatatableController extends Controller
 
     public function tourItinerarys($productId)
     {
-        $itineraries = Itinerary::with(['departure_t', 'arrival_t'])->where('product_id', $productId)->get();
+        $itineraries = Itinerary::query()
+            ->where('product_id', $productId)
+            ->with([
+                'segments' => function ($q) {
+                    $q->orderBy('sort_order')->with(['departureTerminal', 'arrivalTerminal']);
+                },
+            ])
+            ->get();
 
-        return DataTables::make($itineraries)->toJson();
+        $rows = $itineraries->map(function (Itinerary $itinerary) {
+            $first = $itinerary->segments->first();
+
+            $departureDate = $first?->departure_date;
+            $arrivalDate = $first?->arrival_date;
+
+            return [
+                'id' => $itinerary->id,
+                'departure_date' => $departureDate
+                    ? $departureDate->format('Y-m-d H:i:s')
+                    : '',
+                'departure_t' => [
+                    'name' => $first?->departureTerminal?->name ?? '—',
+                ],
+                'arrival_date' => $arrivalDate
+                    ? $arrivalDate->format('Y-m-d H:i:s')
+                    : '',
+                'arrival_t' => [
+                    'name' => $first?->arrivalTerminal?->name ?? '—',
+                ],
+                'price' => $itinerary->price,
+                'taxes' => $itinerary->taxes,
+            ];
+        });
+
+        return DataTables::of($rows)->toJson();
     }
 }

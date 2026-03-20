@@ -15,6 +15,12 @@ class Image extends Model
         'is_main',
         'path',
         'uploaded_user_id',
+        'imageable_id',
+        'imageable_type',
+    ];
+
+    protected $casts = [
+        'is_main' => 'boolean',
     ];
 
     public function user(): BelongsTo
