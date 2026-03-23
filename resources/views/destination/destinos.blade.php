@@ -12,12 +12,15 @@
         <div class="row">
 
             @forelse($categories as $category)
-
+            @php
+                $countryImg = $category->images->firstWhere('is_main', true) ?? $category->images->first();
+                $countryImgSrc = $countryImg?->path ?? 'images/i-love-bootstrap2.png';
+            @endphp
             <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
                 <a href="{{ route('destinos.pais', $category->slug) }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" alt="Imagen de {{$category->name}}" title="{{$category->name}}" class="card-img">
+                            <img src="{{ asset($countryImgSrc) }}" alt="Imagen de {{$category->name}}" title="{{$category->name}}" class="card-img">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title" title="{{$category->name}}"><i class="bi bi-geo-alt-fill"></i>{{$category->name}}</h5>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Client;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class DatatableController extends Controller
 {
-
     /**
      * Show the application dashboard.
      *
@@ -67,7 +65,7 @@ class DatatableController extends Controller
 
     public function invoices()
     {
-        $invoices = Invoice::select('id', 'booking_id', 'created_at','created_user_id')->get();
+        $invoices = Invoice::select('id', 'booking_id', 'created_at', 'created_user_id')->get();
 
         return DataTables::make($invoices)->toJson();
     }
@@ -82,9 +80,9 @@ class DatatableController extends Controller
     public function tours()
     {
         $tours = Product::join('categories', 'products.category_id', '=', 'categories.id')
-        ->select('products.id', 'products.name as name', 'products.status_id as status_id', 
-        'categories.name as category', DB::raw('"652.25" as precio'))
-        ->get();
+            ->select('products.id', 'products.name as name', 'products.status_id as status_id',
+                'categories.name as category', DB::raw('"652.25" as precio'))
+            ->get();
 
         /*
         $tours = Product::with(['category' => function($query){
@@ -130,6 +128,7 @@ class DatatableController extends Controller
                 ],
                 'price' => $itinerary->price,
                 'taxes' => $itinerary->taxes,
+                'total_price' => $itinerary->fullPrice(),
             ];
         });
 

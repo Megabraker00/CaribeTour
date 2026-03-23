@@ -82,7 +82,7 @@ class Itinerary extends Model
 
     public function fullPrice()
     {
-        return $this->price + $this->taxes;
+        return round($this->price + $this->taxes, 2);
     }
 
     public function getDaysAttribute()

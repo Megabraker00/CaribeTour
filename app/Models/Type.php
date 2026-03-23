@@ -11,6 +11,11 @@ class Type extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'typeable',
+    ];
+
     // from 1 to 9 belongs to Product model
     const TOUR = 1;
     const EXCURSION = 2;

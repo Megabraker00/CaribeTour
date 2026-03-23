@@ -14,6 +14,9 @@
 
             <div class="col-sm-12 col-md-12 col-lg-9 mb-4">
                 <h1 class="mb-4"><strong>{{$province->name}}</strong></h1>
+                @if (!empty($province->meta['description']))
+                    <div class="mb-4 tour-description">{!! $province->meta['description'] !!}</div>
+                @endif
                 <hr>
                 
                 @forelse ($tours as $tour)

@@ -9,6 +9,10 @@
     <!-- container -->
     <section class="container my-4">
 
+        @php
+            $paisHeroImg = $category->images->firstWhere('is_main', true) ?? $category->images->first();
+            $paisHeroSrc = $paisHeroImg?->path ?? 'images/i-love-bootstrap2.png';
+        @endphp
         <!-- Destination -->
         <div class="row">
 
@@ -16,13 +20,16 @@
                 <div class="card mb-3">
                 <div class="row g-0">
                   <div class="col-md-6">
-                    <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="img-fluid rounded-start" alt="...">
+                    <img src="{{ asset($paisHeroSrc) }}" class="img-fluid rounded-start" alt="{{ $category->name }}">
                   </div>
                   <div class="col-md-6">
                     <div class="card-body">
                       <h3 class="card-title">{{$category->name}}</h3>
-                      <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla earum dolorum consectetur eveniet, illo unde obcaecati at inventore saepe accusamus praesentium voluptates quas officiis consequatur ipsam aperiam! Sit, laboriosam sapiente!</p>
-                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      @if (!empty($category->meta['description']))
+                          <div class="card-text tour-description">{!! $category->meta['description'] !!}</div>
+                      @else
+                          <p class="card-text text-muted">Descubre las provincias y tours disponibles en este destino.</p>
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -37,11 +44,15 @@
         <div class="row mt-4">
 
             @forelse ($subCategories as $subCategory)
+                @php
+                    $provImg = $subCategory->images->firstWhere('is_main', true) ?? $subCategory->images->first();
+                    $provImgSrc = $provImg?->path ?? 'images/i-love-bootstrap4.png';
+                @endphp
                 <div class="col-md-6 col-lg-4 col-xl-4 mb-4">
                     <a href="{{ route('destinos.provincia', ['country' => $category->slug, 'province' => $subCategory->slug]) }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" alt="Imagen de {{$subCategory->name}}" title="{{$subCategory->name}}" class="card-img">
+                            <img src="{{ asset($provImgSrc) }}" alt="Imagen de {{$subCategory->name}}" title="{{$subCategory->name}}" class="card-img">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title" title="{{$subCategory->name}}">{{$subCategory->name}}</h5>

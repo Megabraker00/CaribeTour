@@ -9,11 +9,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property-read array $meta Contenido de meta_data (p. ej. description).
+ */
 class Category extends Model
 {
     use HasFactory;
 
     protected $table = 'categories';
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'parent_id',
+        'status_id',
+    ];
 
     public function __toString()
     {
@@ -28,6 +38,12 @@ class Category extends Model
     public function status(): MorphOne
     {
         return $this->morphOne(Status::class, 'statusable');
+    }
+
+    /** Estado por FK status_id (listados, admin). */
+    public function statusRecord(): BelongsTo
+    {
+        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function parentCategory(): BelongsTo
@@ -55,11 +71,22 @@ class Category extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function metaData(): MorphOne
+    {
+        return $this->morphOne(Metadata::class, 'meta_dataable');
+    }
+
+    public function getMetaAttribute(): array
+    {
+        $meta = $this->metaData?->meta_data;
+
+        return is_array($meta) ? $meta : [];
+    }
+
     public function mainImage()
     {
-        return  $this->images()->where('is_main', 1)->first()
+        return $this->images()->where('is_main', 1)->first()
             ?? $this->images()->first()
             ?? new Image();
     }
-
 }

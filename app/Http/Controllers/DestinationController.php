@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Itinerary;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
-use Illuminate\Http\Request;
 
 class DestinationController extends Controller
 {
     public function countryIndex()
     {
-        $parentCategories = Category::whereNull('parent_id')->get();
+        $parentCategories = Category::whereNull('parent_id')->with(['images'])->get();
 
         //TODO: obtener el precio mínimo de cada categoría para mostrarlo en la vista
         return view('destination.destinos', ['categories' => $parentCategories]);
@@ -21,21 +19,26 @@ class DestinationController extends Controller
 
     public function countryShow($slugParentCategory)
     {
-        $parentCategory = Category::where('slug', $slugParentCategory)->first();
+        $parentCategory = Category::query()
+            ->where('slug', $slugParentCategory)
+            ->with(['subCategories.images', 'images', 'metaData'])
+            ->first();
 
         if (!$parentCategory) {
             abort(404);
         }
 
         $subCategories = $parentCategory->subCategories;
-        
+
         return view('destination.pais', ['category' => $parentCategory, 'subCategories' => $subCategories]);
     }
 
     public function provinceShow($slugCategory, $slugSubCategoy)
     {
-        $subCategory = Category::with('parentCategory')->
-                        where('slug', $slugSubCategoy)->first();
+        $subCategory = Category::query()
+            ->with(['parentCategory', 'images', 'metaData'])
+            ->where('slug', $slugSubCategoy)
+            ->first();
 
         if (!$subCategory) {
             abort(404);
@@ -57,7 +60,6 @@ class DestinationController extends Controller
     {
         //$tour = Product::where('slug', $slugTour)->first();
 
-        
         $tour = Product::query()
                 ->where('slug', $slugTour)
                 ->where('status_id', Status::PRODUCT_ACTIVE)
@@ -70,8 +72,8 @@ class DestinationController extends Controller
                     ->with(['segments' => function ($q) {
                         $q->orderBy('sort_order', 'asc');
                     }]);
-                }])
-                ->first();
+            }])
+            ->first();
 
         // Esto imprime la consulta con "?"
         //dd($tour->toSql(), $tour->getBindings());
