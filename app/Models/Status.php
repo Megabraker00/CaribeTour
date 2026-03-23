@@ -10,6 +10,11 @@ class Status extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'statusable',
+    ];
+
     // from 1 to 9 belongs to Product model
     const PRODUCT_ACTIVE = 1;
     const PRODUCT_NOT_ACTIVE = 2;

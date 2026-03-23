@@ -567,6 +567,7 @@
                                                 <th scope="col" nowrap>Terminal de Llegada</th>
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
+                                                <th scope="col" nowrap>Precio total</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </thead>
@@ -579,6 +580,7 @@
                                                 <th scope="col" nowrap>Terminal de Llegada</th>
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
+                                                <th scope="col" nowrap>Precio total</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </tfoot>
@@ -812,6 +814,10 @@
                 },
                 {
                     data: 'taxes',
+                    render: (data) => `<span style="white-space: nowrap;">${data} &euro;</span>`
+                },
+                {
+                    data: 'total_price',
                     render: (data) => `<span style="white-space: nowrap;">${data} &euro;</span>`
                 },
                 {

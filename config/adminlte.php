@@ -372,25 +372,28 @@ return [
             ],
         ],
         [
-            'text' => 'SETTINGS',
+            'text' => 'Configuración',
             'icon' => 'fa fa-fw fa-file',
             'submenu' => [
                 [
                     'text' => 'Tipos',
-                    'icon' => 'far fa-fw fa-file',
-                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-tags',
+                    'url' => 'admin/types',
                 ],
                 [
                     'text' => 'Estados',
-                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-toggle-on',
+                    'url' => 'admin/statuses',
                 ],
                 [
                     'text' => 'Categorías',
-                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-folder',
+                    'url' => 'admin/categories',
                 ],
                 [
                     'text' => 'Terminales',
-                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-plane-departure',
+                    'url' => 'admin/terminals',
                 ],
             ],
         ],
