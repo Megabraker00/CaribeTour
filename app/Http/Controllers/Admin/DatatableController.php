@@ -79,18 +79,35 @@ class DatatableController extends Controller
 
     public function tours()
     {
-        $tours = Product::join('categories', 'products.category_id', '=', 'categories.id')
-            ->select('products.id', 'products.name as name', 'products.status_id as status_id',
-                'categories.name as category', DB::raw('"652.25" as precio'))
-            ->get();
+        $minByProduct = DB::table('itineraries')
+            ->selectRaw('product_id, MIN(price + taxes) as min_total')
+            ->groupBy('product_id');
 
-        /*
-        $tours = Product::with(['category' => function($query){
-            $query->select('name');
-        }])
-        ->select('id', 'name', 'status_id', DB::raw('"precio" as precio'))
-        ->get();
-        */
+        $tours = Product::query()
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('statuses', function ($join) {
+                $join->on('products.status_id', '=', 'statuses.id')
+                    ->where('statuses.statusable', Product::class);
+            })
+            ->leftJoinSub($minByProduct, 'it_min', function ($join) {
+                $join->on('products.id', '=', 'it_min.product_id');
+            })
+            ->select(
+                'products.id',
+                'products.name as name',
+                'categories.name as category',
+                'products.status_id',
+                'statuses.name as status_name',
+                DB::raw('ROUND(it_min.min_total, 2) as precio')
+            )
+            ->get()
+            ->map(function ($row) {
+                if ($row->status_name === null || $row->status_name === '') {
+                    $row->status_name = '— (id '.$row->status_id.')';
+                }
+
+                return $row;
+            });
 
         return DataTables::make($tours)->toJson();
     }

@@ -4,40 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Status;
-use App\Models\Type;
 
 class DestinationController extends Controller
 {
     public function countryIndex()
     {
-        $parentCategories = Category::whereNull('parent_id')->with(['images'])->get();
+        $parentCategories = Category::query()
+            ->whereNull('parent_id')
+            ->whereHas('subCategories.products', function ($q) {
+                $q->publicVisibleTour();
+            })
+            ->with(['images'])
+            ->get();
 
-        //TODO: obtener el precio mínimo de cada categoría para mostrarlo en la vista
         return view('destination.destinos', ['categories' => $parentCategories]);
     }
 
-    public function countryShow($slugParentCategory)
+    public function countryShow(string $country)
     {
         $parentCategory = Category::query()
-            ->where('slug', $slugParentCategory)
-            ->with(['subCategories.images', 'images', 'metaData'])
+            ->where('slug', $country)
+            ->whereNull('parent_id')
+            ->with(['images', 'metaData'])
             ->first();
 
         if (!$parentCategory) {
             abort(404);
         }
 
-        $subCategories = $parentCategory->subCategories;
+        $subCategories = $parentCategory
+            ->subCategories()
+            ->whereHas('products', function ($q) {
+                $q->publicVisibleTour();
+            })
+            ->with(['images'])
+            ->orderBy('name')
+            ->get();
 
         return view('destination.pais', ['category' => $parentCategory, 'subCategories' => $subCategories]);
     }
 
-    public function provinceShow($slugCategory, $slugSubCategoy)
+    public function provinceShow(string $country, string $province)
     {
+        $parentCategory = Category::query()
+            ->where('slug', $country)
+            ->whereNull('parent_id')
+            ->first();
+
+        if (! $parentCategory) {
+            abort(404);
+        }
+
         $subCategory = Category::query()
             ->with(['parentCategory', 'images', 'metaData'])
-            ->where('slug', $slugSubCategoy)
+            ->where('slug', $province)
+            ->where('parent_id', $parentCategory->id)
             ->first();
 
         if (!$subCategory) {
@@ -45,115 +66,96 @@ class DestinationController extends Controller
         }
 
         $tours = $subCategory->products()
-            ->where('status_id', Status::PRODUCT_ACTIVE)
-            ->where('type_id', Type::TOUR)
+            ->publicVisibleTour()
+            ->with(['mainImage', 'category.parentCategory'])
             ->paginate(4);
 
         $categories_search = Category::whereNotNull('parent_id')->get();
 
         view()->share('categories', $categories_search);
 
-        return view('destination.provincia', ['countrySlug' => $slugCategory, 'province' => $subCategory, 'tours' => $tours]);
+        return view('destination.provincia', [
+            'countrySlug' => $country,
+            'province' => $subCategory,
+            'tours' => $tours,
+        ]);
     }
 
-    public function tourShow($category, $subCategory, $slugTour)
+    public function tourShow(string $country, string $province, string $tour)
     {
-        //$tour = Product::where('slug', $slugTour)->first();
+        $parentCategory = Category::query()
+            ->where('slug', $country)
+            ->whereNull('parent_id')
+            ->first();
 
-        $tour = Product::query()
-                ->where('slug', $slugTour)
-                ->where('status_id', Status::PRODUCT_ACTIVE)
-                ->where('type_id', Type::TOUR)
-                ->with('metaData')
-                ->with(['itineraries' => function ($query) {
-                    $query->whereHas('segments', function ($q) {
-                        $q->where('departure_date', '>', now());
-                    })
+        if (! $parentCategory) {
+            abort(404);
+        }
+
+        $subCategory = Category::query()
+            ->where('slug', $province)
+            ->where('parent_id', $parentCategory->id)
+            ->first();
+
+        if (! $subCategory) {
+            abort(404);
+        }
+
+        $tourModel = Product::query()
+            ->where('slug', $tour)
+            ->where('category_id', $subCategory->id)
+            ->publicVisibleTour()
+            ->with(['metaData', 'images'])
+            ->with(['itineraries' => function ($query) {
+                $query->whereHas('segments', function ($q) {
+                    $q->where('departure_date', '>', now());
+                })
                     ->with(['segments' => function ($q) {
                         $q->orderBy('sort_order', 'asc');
                     }]);
             }])
             ->first();
 
-        // Esto imprime la consulta con "?"
-        //dd($tour->toSql(), $tour->getBindings());
-/*
-        // Crear un nuevo tour con metadata de ejemplo
-        $tour->metaData()->create([
-            'meta_data' => [
-                'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                'includes' => [
-                    'Vuelos de ida y vuelta',
-                    'Traslados aeropuerto - hotel - aeropuerto',
-                    'Alojamiento en hotel 5 estrellas',
-                    'Régimen de todo incluido',
-                    'Seguro de viaje',
-                ],
-                'itinerary' => [
-                    [
-                        'day' => 1,
-                        'activities' => [
-                            'Llegada al aeropuerto y traslado al hotel',
-                            'Check-in en el hotel y tiempo libre para descansar',
-                            'Cena de bienvenida en el hotel'],
-                    ],
-                    [
-                        'day' => 2,
-                        'activities' => [
-                            'Desayuno en el hotel',
-                            'Excursión a la playa de Punta Cana',
-                            'Almuerzo en un restaurante local',
-                            'Tarde libre para disfrutar de la playa',
-                            'Cena en el hotel'],
-                    ],
-                    [
-                        'day' => 3,
-                        'activities' => [
-                            'Desayuno en el hotel',
-                            'Visita a la isla Saona',
-                            'Almuerzo en la isla',
-                            'Tarde libre para disfrutar de la isla',
-                            'Cena en el hotel'],
-                    ],
-                ],
-                'seo' => [
-                    'title' => 'Tour en Punta Cana - Caribe Tour',
-                    'description' => 'Disfruta de un tour inolvidable en Punta Cana con Caribe Tour. Vuelos, alojamiento, excursiones y más incluido.',
-                    'keywords' => 'tour punta cana, viaje punta cana, vacaciones punta cana, caribe tour',
-                ],
-            ]
-        ]);
-        */
-
-        //dd($slugTour);
-
-        if ($tour === null) {
+        if ($tourModel === null) {
             abort(404);
         }
 
-        $firstItinerary = $tour->cheapestItinerary();
-        
+        $firstItinerary = $tourModel->cheapestItinerary();
+
         $price = $firstItinerary
             ? $firstItinerary->fullPrice()
             : null;
-        
+
         $days = $firstItinerary?->days;
         $nights = $firstItinerary?->nights;
-        $departure = $firstItinerary->firstSegment()->departure_date;
-        $return = $firstItinerary->lastSegment()->departure_date;
-    
+
+        $firstSeg = $firstItinerary?->firstSegment();
+        $lastSeg = $firstItinerary?->lastSegment();
+        $departure = $firstSeg?->departure_date;
+        $return = $lastSeg?->departure_date;
+            
             
         //$price = number_format($firstDate->price + $firstDate->taxes, 2, ',', '.');
+
+        //$price = number_format($firstDate->price + $firstDate->taxes, 2, ',', '.');
         return view('destination.tour', [
-            'tour' => $tour, 
+            'tour' => $tourModel,
             'firstDate' => $firstItinerary,
             'tourDeparture' => $departure,
             'tourReturn' => $return,
             'days' => $days,
             'nights' => $nights,
-            'price' => $price, 
-            'countrySlug' => $category, 
-            'provinceSlug' => $subCategory,
+            'price' => $price,
+            'countrySlug' => $country,
+            'provinceSlug' => $province,
         ]);
+    }
+
+    /**
+     * Ruta reservada en web.php; implementar búsqueda de destinos cuando corresponda.
+     */
+    public function searchResult()
+    {
+        abort(404);
     }
 }

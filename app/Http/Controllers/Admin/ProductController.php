@@ -63,14 +63,16 @@ class ProductController extends Controller
             ],
             'meta_description' => 'nullable|string',
             'meta_includes' => 'nullable|string',
+            'meta_stars' => 'nullable|integer|between:0,5',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',
             'type_id.required' => 'Selecciona un tipo de producto',
             'status_id.required' => 'Selecciona un estado del producto',
+            'meta_stars.between' => 'Las estrellas deben ser un entero entre 0 y 5.',
         ]); // añadir la validación
 
-        unset($validatedFields['meta_description'], $validatedFields['meta_includes']);
+        unset($validatedFields['meta_description'], $validatedFields['meta_includes'], $validatedFields['meta_stars']);
         $validatedFields['created_user_id'] = 1; // set default value
 
         $tour = Product::create($validatedFields);
@@ -148,17 +150,20 @@ class ProductController extends Controller
             ],
             'meta_description' => 'nullable|string',
             'meta_includes' => 'nullable|string',
+            'meta_stars' => 'nullable|integer|between:0,5',
         ], [
             'name.required' => 'El campo nombre es requerido',
             'category_id' => 'Tienes que seleccionar una categoría válida',
             'type_id.required' => 'Selecciona un tipo de producto',
             'status_id.required' => 'Selecciona un estado del producto',
+            'meta_stars.between' => 'Las estrellas deben ser un entero entre 0 y 5.',
         ]); // añadir la validación
 
-        unset($validatedFields['meta_description'], $validatedFields['meta_includes']);
+        unset($validatedFields['meta_description'], $validatedFields['meta_includes'], $validatedFields['meta_stars']);
 
         $tour = Product::findOrFail($id);
         $tour->update($validatedFields);
+        $tour->refresh();
 
         $this->syncTourMetaFromRequest($tour, $request);
 
@@ -167,7 +172,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Guarda description e includes en meta_data (tabla meta_data), fusionando con el JSON existente.
+     * Guarda description, includes y stars en meta_data (tabla meta_data), fusionando con el JSON existente.
      */
     private function syncTourMetaFromRequest(Product $tour, Request $request): void
     {
@@ -178,6 +183,11 @@ class ProductController extends Controller
             static fn (string $line): bool => $line !== ''
         ));
 
+        $starsRaw = $request->input('meta_stars');
+        $stars = $starsRaw === null || $starsRaw === '' ? 0 : (int) $starsRaw;
+        $stars = max(0, min(5, $stars));
+
+        $tour->unsetRelation('metaData');
         $tour->loadMissing('metaData');
         $meta = $tour->metaData?->meta_data ?? [];
         if (! is_array($meta)) {
@@ -186,6 +196,7 @@ class ProductController extends Controller
 
         $meta['description'] = $description;
         $meta['includes'] = $includes;
+        $meta['stars'] = $stars;
 
         $tour->metaData()->updateOrCreate([], ['meta_data' => $meta]);
     }

@@ -184,7 +184,7 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
     font-weight: bold;
 }
 
-/* stars */
+/* stars (clases star-0 … star-5; 0 = sin estrellas en CSS, ver Blade para “Sin clasificar”) */
 .star-1::before { content: '\2605'; }
 .star-2::before { content: '\2605 \2605'; }
 .star-3::before { content: '\2605 \2605 \2605'; }
@@ -197,7 +197,7 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
 .star-3::before,
 .star-4::before,
 .star-5::before {
-    font-size: 1.5em; /* Tamaño de las estrellas */
+    /* font-size: 1.5em; */ /* Tamaño de las estrellas */
     color: #ff9000;  /* Color de las estrellas */
 }
 /* /stars */
@@ -320,6 +320,8 @@ input[type="radio"]:focus {
 ul.tour-info {
     list-style-type: none; /* Quita las viñetas */
     padding-left: 0; /* Opcional: elimina el margen izquierdo */
+    line-height: 1;
+    margin-bottom: 0;
 }
 
 ul.tour-info li {

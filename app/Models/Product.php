@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -100,7 +101,7 @@ class Product extends Model
     public function serviceSlug(): string
     {
         $ret = [
-            $this->category->slug, 
+            $this->category->slug,
             $this->slug,
         ];
 
@@ -125,6 +126,26 @@ class Product extends Model
     public function getMetaAttribute()
     {
         return $this->metaData?->meta_data ?? [];
+    }
+
+    public function stars()
+    {
+        $stars = isset($this->meta['stars']) ? (int) $this->meta['stars'] : 0;
+        $stars = max(0, min(5, $stars));
+        return $stars;
+    }
+
+    /**
+     * Tours activos visibles en la web: al menos un segmento con salida estrictamente futura.
+     */
+    public function scopePublicVisibleTour(Builder $query): Builder
+    {
+        return $query
+            ->where('status_id', Status::PRODUCT_ACTIVE)
+            ->where('type_id', Type::TOUR)
+            ->whereHas('itineraries.segments', function ($q) {
+                $q->where('departure_date', '>', now());
+            });
     }
 
     public function cheapestItinerary()

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
 use App\Http\Controllers\Admin\SegmentController;
+use App\Http\Controllers\Admin\ItineraryPriceController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\InvoiceController;
@@ -16,7 +17,7 @@ use App\Models\Type;
 use App\Models\Status;
 use Illuminate\Support\Facades\Route;
 
-// para ver las consultas que se están ejecutando 
+// para ver las consultas que se están ejecutando
 // DB::listen(function ($query) { dump($query->sql); });
 
 Route::get('', [HomeController::class, 'index'])->name('admin');
@@ -51,6 +52,22 @@ Route::post('/tourDate', [SegmentController::class, 'storeTourDate'])->name('adm
 Route::controller(ItineraryController::class)->group(function () {
     Route::delete('/tourDate/{id}/destroy', 'destroyTourDate')->name('admin.tour.date.destroy');
 });
+
+Route::get('itineraries/{itinerary}/prices', [ItineraryPriceController::class, 'edit'])
+    ->name('admin.itineraries.prices.edit');
+Route::put('itineraries/{itinerary}/prices', [ItineraryPriceController::class, 'update'])
+    ->name('admin.itineraries.prices.update');
+
+Route::get('itineraries/{itinerary}/segments', [SegmentController::class, 'manageItinerarySegments'])
+    ->name('admin.itineraries.segments.index');
+Route::post('itineraries/{itinerary}/segments', [SegmentController::class, 'storeSegment'])
+    ->name('admin.itineraries.segments.store');
+Route::get('itineraries/{itinerary}/segments/{segment}/edit', [SegmentController::class, 'editSegment'])
+    ->name('admin.itineraries.segments.edit');
+Route::put('itineraries/{itinerary}/segments/{segment}', [SegmentController::class, 'updateSegment'])
+    ->name('admin.itineraries.segments.update');
+Route::delete('itineraries/{itinerary}/segments/{segment}', [SegmentController::class, 'destroySegment'])
+    ->name('admin.itineraries.segments.destroy');
 
 Route::resource('types', TypeController::class)->except(['show'])->names([
     'index' => 'admin.types.index',

@@ -6,6 +6,13 @@
 @section('og_image', asset('images/og-default.jpg'))
 
 @section('content')
+    @php
+        $tourStars = isset($tour->meta['stars']) ? (int) $tour->meta['stars'] : 0;
+        $tourStars = max(0, min(5, $tourStars));
+        $tourStarsTitle = $tourStars === 0
+            ? 'Sin clasificación por estrellas'
+            : 'Categoría: '.$tourStars.' '.($tourStars === 1 ? 'estrella' : 'estrellas');
+    @endphp
     <!-- container -->
 
     <section class="container my-4">
@@ -62,20 +69,42 @@
             <!-- description -->
             <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
 
-                <h2>{{$tour->name}} - {{$tour->id}}</h2>
+                <h2>{{ $tour->name }}</h2>
                 <hr>
 
                 <ul class="tour-info">
-                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
+                    <li title="{{ $tourStarsTitle }}"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong>
+                        @if ($tourStars > 0)
+                            <span class="star-{{ $tourStars }} fs-6" role="img" aria-label="{{ $tourStarsTitle }}"></span>
+                        @else
+                            <span class="text-muted small">Sin clasificar</span>
+                        @endif
+                    </li>
                     <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}}</li>
-                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }} {{$tour->cheapestItinerary()->id}}</li>
-                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
-                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
+                    <li>
+                        <i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong>
+                        @if ($tourDeparture)
+                            {{ ucfirst(\Carbon\Carbon::parse($tourDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}
+                        @else
+                            <span class="text-muted">Consultar disponibilidad</span>
+                        @endif
+                    </li>
+                    <li>
+                        <i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong>
+                        @if ($tourReturn)
+                            {{ ucfirst(\Carbon\Carbon::parse($tourReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}
+                        @else
+                            <span class="text-muted">—</span>
+                        @endif
+                    </li>
+                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{ $days ?? '—' }} Días - {{ $nights ?? '—' }} Noches</li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">@if ($price !== null){{ $price }}&euro;@else<span class="text-muted">Consultar</span>@endif</span></li>
                 </ul>
 
-                <div>
-                    <a href="{{ route('reservation.create', ['product' => $tour->slug, 'itinerary' => $firstDate->id]) }}" class="btn btn-primary me-2">Reservar Fechas</a>
+                <div class="mt-4">
+                    @if ($firstDate)
+                        <a href="{{ route('reservation.create', ['product' => $tour->slug, 'itinerary' => $firstDate->id]) }}" class="btn btn-primary me-2">Reservar Fechas</a>
+                    @endif
                     <a href="{{ route('contacto', ['tour' => $tour->slug]) }}" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
                 </div>
             </div>

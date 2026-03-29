@@ -52,8 +52,21 @@
             {data: 'id'},
             {data: 'name'},
             {data: 'category'},
-            {data: 'status_id'},
-            {data: 'precio'},
+            {data: 'status_name'},
+            {
+                data: 'precio',
+                render: (data) => {
+                    if (data === null || data === undefined || data === '') {
+                        return '—';
+                    }
+                    const n = Number(data);
+                    if (Number.isNaN(n)) {
+                        return '—';
+                    }
+                    return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + '\u00a0€';
+                },
+                type: 'num',
+            },
             {
                 data: null,
                 render: (data, type, row) => '<div class="btn-group" role="group">' +
