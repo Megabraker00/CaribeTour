@@ -238,6 +238,44 @@
 
                                 <fieldset {{ isset($show) ? 'disabled' : '' }} class="col-md-6 mt-3 mt-md-0">
                                     <legend class="text-secondary border-bottom w-100 pb-2">Contenido público (meta_data)</legend>
+
+
+                                    @php
+                                        $starsValue = (int) old('meta_stars', $tour->meta['stars'] ?? 0);
+                                        $starsValue = max(0, min(5, $starsValue));
+                                    @endphp
+                                    <div class="form-group mb-0">
+                                        <label for="meta_stars">Categoría (estrellas)</label>
+                                        @isset($show)
+                                            <p class="form-control-plaintext border rounded px-3 py-2 bg-light mb-0">
+                                                @if ($starsValue === 0)
+                                                    <span class="text-muted">Sin clasificar (0)</span>
+                                                @else
+                                                    <span class="text-warning" aria-hidden="true">{!! str_repeat('★', $starsValue) !!}</span>
+                                                    <span class="sr-only">{{ $starsValue }} de 5 estrellas</span>
+                                                    <span class="text-muted small ml-1">({{ $starsValue }}/5)</span>
+                                                @endif
+                                            </p>
+                                        @else
+                                            <select name="meta_stars" id="meta_stars"
+                                                class="form-control @error('meta_stars') is-invalid @enderror">
+                                                @foreach (range(0, 5) as $n)
+                                                    <option value="{{ $n }}" {{ $starsValue === $n ? 'selected' : '' }}>
+                                                        @if ($n === 0)
+                                                            0 — Sin clasificar
+                                                        @else
+                                                            {{ $n }} {{ $n === 1 ? 'estrella' : 'estrellas' }}
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('meta_stars')
+                                                <div class="error invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        @endisset
+                                        <small class="form-text text-muted">Entero 0–5. Se guarda en <code>meta_data</code> como <code>$tour-&gt;meta['stars']</code>.</small>
+                                    </div>
+
                                     <p class="text-muted small">Se muestra en la ficha del tour (<code>destination/tour</code>): descripción e ítems &quot;Incluye&quot;.</p>
 
                                     <div class="form-group">
@@ -263,7 +301,7 @@
                                             (HTML; editor <strong>Pell</strong>).</small>
                                     </div>
 
-                                    <div class="form-group mb-0">
+                                    <div class="form-group">
                                         <label for="meta_includes">Incluye (lista del itinerario / servicios)</label>
                                         <textarea name="meta_includes" id="meta_includes" rows="10"
                                             class="form-control @error('meta_includes') is-invalid @enderror"
@@ -568,6 +606,8 @@
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
                                                 <th scope="col" nowrap>Precio total</th>
+                                                <th scope="col" nowrap>Segmentos</th>
+                                                <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </thead>
@@ -581,6 +621,8 @@
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
                                                 <th scope="col" nowrap>Precio total</th>
+                                                <th scope="col" nowrap>Segmentos</th>
+                                                <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </tfoot>
@@ -821,11 +863,33 @@
                     render: (data) => `<span style="white-space: nowrap;">${data} &euro;</span>`
                 },
                 {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: (id) => {
+                        let base = @json(rtrim(url('/admin/itineraries'), '/'));
+                        let url = base + '/' + id + '/segments';
+                        return `<a href="${url}" class="btn btn-sm btn-outline-secondary" title="Gestionar tramos del viaje"><i class="fas fa-route"></i> Segmentos</a>`;
+                    }
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: (id) => {
+                        let base = @json(rtrim(url('/admin/itineraries'), '/'));
+                        let url = base + '/' + id + '/prices';
+                        return `<a href="${url}" class="btn btn-sm btn-outline-info" title="Precios por tipo de pasajero"><i class="fas fa-users"></i> Tarifas</a>`;
+                    }
+                },
+                {
                     data: null,
+                    orderable: false,
+                    searchable: false,
                     render: (data, type, row) => {
                         let routePhp = "{{ route('admin.tour.date.destroy', 0) }}";
                         let newRoute = routePhp.replace('/0/', `/${row.id}/`);
-                        return `<form method="POST" action="${newRoute}">
+                        return `<form method="POST" action="${newRoute}" class="d-inline">
                         @csrf @method('DELETE')
                         <input type="submit" onclick="return confirm('¿Seguro de que deseas eliminar este registro?');" value="Eliminar" class="btn btn-sm btn-danger">
                       </form>`

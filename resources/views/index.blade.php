@@ -57,22 +57,33 @@
             <div class="row pt-4">
 
                 @foreach ($tours as $tour)
+                @php
+                    $cheapItinerary = $tour->cheapestItinerary();
+                @endphp
+                @continue(!$cheapItinerary)
 
                 <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
                     <a href="{{ route('destinos.tour', [
-                    'country' => $tour->category->parentCategory->slug ?? 'sin-pais', 
-                    'province' => $tour->category->slug ?? 'sin-provincia', 
-                    'tour' => $tour->slug,
-                    'idIt' => $tour->cheapestItinerary()->id,
+                        'country' => $tour->category->parentCategory->slug ?? 'sin-pais',
+                        'province' => $tour->category->slug ?? 'sin-provincia',
+                        'tour' => $tour->slug,
                     ]) }}" class="text-decoration-none">
                         <div class="card shadow zoom">
                             <div class="card-body">
                                 <img loading="lazy" src="{{ asset($tour->mainImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del {{$tour->name}}" title="{{$tour->name}}" class="img-aspect-4-3 card-img img-fluid">
                             </div>
                             <div class="card-footer">
-                                <h5 class="card-title" title="{{$tour->name}}">{{$tour->name}} <span class="star-5 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$tour->category}} - {{$tour->category?->parentCategory}}"><i class="bi bi-geo-alt-fill"></i> <small>{{$tour->category}} - {{$tour->category?->parentCategory}}</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde {{$tour->cheapestItinerary()->fullPrice()}}&euro;">{{$tour->cheapestItinerary()->fullPrice()}}&euro;</span>
+                                <h5 class="card-title" title="{{$tour->name}}">{{$tour->name}}</h5>
+
+                                <ul class="tour-info">
+                                    <li title="Categoría: 5 estrellas"> <span class="star-{{ $tour->stars() }} fs-6"></span> </li>
+                                    <li class="text-muted" title="Destino: {{$tour->category}} - {{$tour->category?->parentCategory}}">
+                                        <i class="bi bi-geo-alt-fill"></i><small>{{$tour->category}}</small>
+                                    </li>
+                                    <li title="Precio por persona">
+                                        <i class="bi bi-tag-fill"></i>Desde <span class="price" title="Precio desde {{ $cheapItinerary->fullPrice() }}&euro;">{{ $cheapItinerary->fullPrice() }}&euro;</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </a>

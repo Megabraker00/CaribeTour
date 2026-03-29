@@ -20,6 +20,10 @@
                 <hr>
                 
                 @forelse ($tours as $tour)
+                    @php
+                        $cheapItinerary = $tour->cheapestItinerary();
+                        $firstSeg = $cheapItinerary?->firstSegment();
+                    @endphp
 
                     <div class="row mb-4">
                         <div class="col-md-6 mb-4">
@@ -42,11 +46,27 @@
                             <ul class="tour-info">
                                 <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
                                 <li title="{{$province->name}}"><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$province->name}} - {{$province->parentCategory}}</li>
-                                <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> Sábado 15 de Septiempre 2024</li>
-                                <li title="Precio por persona"><span class="fs-4"><i class="bi bi-tag-fill"></i><strong>Desde:</strong> 507.65€</span></li>
+                                <li>
+                                    <i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong>
+                                    @if ($firstSeg?->departure_date)
+                                        {{ ucfirst(\Carbon\Carbon::parse($firstSeg->departure_date)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}
+                                    @else
+                                        <span class="text-muted">Ver fechas</span>
+                                    @endif
+                                </li>
+                                <li title="Precio por persona">
+                                    <span class="fs-4">
+                                        <i class="bi bi-tag-fill"></i><strong>Desde:</strong>
+                                        @if ($cheapItinerary)
+                                            {{ number_format($cheapItinerary->fullPrice(), 2, ',', '.') }}€
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </span>
+                                </li>
                             </ul>
 
-                            <div>
+                            <div class="mt-4">
                                 <a title="Ver fechas disponibles para {{$tour->name}}" href="{{ route('destinos.tour', ['country' => $countrySlug, 'province' => $province->slug, 'tour' => $tour->slug]) }}" class="btn btn-primary me-2">Ver Fechas</a>
                                 <button class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</button>
                             </div>

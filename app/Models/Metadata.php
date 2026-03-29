@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Metadata extends Model {
-
+class Metadata extends Model
+{
     protected $table = 'meta_data';
 
     protected $fillable = ['meta_dataable_type', 'meta_dataable_id', 'meta_data'];
@@ -36,5 +35,4 @@ class Metadata extends Model {
         // Decodifica el campo meta_data de JSON a un array
         return json_decode($value, true);
     }
-    
 }

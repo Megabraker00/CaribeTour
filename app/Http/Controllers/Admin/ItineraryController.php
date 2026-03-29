@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Itinerary;
-use Illuminate\Support\Facades\DB;
+use App\Models\ItineraryPrice;
 
 class ItineraryController extends Controller
 {
@@ -14,7 +14,7 @@ class ItineraryController extends Controller
         $productId = $date->product_id;
 
         $date->bookings()->detach();
-        DB::table('itinerary_prices')->where('itinerary_id', $date->id)->delete();
+        ItineraryPrice::query()->where('itinerary_id', $date->id)->delete();
         $date->segments()->delete();
         $date->delete();
 

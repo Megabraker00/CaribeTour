@@ -43,6 +43,11 @@ class Itinerary extends Model
         return $this->hasMany(Segment::class);
     }
 
+    public function itineraryPrices(): HasMany
+    {
+        return $this->hasMany(ItineraryPrice::class);
+    }
+
     public function firstSegment()
     {
         return $this->segments()->orderBy('sort_order')->first();
@@ -72,6 +77,7 @@ class Itinerary extends Model
     public function nights(): int
     {
         $days = $this->days();
+
         return max(0, $days - 1);
     }
 
