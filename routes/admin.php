@@ -25,6 +25,7 @@ Route::get('', [HomeController::class, 'index'])->name('admin');
 Route::controller(ReservationController::class)->group(function () {
     Route::get('/reservas', 'index')->name('admin.booking.index');
     Route::get('/reservas/{booking}', 'show')->name('admin.booking.show');
+    Route::put('/reservas/{booking}/meta', 'updateMeta')->name('admin.booking.meta.update');
 });
 
 Route::controller(ClientController::class)->group(function () {

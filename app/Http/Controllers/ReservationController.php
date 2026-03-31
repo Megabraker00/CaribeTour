@@ -61,6 +61,8 @@ class ReservationController extends Controller
 
             $booking->update(['total_price' => $totalBookingPrice]);
                 
+            $this->syncBookingMetaFromReservationForm($booking, $validated['notes'] ?? null);
+
             $itinerary->decrement('available_stock', $request->quantity);
 
             $booking->itineraries()->attach($itinerary->id, [
@@ -75,18 +77,47 @@ class ReservationController extends Controller
         });        
     }
 
+    /**
+     * Guarda observaciones del cliente en meta_data (JSON) vinculado a la reserva.
+     */
+    private function syncBookingMetaFromReservationForm(Booking $booking, ?string $customerNotes): void
+    {
+        $booking->unsetRelation('metaData');
+        $booking->loadMissing('metaData');
+        $meta = $booking->metaData?->meta_data ?? [];
+        if (! is_array($meta)) {
+            $meta = [];
+        }
+        $meta['customer_notes'] = $customerNotes !== null && $customerNotes !== '' ? trim($customerNotes) : '';
+        if (! array_key_exists('internal_notes', $meta)) {
+            $meta['internal_notes'] = '';
+        }
+        $booking->metaData()->updateOrCreate([], ['meta_data' => $meta]);
+    }
+
     private function createClient(array $validated)
     {
+        $attributes = [
+            'name' => $validated['customer_name'],
+            'last_name' => $validated['customer_last_name'],
+            'phone' => $validated['customer_phone'] ?? null,
+            'dni_passport' => $validated['customer_document'],
+            'nationality' => $validated['customer_nationality'],
+            'status_id' => Status::CLIENT_ACTIVE,
+        ];
+
+        $pax1 = $validated['passengers'][1] ?? null;
+        if (
+            is_array($pax1)
+            && isset($pax1['birth_date'], $pax1['document'])
+            && strtoupper(trim($validated['customer_document'])) === strtoupper(trim($pax1['document']))
+        ) {
+            $attributes['date_of_birth'] = $pax1['birth_date'];
+        }
+
         $client = Client::updateOrCreate(
             ['email' => $validated['customer_email']],
-            [
-                'name' => $validated['customer_name'],
-                'last_name' => $validated['customer_last_name'],
-                'phone' => $validated['customer_phone'] ?? null,
-                'dni_passport' => $validated['customer_document'],
-                'nationality' => $validated['customer_nationality'],
-                'status_id' => Status::CLIENT_ACTIVE,
-            ]
+            $attributes
         );
 
         return $client;

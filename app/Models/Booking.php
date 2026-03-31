@@ -58,4 +58,19 @@ class Booking extends Model
     {
         return $this->belongsTo(Status::class, 'status_id');
     }
+
+    public function metaData(): MorphOne
+    {
+        return $this->morphOne(Metadata::class, 'meta_dataable');
+    }
+
+    /**
+     * Contenido de meta_data (customer_notes, internal_notes, …).
+     */
+    public function getMetaAttribute(): array
+    {
+        $meta = $this->metaData?->meta_data;
+
+        return is_array($meta) ? $meta : [];
+    }
 }

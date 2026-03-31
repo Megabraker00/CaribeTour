@@ -16,9 +16,15 @@
 @section('content')
 <div class="container-fluid">
 
-    
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
 
-    
     <div class="row">
 
         <div class="col-md-6">
@@ -76,21 +82,44 @@
         </div>
     </div>
 
-    {{-- Notas de la reserva --}}
-    @if(filled($booking->notes))
+    {{-- Notas del cliente (meta_data.customer_notes) y notas internas (admin) --}}
     <div class="row">
-        <div class="col-12">
+        <div class="col-md-6">
             <div class="card card-outline card-secondary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-sticky-note"></i> Notas de la reserva</h3>
+                    <h3 class="card-title"><i class="fas fa-comment"></i> Observaciones del cliente</h3>
                 </div>
                 <div class="card-body">
-                    <div class="text-break">{{ $booking->notes }}</div>
+                    @if(filled($booking->meta['customer_notes'] ?? null))
+                        <div class="text-break">{{ $booking->meta['customer_notes'] }}</div>
+                    @else
+                        <p class="text-muted mb-0">Sin observaciones del cliente.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-outline card-warning">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-lock"></i> Notas internas (solo admin)</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('admin.booking.meta.update', $booking) }}">
+                        @csrf
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="internal_notes">Notas internas</label>
+                            <textarea class="form-control @error('internal_notes') is-invalid @enderror" id="internal_notes" name="internal_notes" rows="5" placeholder="Uso interno: no visible para el cliente.">{{ old('internal_notes', $booking->meta['internal_notes'] ?? '') }}</textarea>
+                            @error('internal_notes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar notas internas</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    @endif
 
     {{-- Pagos --}}
     <div class="card card-outline card-success">
@@ -149,7 +178,6 @@
                             <th>DNI/Pasaporte</th>
                             <th>Nacimiento</th>
                             <th>Nacionalidad</th>
-                            <th>Tipo</th>
                             <th>Precio</th>
                             <th>Tasas</th>
                         </tr>
@@ -162,7 +190,6 @@
                             <td>{{ $pax->dni_passport ?? '—' }}</td>
                             <td>{{ $pax->date_of_birth ? \Carbon\Carbon::parse($pax->date_of_birth)->format('d/m/Y') : '—' }}</td>
                             <td>{{ $pax->nationality ?? '—' }}</td>
-                            <td>{{ $pax->type->name ?? '—' }}</td>
                             <td>{{ $pax->price_at_booking ? number_format((float) $pax->price_at_booking, 2, ',', '.') : '—' }}</td>
                             <td>{{ $pax->taxes_at_booking ? number_format((float) $pax->taxes_at_booking, 2, ',', '.') : '—' }}</td>
                         </tr>
