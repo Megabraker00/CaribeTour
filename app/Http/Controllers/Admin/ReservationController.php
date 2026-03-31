@@ -23,6 +23,7 @@ class ReservationController extends Controller
         $booking->load([
             'client',
             'statusRecord',
+            'metaData',
             'payments.type',
             'payments.statusRecord',
             'passengers.type',
@@ -35,5 +36,34 @@ class ReservationController extends Controller
         ]);
 
         return view('admin.booking.show', ['booking' => $booking]);
+    }
+
+    /**
+     * Actualiza internal_notes en meta_data sin pisar customer_notes.
+     */
+    public function updateMeta(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'internal_notes' => 'nullable|string|max:5000',
+        ], [
+            'internal_notes.max' => 'Las notas internas no pueden superar :max caracteres.',
+        ]);
+
+        $booking->unsetRelation('metaData');
+        $booking->loadMissing('metaData');
+        $meta = $booking->metaData?->meta_data ?? [];
+        if (! is_array($meta)) {
+            $meta = [];
+        }
+        if (! array_key_exists('customer_notes', $meta)) {
+            $meta['customer_notes'] = '';
+        }
+        $meta['internal_notes'] = isset($validated['internal_notes']) ? trim((string) $validated['internal_notes']) : '';
+
+        $booking->metaData()->updateOrCreate([], ['meta_data' => $meta]);
+
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', 'Notas internas guardadas.');
     }
 }

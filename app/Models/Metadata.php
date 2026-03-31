@@ -29,10 +29,4 @@ class Metadata extends Model
     {
         return $this->morphMany(Client::class, 'meta_dataable');
     }
-
-    public function getMetaDataAttribute($value)
-    {
-        // Decodifica el campo meta_data de JSON a un array
-        return json_decode($value, true);
-    }
 }

@@ -26,6 +26,12 @@
     <!-- App -->
     <meta name="theme-color" content="#ff9000">
     <meta name="author" content="CaribeTour.es">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Apple: instalación / modo pantalla completa -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CaribeTour">
 
     <title>@yield('title', 'Especialistas en viajes al Caribe') | CaribeTour.es</title>
     <meta name="description" content="@yield('title', 'Descubre las mejores ofertas en vuelos y hoteles al Caribe. Viajes personalizados a Punta Cana, Riviera Maya y más con CaribeTour.')" />
@@ -34,9 +40,8 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" href="{{ asset('images/favicon.svg') }}" type="image/svg+xml">
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
-    <link rel="manifest" href="{{ asset('images/manifest.json') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-    
     <!-- Performance -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -48,7 +53,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    {{-- <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'"> --}}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap">
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
