@@ -1,0 +1,13 @@
+---
+description: Estandares de codigo PHP del proyecto basados en PSR-12
+alwaysApply: true
+---
+
+# Estandar PHP del proyecto
+
+- Seguir PSR-12 para formato y estructura del codigo PHP.
+- Preferir clases, metodos y propiedades con nombres claros y consistentes con convenciones PSR.
+- Mantener controladores delgados y mover logica de negocio a servicios/modelos segun corresponda.
+- Evitar logica compleja en vistas Blade.
+- Antes de finalizar cambios en PHP, ejecutar `composer format` para aplicar estilo.
+- Para validar sin modificar archivos, ejecutar `composer lint`.

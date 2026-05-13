@@ -95,7 +95,7 @@ class StatusController extends Controller
     public function update(Request $request, Status $status): RedirectResponse
     {
         $allowed = array_keys(self::statusableOptions());
-        if (! in_array($status->statusable, $allowed, true)) {
+        if (!in_array($status->statusable, $allowed, true)) {
             $allowed[] = $status->statusable;
         }
 

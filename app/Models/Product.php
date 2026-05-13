@@ -17,10 +17,10 @@ class Product extends Model
 
     protected $guarded = [];
 
-    const TYPE_TOUR = 1;
-    const TYPE_SERVICE = 2;
-    const STATUS_AVAILABLE = 1;
-    const STATUS_UNAVAILABLE = 2;
+    public const TYPE_TOUR = 1;
+    public const TYPE_SERVICE = 2;
+    public const STATUS_AVAILABLE = 1;
+    public const STATUS_UNAVAILABLE = 2;
 
     public function __toString()
     {

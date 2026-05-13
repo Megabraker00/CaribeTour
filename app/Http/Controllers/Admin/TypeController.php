@@ -78,7 +78,7 @@ class TypeController extends Controller
     public function update(Request $request, Type $type): RedirectResponse
     {
         $allowed = array_keys(self::typeableOptions());
-        if (! in_array($type->typeable, $allowed, true)) {
+        if (!in_array($type->typeable, $allowed, true)) {
             $allowed[] = $type->typeable;
         }
 

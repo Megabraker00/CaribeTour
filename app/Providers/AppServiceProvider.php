@@ -20,10 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-            // Compartir categorías con todas las vistas
-            //$categories_search = \App\Models\Category::whereNotNull('parent_id')->get();
-            //view()->share('categories', $categories_search);
+        // Compartir categorías con todas las vistas
+        //$categories_search = \App\Models\Category::whereNotNull('parent_id')->get();
+        //view()->share('categories', $categories_search);
 
-            Paginator::useBootstrapFive();
+        Paginator::useBootstrapFive();
     }
 }

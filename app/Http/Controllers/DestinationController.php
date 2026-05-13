@@ -51,7 +51,7 @@ class DestinationController extends Controller
             ->whereNull('parent_id')
             ->first();
 
-        if (! $parentCategory) {
+        if (!$parentCategory) {
             abort(404);
         }
 
@@ -88,7 +88,7 @@ class DestinationController extends Controller
             ->whereNull('parent_id')
             ->first();
 
-        if (! $parentCategory) {
+        if (!$parentCategory) {
             abort(404);
         }
 
@@ -97,7 +97,7 @@ class DestinationController extends Controller
             ->where('parent_id', $parentCategory->id)
             ->first();
 
-        if (! $subCategory) {
+        if (!$subCategory) {
             abort(404);
         }
 
@@ -133,8 +133,8 @@ class DestinationController extends Controller
         $lastSeg = $firstItinerary?->lastSegment();
         $departure = $firstSeg?->departure_date;
         $return = $lastSeg?->departure_date;
-            
-            
+
+
         //$price = number_format($firstDate->price + $firstDate->taxes, 2, ',', '.');
 
         //$price = number_format($firstDate->price + $firstDate->taxes, 2, ',', '.');

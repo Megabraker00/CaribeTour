@@ -16,7 +16,7 @@ class Blog extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');

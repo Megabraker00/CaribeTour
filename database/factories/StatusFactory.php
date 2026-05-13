@@ -80,7 +80,7 @@ class StatusFactory extends Factory
             ['id' => Status::PAYMENT_PAID, 'name' => 'Pagado', 'statusable' => Payment::class],
             ['id' => Status::PAYMENT_CANCELLED, 'name' => 'Cancelado', 'statusable' => Payment::class],
         );
-    }    
+    }
 
     public function forSupplier(): static
     {

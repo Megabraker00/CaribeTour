@@ -23,12 +23,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// para ver las consultas que se están ejecutando 
+// para ver las consultas que se están ejecutando
 //DB::listen(function ($query) { dump($query->sql); });
 
 Route::get('/', HomeController::class)->name('inicio');
 
-Route::controller(ServiceController::class)->group(function() {
+Route::controller(ServiceController::class)->group(function () {
     Route::get('/servicios', 'index')->name('servicios');
     Route::get('/servicios/{servicio:slug}', 'show')->name('servicios.detalle');
     Route::get('/servicios/{cat:slug}', 'categoryIndex');
@@ -38,11 +38,11 @@ Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
 
 Route::get('/blogs/{post:slug}', [PostController::class, 'show'])->name('blogs.show');
 
-Route::get('/contacto', function() {
+Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
 
-Route::controller(DestinationController::class)->group(function() {
+Route::controller(DestinationController::class)->group(function () {
     Route::get('/destinos', 'countryIndex')->name('destinos');
     Route::get('/destinos/{country:slug}', 'countryShow')->name('destinos.pais');
     Route::get("/destinos/{country:slug}/{province:slug}", 'provinceShow')->name('destinos.provincia');
@@ -50,13 +50,13 @@ Route::controller(DestinationController::class)->group(function() {
     Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
 });
 
-Route::get('/galeria', function() {
+Route::get('/galeria', function () {
     //$images = Image::all();
     $images = Image::where('imageable_type', App\Models\Product::class)->paginate(12);
     return view('galeria', compact('images'));
 })->name('galeria');
 
-Route::controller(ReservationController::class)->scopeBindings()->group(function() {
+Route::controller(ReservationController::class)->scopeBindings()->group(function () {
     Route::get("/reserva/{product:slug}/{itinerary}", 'create')->name('reservation.create');
     Route::post("/reserva/{product:slug}/{itinerary}", 'store')->name('reservation.store');
     Route::get("/reserva/{product:slug}/{itinerary}/pago", 'payment')->name('reservation.payment');

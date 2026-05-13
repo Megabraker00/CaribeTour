@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Image;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -19,7 +18,7 @@ class ImageSeeder extends Seeder
     {
         $toursPath = public_path('images/tours');
 
-        if (! File::isDirectory($toursPath)) {
+        if (!File::isDirectory($toursPath)) {
             File::makeDirectory($toursPath, 0755, true);
         }
 

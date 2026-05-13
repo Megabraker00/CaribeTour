@@ -34,7 +34,7 @@ class ProductMetadataSeeder extends Seeder
                         'Transporte en autobús',
                         'Mapa turístico',
                         'Botella de agua'
-                    ], rand(3,5))
+                    ], rand(3, 5))
                 ]
             ]);
 

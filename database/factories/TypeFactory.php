@@ -30,7 +30,7 @@ class TypeFactory extends Factory
             'typeable' => fake()->randomElement($typeables),
         ];
     }
-    
+
     /**
      * Indica que el tipo pertenece al modelo Product, con nombres específicos para cada tipo de producto.
      */

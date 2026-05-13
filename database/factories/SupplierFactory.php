@@ -18,7 +18,7 @@ class SupplierFactory extends Factory
      */
     public function definition(): array
     {
-        $states = Status::where('statusable', Supplier::class )->get();
+        $states = Status::where('statusable', Supplier::class)->get();
         return [
             'name' => fake()->company(),
             'status_id' => fake()->randomElement($states),
