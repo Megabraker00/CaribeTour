@@ -52,10 +52,10 @@ class ReservationController extends Controller
         $booking->unsetRelation('metaData');
         $booking->loadMissing('metaData');
         $meta = $booking->metaData?->meta_data ?? [];
-        if (! is_array($meta)) {
+        if (!is_array($meta)) {
             $meta = [];
         }
-        if (! array_key_exists('customer_notes', $meta)) {
+        if (!array_key_exists('customer_notes', $meta)) {
             $meta['customer_notes'] = '';
         }
         $meta['internal_notes'] = isset($validated['internal_notes']) ? trim((string) $validated['internal_notes']) : '';

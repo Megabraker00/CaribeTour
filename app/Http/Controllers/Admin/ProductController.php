@@ -190,7 +190,7 @@ class ProductController extends Controller
         $tour->unsetRelation('metaData');
         $tour->loadMissing('metaData');
         $meta = $tour->metaData?->meta_data ?? [];
-        if (! is_array($meta)) {
+        if (!is_array($meta)) {
             $meta = [];
         }
 
@@ -223,7 +223,7 @@ class ProductController extends Controller
         $relativeDir = 'images/tours/'.$safeSlug;
         $absoluteDir = public_path($relativeDir);
 
-        if (! File::isDirectory($absoluteDir)) {
+        if (!File::isDirectory($absoluteDir)) {
             File::makeDirectory($absoluteDir, 0755, true);
         }
 
@@ -233,13 +233,13 @@ class ProductController extends Controller
         $savedCount = 0;
 
         foreach ($request->file('images') as $file) {
-            if (! $file->isValid()) {
+            if (!$file->isValid()) {
                 continue;
             }
 
             $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'jpg');
             $allowedExt = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
-            if (! in_array($extension, $allowedExt, true)) {
+            if (!in_array($extension, $allowedExt, true)) {
                 continue;
             }
 
@@ -255,7 +255,7 @@ class ProductController extends Controller
             $file->move($absoluteDir, $filename);
 
             $relativePath = $relativeDir.'/'.$filename;
-            $isMain = ! $hasMain && ! $mainAssignedInBatch;
+            $isMain = !$hasMain && !$mainAssignedInBatch;
 
             $tour->images()->create([
                 'name' => pathinfo($filename, PATHINFO_FILENAME),
@@ -376,7 +376,7 @@ class ProductController extends Controller
             foreach ($validated['image_names'] as $imageId => $name) {
                 $imageId = (int) $imageId;
                 $image = $tour->images->firstWhere('id', $imageId);
-                if (! $image) {
+                if (!$image) {
                     continue;
                 }
                 $image->update(['name' => trim((string) $name)]);

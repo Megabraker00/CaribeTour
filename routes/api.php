@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /**
  * DataTable
  */
-Route::controller(DatatableController::class)->group(function(){
+Route::controller(DatatableController::class)->group(function () {
     Route::get('datatable/bookings', 'bookings')->name('api.datatable.bookings');
     Route::get('datatable/clientes', 'clients')->name('api.datatable.clients');
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');

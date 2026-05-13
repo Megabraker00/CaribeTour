@@ -11,7 +11,6 @@ use App\Models\Product;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 
-
 class DatatableController extends Controller
 {
     /**

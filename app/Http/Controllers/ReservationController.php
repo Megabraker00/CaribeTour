@@ -60,7 +60,7 @@ class ReservationController extends Controller
             $totalBookingPrice = $this->createPassengersAndCalculateBookingPrice($validated, $itinerary, $booking->id);
 
             $booking->update(['total_price' => $totalBookingPrice]);
-                
+
             $this->syncBookingMetaFromReservationForm($booking, $validated['notes'] ?? null);
 
             $itinerary->decrement('available_stock', $request->quantity);
@@ -74,7 +74,7 @@ class ReservationController extends Controller
             return redirect()->route('reservation.payment', [$product, $itinerary])
                                 ->with('success', 'Reserva creada correctamente.');
 
-        });        
+        });
     }
 
     /**
@@ -85,11 +85,11 @@ class ReservationController extends Controller
         $booking->unsetRelation('metaData');
         $booking->loadMissing('metaData');
         $meta = $booking->metaData?->meta_data ?? [];
-        if (! is_array($meta)) {
+        if (!is_array($meta)) {
             $meta = [];
         }
         $meta['customer_notes'] = $customerNotes !== null && $customerNotes !== '' ? trim($customerNotes) : '';
-        if (! array_key_exists('internal_notes', $meta)) {
+        if (!array_key_exists('internal_notes', $meta)) {
             $meta['internal_notes'] = '';
         }
         $booking->metaData()->updateOrCreate([], ['meta_data' => $meta]);
@@ -123,7 +123,7 @@ class ReservationController extends Controller
         return $client;
     }
 
-    private function createBooking($clientId) 
+    private function createBooking($clientId)
     {
         // 3. RESERVA
         $booking = Booking::create([
@@ -180,9 +180,9 @@ class ReservationController extends Controller
      * Muestra los datos de la reserva y el formulario de stripe
      */
     public function payment(Request $request, Product $product, Itinerary $itinerary)
-    {    
+    {
         $bookingId = session('booking_id');
-        
+
         $booking = Booking::findOrFail($bookingId);
 
         Stripe::setApiKey(env('STRIPE_SECRET_KEY_TEST'));
@@ -197,7 +197,7 @@ class ReservationController extends Controller
                 'booking_id' => $booking->id,
                 'external_ref' => $booking->external_ref
             ],
-        ]);  
+        ]);
 
         $days = $itinerary?->days;
         $nights = $itinerary?->nights;
@@ -223,25 +223,25 @@ class ReservationController extends Controller
      */
     public function paymentCallback(Request $request, Product $product, Itinerary $itinerary)
     {
-        
+
         // 1. Configuramos la llave secreta
         Stripe::setApiKey(env('STRIPE_SECRET_KEY_TEST'));
 
         try {
             // 2. Recuperamos el ID del pago que Stripe nos manda por la URL
             $paymentIntentId = $request->query('payment_intent');
-            
+
             if (!$paymentIntentId) {
-                
+
                 return redirect()->route('reservation.payment', [
-                        $product->slug, 
+                        $product->slug,
                         $itinerary->id,
                     ])->with('error', 'No se encontró información del pago.');
             }
-            
+
             // 3. Consultamos el estado real en los servidores de Stripe
             $intent = PaymentIntent::retrieve($paymentIntentId);
-            
+
             // 4. Recuperamos la reserva de la base de datos (usando el metadata que enviamos al crear el intent)
             $booking = Booking::findOrFail($intent->metadata->booking_id);
 
@@ -254,11 +254,11 @@ class ReservationController extends Controller
 
             // --- CASO ÉXITO ---
             if ($intent->status === Status::PAYMENT_STRIPE_SUCCEEDED) {
-                
+
                 // Si la reserva aún no está pagada en nuestra DB, la actualizamos
                 if ($booking->status_id != Status::PAYMENT_PAID) {
                     $booking->update(['status_id' => Status::PAYMENT_PAID]);
-                    
+
                     // Registramos el pago exitoso
                     $booking->payments()->create([
                         'amount' => $intent->amount / 100,

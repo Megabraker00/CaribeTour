@@ -45,7 +45,7 @@ class ProductFactory extends Factory
         ]);
 
         $name .= '-' . fake()->unique()->numberBetween(1, 1000);
-        
+
         return [
             'name' => $name,
             'slug' => Str::slug($name),

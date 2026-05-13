@@ -11,8 +11,8 @@ class Passenger extends Model
 {
     use HasFactory;
 
-    const GENDER_MALE = "Male";
-    const GENDER_FEMALE = "Female";
+    public const GENDER_MALE = "Male";
+    public const GENDER_FEMALE = "Female";
 
     protected $fillable = [
         'booking_id',
@@ -27,7 +27,7 @@ class Passenger extends Model
         'price_at_booking',
         'taxes_at_booking',
     ];
-    
+
     public function __toString()
     {
         return \ucwords($this->name ." ". $this->last_name);
@@ -55,9 +55,15 @@ class Passenger extends Model
 
     public static function getPassengerTypeIdByAge(int $age)
     {
-        if ($age < 2) return Type::INFANT; // Infante
-        if ($age < 12) return Type::CHILD; // Niño
-        if ($age >= 70) return Type::SENIOR; // Sénior (como definimos antes)
+        if ($age < 2) {
+            return Type::INFANT;
+        } // Infante
+        if ($age < 12) {
+            return Type::CHILD;
+        } // Niño
+        if ($age >= 70) {
+            return Type::SENIOR;
+        } // Sénior (como definimos antes)
 
         return Type::ADULT; // Adulto
     }

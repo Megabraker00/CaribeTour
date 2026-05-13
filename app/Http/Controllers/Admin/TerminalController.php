@@ -111,7 +111,7 @@ class TerminalController extends Controller
      */
     private function validatedTerminal(Request $request, ?Terminal $terminal = null): array
     {
-        if (! $request->filled('parent_id')) {
+        if (!$request->filled('parent_id')) {
             $request->merge(['parent_id' => null]);
         }
 

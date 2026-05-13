@@ -97,7 +97,7 @@ class CategoryController extends Controller
     {
         $category->loadMissing('metaData');
         $meta = $category->metaData?->meta_data ?? [];
-        if (! is_array($meta)) {
+        if (!is_array($meta)) {
             $meta = [];
         }
         $meta['description'] = $html;
@@ -110,12 +110,12 @@ class CategoryController extends Controller
      */
     private function storeCategoryMainImage(Category $category, Request $request): void
     {
-        if (! $request->hasFile('category_image')) {
+        if (!$request->hasFile('category_image')) {
             return;
         }
 
         $file = $request->file('category_image');
-        if (! $file->isValid()) {
+        if (!$file->isValid()) {
             return;
         }
 
@@ -123,7 +123,7 @@ class CategoryController extends Controller
         $relativeDir = 'images/categories/'.$safeSlug;
         $absoluteDir = public_path($relativeDir);
 
-        if (! File::isDirectory($absoluteDir)) {
+        if (!File::isDirectory($absoluteDir)) {
             File::makeDirectory($absoluteDir, 0755, true);
         }
 
@@ -139,7 +139,7 @@ class CategoryController extends Controller
 
         $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'jpg');
         $allowedExt = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
-        if (! in_array($extension, $allowedExt, true)) {
+        if (!in_array($extension, $allowedExt, true)) {
             return;
         }
 
@@ -215,7 +215,7 @@ class CategoryController extends Controller
      */
     private function validatedCategory(Request $request, ?Category $category = null): array
     {
-        if (! $request->filled('parent_id')) {
+        if (!$request->filled('parent_id')) {
             $request->merge(['parent_id' => null]);
         }
 

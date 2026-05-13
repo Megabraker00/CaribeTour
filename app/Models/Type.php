@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-
 class Type extends Model
 {
     use HasFactory;
@@ -17,27 +16,27 @@ class Type extends Model
     ];
 
     // from 1 to 9 belongs to Product model
-    const TOUR = 1;
-    const EXCURSION = 2;
-    const HOTEL = 3;
-    const INSURANCE = 4;
-    const CRUISE = 5;
-    const FLIGHT = 6;
-    const TRANSFER = 7;
-    const FREETOUR = 8;
+    public const TOUR = 1;
+    public const EXCURSION = 2;
+    public const HOTEL = 3;
+    public const INSURANCE = 4;
+    public const CRUISE = 5;
+    public const FLIGHT = 6;
+    public const TRANSFER = 7;
+    public const FREETOUR = 8;
 
     // from 10 to 19 belongs to Payment model
-    const PAID_BY_CARD = 10;
-    const MONETARY_TRANSFER = 11;
-    const PAID_BY_STRIPE = 12;
-    const PAID_BY_PAYPAL = 13;
-    const PAID_BY_CASH = 14;
+    public const PAID_BY_CARD = 10;
+    public const MONETARY_TRANSFER = 11;
+    public const PAID_BY_STRIPE = 12;
+    public const PAID_BY_PAYPAL = 13;
+    public const PAID_BY_CASH = 14;
 
     // from 20 to 29 belongs to Passenger
-    const INFANT = 20;
-    const CHILD = 21;
-    const ADULT = 22;
-    const SENIOR = 23;
+    public const INFANT = 20;
+    public const CHILD = 21;
+    public const ADULT = 22;
+    public const SENIOR = 23;
 
     public function __toString()
     {

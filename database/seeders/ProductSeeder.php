@@ -17,7 +17,7 @@ class ProductSeeder extends Seeder
             ->tour()
             ->active()
             ->create();
-            
+
         Product::factory(50)->create();
     }
 }
