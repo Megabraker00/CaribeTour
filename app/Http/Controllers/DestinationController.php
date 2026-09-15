@@ -11,9 +11,9 @@ class DestinationController extends Controller
     {
         $parentCategories = Category::query()
             ->whereNull('parent_id')
-            ->whereHas('subCategories.products', function ($q) {
+            /*->whereHas('subCategories.products', function ($q) {
                 $q->publicVisibleTour();
-            })
+            })*/
             ->with(['images'])
             ->get();
 
@@ -56,7 +56,7 @@ class DestinationController extends Controller
         }
 
         $subCategory = Category::query()
-            ->with(['parentCategory', 'images', 'metaData'])
+            ->with(['parentCategory', 'metaData'])
             ->where('slug', $province)
             ->where('parent_id', $parentCategory->id)
             ->first();
