@@ -119,7 +119,7 @@
 
                 @if (!empty($tour->meta['description']))
                     <h5><i class="bi bi-card-text"></i> Descripción</h5>
-                    <div class="tour-description">{!! $tour->meta['description'] !!}</div>
+                    <div class="tour-description mb-4">{!! $tour->meta['description'] !!}</div>
                 @endif
 
                 @if(!empty($tour->meta['includes']))

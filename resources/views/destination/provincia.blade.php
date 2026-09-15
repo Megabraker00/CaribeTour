@@ -44,7 +44,7 @@
                             </a>
 
                             <ul class="tour-info">
-                                <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
+                                <li title="Categoría: {{$tour->stars()}} estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-{{$tour->stars()}} fs-6"></span> </li>
                                 <li title="{{$province->name}}"><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$province->name}} - {{$province->parentCategory}}</li>
                                 <li>
                                     <i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong>

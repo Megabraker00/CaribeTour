@@ -29,18 +29,20 @@
                             <div class="card-subtitle mb-2 text-muted" title="Resumen">
 
                                 <ul class="tour-info">
-                                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
+                                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-{{$tour->stars()}} fs-6"></span> </li>
                                     <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}} - {{$tour->category?->parentCategory}}</li>
                                     <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
                                     <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($tourReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
                                     <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
                                     @if(!empty($tour->meta['includes']))
-                                        <i class="bi bi-ui-checks"></i> Incluye
-                                        <ul>
+                                    <li>
+                                        <i class="bi bi-ui-checks"></i><strong>Incluye:</strong>
+                                        <ul class="mt-2">
                                             @foreach($tour->meta['includes'] as $include)
                                                 <li>{{ $include }}</li>
                                             @endforeach
                                         </ul>
+                                    </li>
                                     @endif
                                     <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
                                 </ul>
@@ -94,14 +96,6 @@
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_phone" class="form-label">Teléfono de Contacto</label>
                                 <input type="tel" class="form-control" id="customer_phone" name="customer_phone" placeholder="+34...">
-                            </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="holder_is_passenger" id="holder_is_passenger" checked>
-                                    <label class="form-check-label" for="holder_is_passenger">
-                                        Yo soy uno de los pasajeros
-                                    </label>
-                                </div>
                             </div>
                         </div>
                     </div>
