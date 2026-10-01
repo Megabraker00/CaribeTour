@@ -13,67 +13,75 @@ use Illuminate\Support\Facades\DB;
 
 class DatatableController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function bookings()
     {
-        $bookings = Booking::with(['client', 'statusRecord', 'itineraries' => function ($q) {
-            $q->orderBy('booking_itinerary.itinerary_order')->with(['segments' => function ($sq) {
-                $sq->orderBy('sort_order');
-            }]);
-        }])
-            ->get();
+        $query = Booking::query()
+            ->with(['client', 'statusRecord', 'itineraries' => function ($q) {
+                $q->orderBy('booking_itinerary.itinerary_order')->with(['segments' => function ($sq) {
+                    $sq->orderBy('sort_order');
+                }]);
+            }])
+            ->select('bookings.*');
 
-        $rows = $bookings->map(function ($booking) {
-            $titular = '—';
-            if ($booking->relationLoaded('client') && $booking->client) {
-                $titular = trim(($booking->client->name ?? '') . ' ' . ($booking->client->last_name ?? ''));
-            }
-            if ($titular === '') {
-                $titular = '—';
-            }
+        return DataTables::eloquent($query)
+            ->addColumn('titular', function (Booking $booking) {
+                $titular = trim(($booking->client->name ?? '').' '.($booking->client->last_name ?? ''));
 
-            $fSalida = '—';
-            $firstItinerary = $booking->itineraries->first();
-            if ($firstItinerary && $firstItinerary->relationLoaded('segments') && $firstItinerary->segments->isNotEmpty()) {
-                $firstSegment = $firstItinerary->segments->sortBy('sort_order')->first();
-                if ($firstSegment && $firstSegment->departure_date) {
-                    $fSalida = \Carbon\Carbon::parse($firstSegment->departure_date)->format('d/m/Y');
+                return $titular !== '' ? $titular : '—';
+            })
+            ->addColumn('f_salida', function (Booking $booking) {
+                $firstItinerary = $booking->itineraries->first();
+                $firstSegment = $firstItinerary?->segments?->sortBy('sort_order')->first();
+                if ($firstSegment?->departure_date) {
+                    return $firstSegment->departure_date->format('d/m/Y');
                 }
-            }
 
-            $totalPrice = $booking->total_price !== null ? (float) $booking->total_price : 0;
-            $totalAmount = number_format($totalPrice, 2, ',', '.') . ' ' . ($booking->currency ?? 'EUR');
+                return '—';
+            })
+            ->addColumn('total_amount', function (Booking $booking) {
+                $totalPrice = $booking->total_price !== null ? (float) $booking->total_price : 0;
 
-            return [
-                'id' => $booking->id,
-                'external_ref' => $booking->external_ref ?? '—',
-                'titular' => $titular,
-                'f_salida' => $fSalida,
-                'total_amount' => $totalAmount,
-                'status_id' => $booking->status_id,
-                'status_name' => $booking->statusRecord->name ?? (string) $booking->status_id,
-            ];
-        });
-
-        return DataTables::of($rows)->toJson();
+                return number_format($totalPrice, 2, ',', '.').' '.($booking->currency ?? 'EUR');
+            })
+            ->addColumn('status_name', function (Booking $booking) {
+                return $booking->statusRecord->name ?? (string) $booking->status_id;
+            })
+            ->filterColumn('titular', function ($query, $keyword) {
+                $query->whereHas('client', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('last_name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('status_name', function ($query, $keyword) {
+                $query->whereHas('statusRecord', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('total_amount', function ($query, $keyword) {
+                $query->where('total_price', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('f_salida', function ($query, $keyword) {
+                // Computed from segments; keep global search from breaking the query.
+            })
+            ->orderColumn('total_amount', 'total_price $1')
+            ->orderColumn('status_name', 'status_id $1')
+            ->orderColumn('titular', 'client_id $1')
+            ->orderColumn('f_salida', 'id $1')
+            ->toJson();
     }
 
     public function invoices()
     {
-        $invoices = Invoice::select('id', 'booking_id', 'created_at', 'created_user_id')->get();
+        $query = Invoice::query()->select('id', 'booking_id', 'created_at', 'created_user_id');
 
-        return DataTables::make($invoices)->toJson();
+        return DataTables::eloquent($query)->toJson();
     }
 
     public function clients()
     {
-        $clients = Client::select('id', 'name', 'last_name', 'dni_passport')->get();
+        $query = Client::query()->select('id', 'name', 'last_name', 'dni_passport');
 
-        return DataTables::make($clients)->toJson();
+        return DataTables::eloquent($query)->toJson();
     }
 
     public function tours()
@@ -82,7 +90,7 @@ class DatatableController extends Controller
             ->selectRaw('product_id, MIN(price + taxes) as min_total')
             ->groupBy('product_id');
 
-        $tours = Product::query()
+        $query = Product::query()
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->leftJoin('statuses', function ($join) {
                 $join->on('products.status_id', '=', 'statuses.id')
@@ -98,56 +106,65 @@ class DatatableController extends Controller
                 'products.status_id',
                 'statuses.name as status_name',
                 DB::raw('ROUND(it_min.min_total, 2) as precio')
-            )
-            ->get()
-            ->map(function ($row) {
+            );
+
+        return DataTables::of($query)
+            ->editColumn('status_name', function ($row) {
                 if ($row->status_name === null || $row->status_name === '') {
-                    $row->status_name = '— (id '.$row->status_id.')';
+                    return '— (id '.$row->status_id.')';
                 }
 
-                return $row;
-            });
-
-        return DataTables::make($tours)->toJson();
+                return $row->status_name;
+            })
+            ->filterColumn('category', function ($query, $keyword) {
+                $query->where('categories.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('status_name', function ($query, $keyword) {
+                $query->where('statuses.name', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('precio', function ($query, $keyword) {
+                $query->whereRaw('ROUND(it_min.min_total, 2) like ?', ["%{$keyword}%"]);
+            })
+            ->orderColumn('category', 'categories.name $1')
+            ->orderColumn('status_name', 'statuses.name $1')
+            ->orderColumn('precio', 'it_min.min_total $1')
+            ->toJson();
     }
 
     public function tourItinerarys($productId)
     {
-        $itineraries = Itinerary::query()
+        $query = Itinerary::query()
             ->where('product_id', $productId)
             ->with([
                 'segments' => function ($q) {
                     $q->orderBy('sort_order')->with(['departureTerminal', 'arrivalTerminal']);
                 },
-            ])
-            ->get();
+            ]);
 
-        $rows = $itineraries->map(function (Itinerary $itinerary) {
-            $first = $itinerary->segments->first();
+        return DataTables::eloquent($query)
+            ->addColumn('departure_date', function (Itinerary $itinerary) {
+                $date = $itinerary->segments->first()?->departure_date;
 
-            $departureDate = $first?->departure_date;
-            $arrivalDate = $first?->arrival_date;
+                return $date ? $date->format('Y-m-d H:i:s') : '';
+            })
+            ->addColumn('departure_t', function (Itinerary $itinerary) {
+                return [
+                    'name' => $itinerary->segments->first()?->departureTerminal?->name ?? '—',
+                ];
+            })
+            ->addColumn('arrival_date', function (Itinerary $itinerary) {
+                $date = $itinerary->segments->first()?->arrival_date;
 
-            return [
-                'id' => $itinerary->id,
-                'departure_date' => $departureDate
-                    ? $departureDate->format('Y-m-d H:i:s')
-                    : '',
-                'departure_t' => [
-                    'name' => $first?->departureTerminal?->name ?? '—',
-                ],
-                'arrival_date' => $arrivalDate
-                    ? $arrivalDate->format('Y-m-d H:i:s')
-                    : '',
-                'arrival_t' => [
-                    'name' => $first?->arrivalTerminal?->name ?? '—',
-                ],
-                'price' => $itinerary->price,
-                'taxes' => $itinerary->taxes,
-                'total_price' => $itinerary->fullPrice(),
-            ];
-        });
-
-        return DataTables::of($rows)->toJson();
+                return $date ? $date->format('Y-m-d H:i:s') : '';
+            })
+            ->addColumn('arrival_t', function (Itinerary $itinerary) {
+                return [
+                    'name' => $itinerary->segments->first()?->arrivalTerminal?->name ?? '—',
+                ];
+            })
+            ->addColumn('total_price', function (Itinerary $itinerary) {
+                return $itinerary->fullPrice();
+            })
+            ->toJson();
     }
 }

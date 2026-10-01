@@ -4,25 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Category;
-use App\Models\Type;
 use App\Models\Product;
 use App\Models\Status;
+use App\Models\Type;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function __invoke()
     {
+        $cheapest = DB::table('itineraries')
+            ->selectRaw('product_id, MIN(price + taxes) as total')
+            ->groupBy('product_id');
+
         $featured_products = Product::query()
             ->with(['category.parentCategory'])
-            ->select('products.*')
-            ->selectRaw('SUM(itineraries.price + itineraries.taxes) as total')
-            ->join('itineraries', 'products.id', '=', 'itineraries.product_id')
-            ->where('status_id', Status::PRODUCT_ACTIVE)
+            ->joinSub($cheapest, 'cheapest', function ($join) {
+                $join->on('products.id', '=', 'cheapest.product_id');
+            })
+            ->where('products.status_id', Status::PRODUCT_ACTIVE)
             ->whereHas('itineraries.segments', function ($q) {
                 $q->where('departure_date', '>', now());
             })
-            ->groupBy('products.id')
-            ->orderBy('total')
+            ->orderBy('cheapest.total')
+            ->select('products.*', 'cheapest.total')
             ->take(5)
             ->get();
 
@@ -32,8 +37,7 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        // TODO: hacer la consulta para blogs que esté publicados (no borrador)
-        $blog = Blog::where('status_id', \App\Models\Status::BLOG_PUBLISHED)
+        $blog = Blog::where('status_id', Status::BLOG_PUBLISHED)
             ->orderBy('id', 'DESC')
             ->first() ?? new Blog();
 
