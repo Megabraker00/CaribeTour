@@ -27,8 +27,9 @@ class InvoiceController extends Controller
             'total' => 'required|numeric',
             'status' => 'required|string|in:pending,paid,cancelled',
             'booking_id' => 'required|exists:bookings,id',
-            'created_user_id' => 'required|exists:users,id',
         ]);
+
+        $validated['created_user_id'] = auth()->id();
 
         Invoice::create($validated);
 

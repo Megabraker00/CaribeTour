@@ -8,11 +8,6 @@ use App\Http\Controllers\Controller;
 
 class ReservationController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('auth');
-    }
-
     public function index()
     {
         return view('admin.booking.index');

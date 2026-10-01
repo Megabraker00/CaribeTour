@@ -20,9 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 /**
- * DataTable
+ * DataTables used by the authenticated admin panel (session cookie).
  */
-Route::controller(DatatableController::class)->group(function () {
+Route::middleware(['web', 'auth', 'can:access-admin'])->controller(DatatableController::class)->group(function () {
     Route::get('datatable/bookings', 'bookings')->name('api.datatable.bookings');
     Route::get('datatable/clientes', 'clients')->name('api.datatable.clients');
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');
@@ -30,13 +30,20 @@ Route::controller(DatatableController::class)->group(function () {
     Route::get('datatable/invoices', 'invoices')->name('api.datatable.invoices');
 });
 
-// API Resources
 Route::prefix('v1')->group(function () {
-    Route::apiResource('products', App\Http\Controllers\Api\ProductController::class);
-    Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class);
-    Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class);
-    Route::apiResource('types', App\Http\Controllers\Api\TypeController::class);
-    Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class);
-    // Route for product itineraries
-    Route::get('products/{product}/itineraries', [App\Http\Controllers\Api\ProductController::class, 'tourItineraries'])->name('api.products.itineraries');
+    Route::apiResource('products', App\Http\Controllers\Api\ProductController::class)->only(['index', 'show']);
+    Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class)->only(['index', 'show']);
+    Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class)->only(['index', 'show']);
+    Route::apiResource('types', App\Http\Controllers\Api\TypeController::class)->only(['index', 'show']);
+    Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class)->only(['index', 'show']);
+    Route::get('products/{product}/itineraries', [App\Http\Controllers\Api\ProductController::class, 'tourItineraries'])
+        ->name('api.products.itineraries');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('products', App\Http\Controllers\Api\ProductController::class)->except(['index', 'show']);
+        Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class)->except(['index', 'show']);
+        Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class)->except(['index', 'show']);
+        Route::apiResource('types', App\Http\Controllers\Api\TypeController::class)->except(['index', 'show']);
+        Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class)->except(['index', 'show']);
+    });
 });

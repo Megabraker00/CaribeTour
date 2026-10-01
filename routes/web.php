@@ -63,30 +63,15 @@ Route::controller(ReservationController::class)->scopeBindings()->group(function
     Route::get("/reserva/{product:slug}/{itinerary}/pago/finalizar", 'paymentCallback')->name('reservation.payment.callback');
 });
 
-//Auth::routes();
-
-
-Route::get('/login', LoginController::class)->name('login');
-Route::get('/register', RegisterController::class)->name('register');
-Route::post('/register', [RegisterController::class, 'create']);
-//Route::get('/password/reset', ForgotPasswordController::class);
-
-
-/**
- * Authentication routes
- */
-/*
-Route::middleware(['guest'])->group(function () {
-    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [LoginController::class, 'login']);
-    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
-    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+    Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
-*/
 
-
-//Auth::routes();
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
