@@ -27,7 +27,7 @@
                                     </div>
                                     <div class="carousel-item">
                                         <img src="{{ asset('images/image_5.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="...">
+                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
                                         <div class="carousel-caption d-none d-md-block">
                                             <h5>Second slide label</h5>
                                             <p>Some representative placeholder content for the second slide.</p>
@@ -35,7 +35,7 @@
                                     </div>
                                     <div class="carousel-item">
                                         <img src="{{ asset('images/image_6.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="...">
+                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
                                         <div class="carousel-caption d-none d-md-block">
                                             <h5>Third slide label</h5>
                                             <p>Some representative placeholder content for the third slide.</p>
@@ -43,7 +43,7 @@
                                     </div>
                                     <div class="carousel-item">
                                         <img src="{{ asset('images/image_4.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="...">
+                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
                                         <div class="carousel-caption d-none d-md-block">
                                             <h5>Fourth slide label</h5>
                                             <p>Some representative placeholder content for the second slide.</p>

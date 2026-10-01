@@ -60,7 +60,7 @@
             </div>
 
             <div class="col-md-6 col-sm-12 col-lg-8">
-                <form action="{{ route('reservation.store', ['product' => $tour, 'itinerary' => $itinerary]) }}" method="POST">
+                <form action="{{ route('reservation.store', ['product' => $tour, 'itinerary' => $itinerary]) }}" method="POST" data-disable-on-submit>
                     @csrf
 
                     {{-- 1. DATOS DEL TOUR (CAMPOS OCULTOS) --}}

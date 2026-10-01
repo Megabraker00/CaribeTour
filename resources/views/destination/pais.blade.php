@@ -52,7 +52,7 @@
                     <a href="{{ route('destinos.provincia', ['country' => $category->slug, 'province' => $subCategory->slug]) }}" class="text-decoration-none">
                     <div class="card shadow zoom">
                         <div class="card-body">
-                            <img src="{{ asset($provImgSrc) }}" alt="Imagen de {{$subCategory->name}}" title="{{$subCategory->name}}" class="card-img">
+                            <img src="{{ asset($provImgSrc) }}" alt="Imagen de {{$subCategory->name}}" title="{{$subCategory->name}}" class="card-img" loading="lazy" decoding="async">
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title" title="{{$subCategory->name}}">{{$subCategory->name}}</h5>

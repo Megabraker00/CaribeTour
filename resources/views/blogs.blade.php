@@ -17,7 +17,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <a href="{{ route('blogs.show', $blog->slug) }}" class="text-decoration-none">
-                                <img src="{{ asset('images/i-love-bootstrap2.png') }}" width="100%" class="mb-4" alt="{{ $blog->name }}">
+                                <img src="{{ asset('images/i-love-bootstrap2.png') }}" width="100%" class="mb-4" alt="{{ $blog->name }}" loading="lazy" decoding="async">
                             </a>
 
                             <a href="{{ route('blogs.show', $blog->slug) }}" class="text-decoration-none">

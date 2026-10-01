@@ -20,8 +20,10 @@
                         data-size="lg"
                         data-type="image">
                         <img src="{{ asset($img->path) }}?250"
-                            class="img-fluid img-thumbnail rounded shadow-sm zoom"                        
-                            alt="">
+                            class="img-fluid img-thumbnail rounded shadow-sm zoom"
+                            alt=""
+                            loading="lazy"
+                            decoding="async">
                     </a>
                 </div>
                 @endforeach

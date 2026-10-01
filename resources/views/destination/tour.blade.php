@@ -38,7 +38,7 @@
                                 @foreach ($tour->images as $image)
                                     <div class="carousel-item {{ $image->is_main == 1 ? 'active' : '' }}">
                                         <img src="{{ asset($image->path) }}"
-                                            class="d-block w-100" alt="Imagen de {{$image->name}}" width="662px">
+                                            class="d-block w-100" alt="Imagen de {{$image->name}}" width="662px" loading="lazy" decoding="async">
                                         <div class="carousel-caption d-none d-md-block">
                                             {{-- <h5>{{$image->name}}</h5> --}}
                                             <p>{{$image->name}}</p>

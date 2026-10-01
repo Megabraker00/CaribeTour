@@ -20,8 +20,8 @@
     <meta name="twitter:description" content="@yield('og_description', 'Ofertas increíbles en vuelos y hoteles. ¡Reserva tu paraíso hoy!')">
     <meta name="twitter:image" content="@yield('og_image', asset('images/og-default.jpg'))">
 
-    <!-- //TODO: mejorar content-security-policy e incluir a todos los js y css de vendors autorizados -->
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'">-->
+    <!-- Content-Security-Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://js.stripe.com https://cdn.jsdelivr.net; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com; manifest-src 'self'; worker-src 'self';">
 
     <!-- App -->
     <meta name="theme-color" content="#ff9000">
@@ -65,8 +65,6 @@
 
 </head>
 <body class="min-vh-100 d-flex flex-column">
-
-    <!-- NOTA: añadir el atributo loading="lazy" y decoding="async" a las imágenes que no sean críticas para mejorar el rendimiento -->
 
     <header class="bg-palm">
 
@@ -180,6 +178,15 @@
     </script>
     @yield('custom-js')
     @stack('scripts')
+    <script>
+        document.querySelectorAll('form[data-disable-on-submit]').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                form.querySelectorAll('[type="submit"]').forEach(function (button) {
+                    button.disabled = true;
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
