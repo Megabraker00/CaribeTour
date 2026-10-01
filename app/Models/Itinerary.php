@@ -14,7 +14,14 @@ class Itinerary extends Model
 
     protected $table = 'itineraries';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'product_id',
+        'total_stock',
+        'available_stock',
+        'price',
+        'taxes',
+        'currency',
+    ];
 
     protected $appends = ['days', 'nights'];
 

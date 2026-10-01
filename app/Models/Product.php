@@ -15,7 +15,15 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'slug',
+        'category_id',
+        'type_id',
+        'status_id',
+        'supplier_id',
+        'created_user_id',
+    ];
 
     public const TYPE_TOUR = 1;
     public const TYPE_SERVICE = 2;
