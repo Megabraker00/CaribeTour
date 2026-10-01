@@ -56,6 +56,7 @@
                 //retrieve: true
                 stateSave: true, // guarda el estado de la tabla
                 processing: true,
+                serverSide: true,
                 responsive: true,
                 autoWidth: false,
                 //scrollX: true,
