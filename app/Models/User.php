@@ -90,12 +90,17 @@ class User extends Authenticatable
 
     public function adminlte_image()
     {
-        return 'https://picsum.photos/300/300'; // TODO: obtener la imagen del usuario de la bbdd
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s=300&d=mp';
     }
 
     public function adminlte_desc()
     {
-        return 'administrador'; // TODO: obtener el rol de la bbdd
+        return $this->isAdmin() ? 'Administrador' : 'Usuario';
+    }
+
+    public function isAdmin(): bool
+    {
+        return true;
     }
 
     public function adminlte_profile_url()

@@ -12,9 +12,6 @@ use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\StatusController;
 use App\Http\Controllers\Admin\TerminalController;
 use App\Http\Controllers\Admin\TypeController;
-use App\Models\Client;
-use App\Models\Type;
-use App\Models\Status;
 use Illuminate\Support\Facades\Route;
 
 // para ver las consultas que se están ejecutando
@@ -115,22 +112,4 @@ Route::controller(InvoiceController::class)->group(function () {
     Route::get('/facturas/{id}/edit', 'edit')->name('admin.facturas.edit');
     Route::put('/facturas/{id}', 'update')->name('admin.facturas.update');
     Route::delete('/facturas/{id}', 'destroy')->name('admin.facturas.destroy');
-});
-
-/**
- * TODO: eliminar ruta, sólo usar en dev
- */
-Route::get('popularcliente', function () {
-    for ($i = 0; $i <= 2000; $i++) {
-        $client = new Client();
-        $client->name = fake()->name();
-        $client->last_name = fake()->words(2, true);
-        $client->dni_passport = fake()->randomNumber(5, true);
-        $client->type_id = Type::HOLDER;
-        $client->status_id = Status::CLIENT_ACTIVE;
-        $client->booking_id = 1;
-        $client->save();
-    }
-
-    return 'los cliente han sidos creados correctamente';
 });

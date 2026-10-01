@@ -73,7 +73,7 @@ class ProductController extends Controller
         ]); // añadir la validación
 
         unset($validatedFields['meta_description'], $validatedFields['meta_includes'], $validatedFields['meta_stars']);
-        $validatedFields['created_user_id'] = 1; // set default value
+        $validatedFields['created_user_id'] = auth()->id();
 
         $tour = Product::create($validatedFields);
 

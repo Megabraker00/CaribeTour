@@ -53,18 +53,23 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        // Apply filters
         if ($request->has('filter')) {
             $filter = $request->input('filter');
+            $allowedFields = ['name', 'category_id', 'type_id', 'status_id'];
 
-            // Check if the filter is a JSON object or a plain string
             if ($this->isJson($filter)) {
                 $filters = json_decode($filter, true);
-                foreach ($filters as $field => $value) {
-                    $query->where($field, 'LIKE', "%$value%");
+                if (is_array($filters)) {
+                    foreach ($filters as $field => $value) {
+                        if (!in_array($field, $allowedFields, true)) {
+                            continue;
+                        }
+
+                        $query->where($field, 'LIKE', '%'.$value.'%');
+                    }
                 }
             } else {
-                $query->where('name', 'LIKE', "%$filter%");
+                $query->where('name', 'LIKE', '%'.$filter.'%');
             }
         }
 
