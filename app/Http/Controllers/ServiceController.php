@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Status;
+use App\Models\Type;
+
 class ServiceController extends Controller
 {
     public function index()
@@ -9,11 +13,15 @@ class ServiceController extends Controller
         return view('servicios');
     }
 
-    /**
-     * TODO: Pendiente de completar
-     */
-    public function show($service)
+    public function show(string $servicio)
     {
-        return view('servicios');
+        $service = Product::query()
+            ->where('slug', $servicio)
+            ->where('type_id', '!=', Type::TOUR)
+            ->where('status_id', Status::PRODUCT_ACTIVE)
+            ->with(['images', 'category.parentCategory', 'metaData', 'type'])
+            ->firstOrFail();
+
+        return view('servicios.show', compact('service'));
     }
 }

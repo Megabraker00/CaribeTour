@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Status;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::all();
+        $blogs = Blog::query()
+            ->where('status_id', Status::BLOG_PUBLISHED)
+            ->orderByDesc('id')
+            ->get();
 
         return view('blogs', ['blogs' => $blogs]);
     }
 
-    public function show($postSlug)
+    public function show(string $postSlug)
     {
-        $post = Blog::where('slug', $postSlug)->first();
+        $post = Blog::query()
+            ->where('slug', $postSlug)
+            ->where('status_id', Status::BLOG_PUBLISHED)
+            ->firstOrFail();
 
         return view('blog_post', ['post' => $post]);
     }
