@@ -13,7 +13,9 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'booking_id',
         'amount',
+        'currency',
         'transaction_id',
         'status_id',
         'type_id',

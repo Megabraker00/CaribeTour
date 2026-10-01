@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreReservationRequest extends FormRequest
 {
@@ -22,7 +23,11 @@ class StoreReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'itId' => 'required|exists:itineraries,id',
+            'itId' => [
+                'required',
+                'exists:itineraries,id',
+                Rule::in([(string) $this->route('itinerary')?->id]),
+            ],
             'quantity' => 'required|integer|min:1|max:20',
             'customer_name' => 'required|string|max:100',
             'customer_last_name' => 'required|string|max:100',
@@ -30,14 +35,14 @@ class StoreReservationRequest extends FormRequest
             'customer_document' => 'required|string|max:20',
             'customer_email' => 'required|email|max:150',
             'customer_phone' => 'required|string|max:30',
-            'passengers' => 'required|array',
+            'passengers' => 'required|array|size:'.$this->integer('quantity'),
             'passengers.*.first_name' => 'required|string|max:100',
             'passengers.*.last_name' => 'required|string|max:100',
             'passengers.*.nationality' => 'required|string|max:20',
             'passengers.*.document' => 'required|string|max:20',
             'passengers.*.gender' => 'required|in:male,female',
             'passengers.*.birth_date' => 'required|date|before:today',
-            'notes' => 'nullable|string|max:1000'
+            'notes' => 'nullable|string|max:1000',
         ];
     }
 
@@ -46,6 +51,8 @@ class StoreReservationRequest extends FormRequest
         return [
             'passengers.*.birth_date.before' => 'La fecha de nacimiento debe ser anterior a hoy.',
             'customer_email.email' => 'El formato del correo electrónico no es válido.',
+            'passengers.size' => 'El número de pasajeros debe coincidir con las plazas reservadas.',
+            'itId.in' => 'El itinerario no coincide con la reserva.',
         ];
     }
 

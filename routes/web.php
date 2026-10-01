@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\BookingLookupController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservationController;
@@ -55,6 +56,9 @@ Route::get('/galeria', function () {
     $images = Image::where('imageable_type', App\Models\Product::class)->paginate(12);
     return view('galeria', compact('images'));
 })->name('galeria');
+
+Route::get('/reserva/consulta', [BookingLookupController::class, 'show'])->name('reservation.lookup');
+Route::post('/reserva/consulta', [BookingLookupController::class, 'lookup'])->name('reservation.lookup.submit');
 
 Route::controller(ReservationController::class)->scopeBindings()->group(function () {
     Route::get("/reserva/{product:slug}/{itinerary}", 'create')->name('reservation.create');
