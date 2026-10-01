@@ -16,15 +16,9 @@
 
                 <article>
                     <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4" alt="..." width="822">
-                    <h2>Título del post</h2>
+                    <h2>{{ $post->name }}</h2>
                     <hr>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur qui provident, cumque quas quod quos quam eos aspernatur reiciendis dolorum culpa excepturi repellat vitae delectus expedita pariatur aliquam eligendi possimus?
-                    Nesciunt ea distinctio veritatis rem placeat explicabo at suscipit cum ad deserunt delectus assumenda, temporibus cumque itaque, quam facere quisquam ipsa quos illum illo, cupiditate maxime aut corrupti. Obcaecati, quas.
-                    Debitis dicta, cumque minus pariatur dolorem laboriosam. Suscipit sed possimus perspiciatis adipisci, est minus porro, exercitationem quisquam quidem, reprehenderit optio corporis dolorem impedit facere doloribus autem officiis? Quas, maiores harum.
-                    Necessitatibus laborum dignissimos doloribus culpa voluptatum molestias, eos nostrum sapiente, qui consequuntur ab maiores ad quae aliquid autem? Quia eum ut magni vero. Consequuntur nesciunt iusto, necessitatibus fuga voluptatum eum.
-                    Consequatur, eum distinctio voluptatem fuga corrupti ex earum molestias deserunt ullam dolor quo similique repudiandae accusantium nulla aperiam nam! Consectetur dolorum sunt nesciunt cumque vitae vel in modi omnis voluptate!</p>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel quo consectetur asperiores officia, minima quod, laboriosam totam illum deleniti error exercitationem ut ratione non, corrupti earum quae fugiat beatae hic.</p>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus facere nesciunt ipsum doloremque, tempore iure incidunt debitis, asperiores eos beatae adipisci laboriosam consectetur eius voluptatum assumenda, inventore autem? Molestias, ipsam.</p>
+                    {!! nl2br(e($post->content)) !!}
 
                     <p>
                         <strong>Publicado:</strong> 
