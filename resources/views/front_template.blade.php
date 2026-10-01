@@ -159,7 +159,9 @@
     <footer class="py-3 bg-palm text-light">
         <div class="container">
             <div class="row"><a>CaribeTour.es © 2024 - Todos los derechos reservados.</a></div>
-            <div class="row"><a>Condiciones de uso | Aviso Legal | Política de Privacidad | Uso de Cookies</a></div>
+            <div>
+                <a href=#>Condiciones de uso</a> | <a href=#>Aviso Legal</a> | <a href=#>Política de Privacidad</a> | <a href=#>Uso de Cookies</a> | <a href="{{ route('reservation.lookup') }}">Consultar reserva</a>
+            </div>
         </div>
     </footer>
     <!-- /footer -->

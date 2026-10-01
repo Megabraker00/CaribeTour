@@ -78,7 +78,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
 
-        const stripeKey = "{{ env('STRIPE_KEY_TEST') }}";
+        const stripeKey = @json($stripeKey);
 
         if (!stripeKey) {
             console.error("Error: STRIPE_KEY no detectada.");
@@ -110,6 +110,10 @@
             const form = document.getElementById('payment-form');
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
+                const submitButton = document.getElementById('submit');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
 
                 const {error} = await stripe.confirmPayment({
                     elements,
@@ -122,6 +126,9 @@
                 if (error) {
                     const messageContainer = document.querySelector('#error-message');
                     messageContainer.textContent = error.message;
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
                 }
             });
 

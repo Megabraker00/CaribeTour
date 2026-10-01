@@ -49,11 +49,11 @@ class ProductFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'category_id' => $categories->isNotEmpty() ? fake()->randomElement($categories)->id : Category::factory()->create()->id,
-            'type_id' => $types->isNotEmpty() ? fake()->randomElement($types)->id : Type::factory()->create(['typeable' => Product::class])->id,
-            'status_id' => $states->isNotEmpty() ? fake()->randomElement($states)->id : Status::factory()->create(['statusable' => Product::class])->id,
-            'supplier_id' => $suppliers->isNotEmpty() ? fake()->randomElement($suppliers)->id : Supplier::factory()->create()->id,
-            'created_user_id' => $users->isNotEmpty() ? fake()->randomElement($users)->id : User::factory()->create()->id,
+            'category_id' => $categories->isNotEmpty() ? fake()->randomElement($categories->all())->id : Category::factory()->create()->id,
+            'type_id' => $types->isNotEmpty() ? fake()->randomElement($types->all())->id : Type::factory()->create(['typeable' => Product::class])->id,
+            'status_id' => $states->isNotEmpty() ? fake()->randomElement($states->all())->id : Status::factory()->create(['statusable' => Product::class])->id,
+            'supplier_id' => $suppliers->isNotEmpty() ? fake()->randomElement($suppliers->all())->id : Supplier::factory()->create()->id,
+            'created_user_id' => $users->isNotEmpty() ? fake()->randomElement($users->all())->id : User::factory()->create()->id,
         ];
     }
 
