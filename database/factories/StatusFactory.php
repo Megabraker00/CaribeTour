@@ -13,6 +13,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Status;
 use App\Models\Blog;
+use App\Models\Position;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Status>
@@ -103,6 +104,21 @@ class StatusFactory extends Factory
         return $this->sequence(
             ['id' => Status::BLOG_PUBLISHED, 'name' => 'Publicado', 'statusable' => Blog::class],
             ['id' => Status::BLOG_DRAFT, 'name' => 'Borrador', 'statusable' => Blog::class],
+        );
+    }
+
+    public function forEmployee(): static
+    {
+        return $this->sequence(
+            ['id' => Status::EMPLOYEE_ACTIVE, 'name' => 'Activo', 'statusable' => Employee::class],
+            ['id' => Status::EMPLOYEE_INACTIVE, 'name' => 'Inactivo', 'statusable' => Employee::class],
+        );
+    }
+
+    public function forPosition(): static
+    {
+        return $this->sequence(
+            ['id' => Status::POSITION_ACTIVE, 'name' => 'Activo', 'statusable' => Position::class],
         );
     }
 }

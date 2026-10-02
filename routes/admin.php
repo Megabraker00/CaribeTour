@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
 use App\Http\Controllers\Admin\SegmentController;
@@ -10,8 +12,10 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\StatusController;
+use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TerminalController;
 use App\Http\Controllers\Admin\TypeController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // para ver las consultas que se están ejecutando
@@ -94,6 +98,23 @@ Route::resource('categories', CategoryController::class)->only([
     'edit' => 'admin.categories.edit',
     'update' => 'admin.categories.update',
 ]);
+
+Route::resource('blogs', BlogController::class)->names('admin.blogs');
+
+Route::resource('empleados', EmployeeController::class)
+    ->parameters(['empleados' => 'employee'])
+    ->except(['show'])
+    ->names('admin.employees');
+
+Route::resource('proveedores', SupplierController::class)
+    ->parameters(['proveedores' => 'supplier'])
+    ->except(['show'])
+    ->names('admin.suppliers');
+
+Route::resource('usuarios', UserController::class)
+    ->parameters(['usuarios' => 'user'])
+    ->except(['show'])
+    ->names('admin.users');
 
 Route::resource('terminals', TerminalController::class)->only([
     'index', 'create', 'store', 'edit', 'update',

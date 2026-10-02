@@ -12,6 +12,7 @@ class Image extends Model
 
     protected $fillable = [
         'name',
+        'alt',
         'is_main',
         'path',
         'uploaded_user_id',

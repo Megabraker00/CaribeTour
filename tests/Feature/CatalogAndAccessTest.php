@@ -62,6 +62,41 @@ class CatalogAndAccessTest extends TestCase
             ->assertSee('Post publicado');
     }
 
+    public function test_blogs_index_shows_content_excerpt(): void
+    {
+        $post = Blog::factory()->create([
+            'name' => 'Listado extracto',
+            'content' => '<p>Primera línea del post.</p><p>Segunda línea con más detalle.</p>',
+        ]);
+
+        $this->get(route('blogs'))
+            ->assertOk()
+            ->assertSee('Listado extracto')
+            ->assertSee('Primera línea del post.')
+            ->assertSee('Segunda línea con más detalle.')
+            ->assertSee($post->excerptHtml(100), false);
+    }
+
+    public function test_blogs_index_shows_real_author_and_social_icons(): void
+    {
+        $author = User::factory()->create(['name' => 'ana marquez']);
+        Blog::factory()->create([
+            'name' => 'Post con autor',
+            'created_user_id' => $author->id,
+            'author_linkedin' => 'https://www.linkedin.com/in/ana-marquez',
+            'author_instagram' => 'https://www.instagram.com/ana.marquez',
+        ]);
+
+        $this->get(route('blogs'))
+            ->assertOk()
+            ->assertSee('Ana Marquez')
+            ->assertSee('https://www.linkedin.com/in/ana-marquez', false)
+            ->assertSee('https://www.instagram.com/ana.marquez', false)
+            ->assertSee('bi-linkedin', false)
+            ->assertSee('bi-instagram', false)
+            ->assertDontSee('bi-facebook', false);
+    }
+
     public function test_service_detail_returns_404_for_tours(): void
     {
         $user = User::factory()->create();

@@ -17,7 +17,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <a href="{{ route('blogs.show', $blog->slug) }}" class="text-decoration-none">
-                                <img src="{{ asset('images/i-love-bootstrap2.png') }}" width="100%" class="mb-4" alt="{{ $blog->name }}" loading="lazy" decoding="async">
+                                <img src="{{ asset($blog->mainImage()?->path ?? 'images/i-love-bootstrap2.png') }}" width="100%" class="mb-4" alt="{{ $blog->mainImageAlt() }}" loading="lazy" decoding="async">
                             </a>
 
                             <a href="{{ route('blogs.show', $blog->slug) }}" class="text-decoration-none">
@@ -26,21 +26,10 @@
                                 </h4>
                             </a>
 
-                            <p class="card-text">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit blanditiis ipsam, quasi aut veritatis neque perferendis enim odit sint tempora eos iure at expedita sit itaque hic! Aut, quis eum.
-                            </p>
-
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis voluptatem consequatur exercitationem enim expedita non architecto eaque amet eligendi alias saepe illum animi, suscipit quo dolorem, ipsa odit. Inventore, fu...</p>
+                            <p class="card-text">{!! $blog->excerptHtml(500) !!}</p>
                             <p><strong>Publicado:</strong> <time datetime="19-09-2024">19-09-2024</time></p>
                             
-                            <div class="mb-4">
-                                <a href="https://www.linkedin.com/feed/"  title="Autor" target="_blank" class="text-decoration-none">
-                                    <img src="img/autores/autor2.JPG" width="10%" class="img-thumbnail rounded-circle" alt="...">
-                                    <span class="fs-6">
-                                        <strong>Emilio Gutierrez </strong> <i class="bi bi-linkedin text-primary"></i>
-                                    </span>
-                                </a>
-                            </div>
+                            @include('components.blog-author', ['blog' => $blog])
                         </div>
                         <div class="card-footer">
                             <i class="bi bi-chat-right-text-fill"></i> Comentarios 

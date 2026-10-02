@@ -51,6 +51,13 @@ class Status extends Model
     public const BLOG_PUBLISHED = 60;
     public const BLOG_DRAFT = 61;
 
+    // from 70 to 79 belongs to Employee model
+    public const EMPLOYEE_ACTIVE = 70;
+    public const EMPLOYEE_INACTIVE = 71;
+
+    // from 80 to 89 belongs to Position model
+    public const POSITION_ACTIVE = 80;
+
     /**
      * The table associated with the model.
      *
