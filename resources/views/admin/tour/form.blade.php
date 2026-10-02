@@ -120,7 +120,7 @@
                             aria-labelledby="tour-info-tab">
 
                             <!-- form -->
-                            <form novalidate
+                            <form novalidate data-disable-on-submit
                                 @if (isset($new)) method="POST" action="{{ route('admin.tour.store') }}" @endif
                                 @if (isset($edit)) method="POST" action="{{ route('admin.tour.update', $tour->id) }}" @endif>
 
@@ -676,6 +676,14 @@
                 document.getElementById('slug').value = generateSlug(nameField.value)
                 document.getElementById('categoria').focus();
             })
+
+            document.querySelectorAll('form[data-disable-on-submit]').forEach(function (form) {
+                form.addEventListener('submit', function () {
+                    form.querySelectorAll('[type="submit"]').forEach(function (button) {
+                        button.disabled = true;
+                    });
+                });
+            });
         });
 
 

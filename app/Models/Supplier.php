@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
@@ -11,9 +12,19 @@ class Supplier extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'status_id',
+    ];
+
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function statusRecord(): BelongsTo
+    {
+        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function products(): HasMany

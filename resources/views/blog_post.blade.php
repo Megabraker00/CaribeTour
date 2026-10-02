@@ -15,24 +15,17 @@
             <div class="col-md-8">
 
                 <article>
-                    <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4" alt="..." width="822">
+                    <img src="{{ asset($post->mainImage()?->path ?? 'images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4" alt="{{ $post->mainImageAlt() }}" width="822">
                     <h2>{{ $post->name }}</h2>
                     <hr>
-                    {!! nl2br(e($post->content)) !!}
+                    {!! $post->content !!}
 
                     <p>
                         <strong>Publicado:</strong> 
                         <time datetime="19-09-2024">19-09-2024</time>
                     </p>
                             
-                    <div class="mb-4">
-                        <a href="https://www.linkedin.com/feed/"  title="Autor" target="_blank" class="text-decoration-none">
-                            <img src="{{ asset('images/teleoperadora.jpg') }}" width="10%" class="img-thumbnail rounded-circle" alt="...">
-                            <span class="fs-6">
-                                <strong>Emilio Gutierrez </strong> <i class="bi bi-linkedin text-primary"></i>
-                            </span>
-                        </a>
-                    </div>
+                    @include('components.blog-author', ['blog' => $post])
 
                     <div title="Etiquetas" class="mb-4">
                         <span class="badge bg-primary">Primary</span>

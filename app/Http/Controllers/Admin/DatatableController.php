@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\Invoice;
@@ -82,6 +83,35 @@ class DatatableController extends Controller
         $query = Client::query()->select('id', 'name', 'last_name', 'dni_passport');
 
         return DataTables::eloquent($query)->toJson();
+    }
+
+    public function blogs()
+    {
+        $query = Blog::query()
+            ->with(['statusRecord', 'createdUser'])
+            ->select('blogs.*');
+
+        return DataTables::eloquent($query)
+            ->addColumn('status_name', function (Blog $blog) {
+                return $blog->statusRecord->name ?? (string) $blog->status_id;
+            })
+            ->addColumn('author', function (Blog $blog) {
+                return $blog->createdUser->name ?? '—';
+            })
+            ->filterColumn('status_name', function ($query, $keyword) {
+                $query->whereHas('statusRecord', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('author', function ($query, $keyword) {
+                $query->whereHas('createdUser', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('email', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('status_name', 'status_id $1')
+            ->orderColumn('author', 'created_user_id $1')
+            ->toJson();
     }
 
     public function tours()

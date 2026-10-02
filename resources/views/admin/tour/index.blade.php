@@ -3,14 +3,18 @@
 @section('title', 'Tours')
 
 @section('content_header')
-    <h1>Tours</h1>
+<div class="row mb-2">
+    <div class="col-sm">
+        <h1>Tours</h1>
+    </div>
+    <div class="col-sm text-right">
+        <a href="{{ route('admin.tour.create') }}" class="btn btn-info">Nuevo</a>
+    </div>
+</div>
 @stop
 
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <a href="{{ route('admin.tour.create') }}" class="btn btn-primary">Nuevo</a>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped table-hover" id="the_table" style="width:99%">

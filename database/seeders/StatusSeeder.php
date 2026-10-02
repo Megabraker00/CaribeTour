@@ -19,5 +19,13 @@ class StatusSeeder extends Seeder
         Status::factory()->count(3)->forPayment()->create();
         Status::factory()->count(2)->forSupplier()->create();
         Status::factory()->count(2)->forBlog()->create();
+
+        if (!Status::query()->where('id', Status::EMPLOYEE_ACTIVE)->exists()) {
+            Status::factory()->count(2)->forEmployee()->create();
+        }
+
+        if (!Status::query()->where('id', Status::POSITION_ACTIVE)->exists()) {
+            Status::factory()->count(1)->forPosition()->create();
+        }
     }
 }
