@@ -1,6 +1,6 @@
 @extends('admin.form_template')
 
-@section('title', 'Tour')
+@section('title', $catalog['singular'])
 
 @section('css')
     @parent
@@ -59,10 +59,10 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm">
-        <h1>Tour</h1>
+        <h1>{{ $catalog['singular'] }}</h1>
     </div>
     <div class="col-sm text-right">
-        <a href="{{ route('admin.tour.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver al listado</a>
+        <a href="{{ route('admin.catalog.index', $catalog['kind']) }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver al listado</a>
     </div>
 </div>
 @stop
@@ -121,8 +121,8 @@
 
                             <!-- form -->
                             <form novalidate data-disable-on-submit
-                                @if (isset($new)) method="POST" action="{{ route('admin.tour.store') }}" @endif
-                                @if (isset($edit)) method="POST" action="{{ route('admin.tour.update', $tour->id) }}" @endif>
+                                @if (isset($new)) method="POST" action="{{ route('admin.catalog.store', $catalog['kind']) }}" @endif
+                                @if (isset($edit)) method="POST" action="{{ route('admin.catalog.update', [$catalog['kind'], $tour->id]) }}" @endif>
 
                                 @csrf
                                 @if (isset($edit))
@@ -167,20 +167,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="tipo-producto">Tipo de producto</label>
-                                        <select name="type_id" id="tipo-producto"
-                                            class="form-control @error('type_id') is-invalid @enderror">
-                                            <option value=""> — </option>
-                                            @foreach ($productTypes as $productType)
-                                                <option value="{{ $productType->id }}"
-                                                    {{ (string) old('type_id', $tour->type_id ?? \App\Models\Type::TOUR) === (string) $productType->id ? 'selected' : '' }}>
-                                                    {{ $productType->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('type_id')
-                                            <div class="error invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <small class="form-text text-muted">Define el tipo de producto (<code>type_id</code> →
-                                            <code>types</code>). En destinos públicos suele filtrarse por tipo (p. ej. tour).</small>
+                                        <input type="hidden" name="type_id" value="{{ $catalog['type_id'] }}">
+                                        <p id="tipo-producto" class="form-control-plaintext border rounded px-3 py-2 bg-light mb-0">
+                                            {{ $catalog['singular'] }}
+                                        </p>
+                                        <small class="form-text text-muted">Este listado solo gestiona productos de tipo
+                                            {{ strtolower($catalog['singular']) }}. El resto de tipos está en su propio menú.</small>
                                     </div>
                                     <div class="form-group">
                                         <label for="categoria">Categoría</label>
@@ -276,10 +268,10 @@
                                         <small class="form-text text-muted">Entero 0–5. Se guarda en <code>meta_data</code> como <code>$tour-&gt;meta['stars']</code>.</small>
                                     </div>
 
-                                    <p class="text-muted small">Se muestra en la ficha del tour (<code>destination/tour</code>): descripción e ítems &quot;Incluye&quot;.</p>
+                                    <p class="text-muted small">Se muestra en la ficha pública: descripción e ítems &quot;Incluye&quot;.</p>
 
                                     <div class="form-group">
-                                        <label for="meta_description">Descripción del tour</label>
+                                        <label for="meta_description">Descripción</label>
                                         @isset($show)
                                             <div class="border rounded p-3 bg-light meta-description-readonly"
                                                 style="min-height: 6rem;">
@@ -316,7 +308,7 @@
 
 
                                 @if (isset($show))
-                                        <a href="{{ route('admin.tour.edit', $tour->id) }}"
+                                        <a href="{{ route('admin.catalog.edit', [$catalog['kind'], $tour->id]) }}"
                                             class="btn btn-warning">Editar</a>
                                 @else
                                         <button type="submit" id="submit" class="btn btn-info">Guardar</button>
@@ -330,14 +322,14 @@
 
                         <div class="tab-pane fade" id="tour-images" role="tabpanel" aria-labelledby="tour-images-tab">
                             @if (! $tour->id)
-                                <p class="text-muted">Guarda el tour primero (pestaña Información) para poder subir imágenes.
-                                    Se guardarán en <code>public/images/{{ '{slug-del-tour}' }}/</code> con el nombre
+                                <p class="text-muted">Guarda el producto primero (pestaña Información) para poder subir imágenes.
+                                    Se guardarán en <code>public/images/{{ $catalog['image_folder'] }}/{{ '{slug}' }}/</code> con el nombre
                                     <code>slug-milisegundos.ext</code> (JPEG, PNG, GIF, WebP).</p>
                             @else
                                 <div class="row">
                                     {{-- Columna izquierda: subida + carrusel (vista previa) --}}
                                     <div class="col-md-4 mb-4">
-                                        <form action="{{ route('admin.tour.images.store', $tour->id) }}" method="POST"
+                                        <form action="{{ route('admin.catalog.images.store', [$catalog['kind'], $tour->id]) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-group">
@@ -413,12 +405,12 @@
                                     {{-- Columna derecha: galería de miniaturas, títulos y acciones --}}
                                     <div class="col-md-8 mb-4">
                                         @if ($tour->images->isEmpty())
-                                            <p class="text-muted mb-0">Aún no hay imágenes para este tour. Usa el formulario de la izquierda para subirlas.</p>
+                                            <p class="text-muted mb-0">Aún no hay imágenes para este producto. Usa el formulario de la izquierda para subirlas.</p>
                                         @else
                                             <p class="text-muted small mb-2">Edita los títulos en las tarjetas y pulsa <strong>Guardar nombres de todas las imágenes</strong> una sola vez.</p>
 
                                             {{-- Formulario vacío: los inputs usan form="tour-images-names-form" para no anidar <form> con principal/eliminar --}}
-                                            <form action="{{ route('admin.tour.images.names', $tour->id) }}" method="POST"
+                                            <form action="{{ route('admin.catalog.images.names', [$catalog['kind'], $tour->id]) }}" method="POST"
                                                 id="tour-images-names-form" class="d-none" aria-hidden="true">
                                                 @csrf
                                             </form>
@@ -457,7 +449,7 @@
                                                                 @if ($img->is_main)
                                                                     <span class="badge badge-success mb-1 d-inline-block"><i class="fas fa-star"></i> Principal</span>
                                                                 @else
-                                                                    <form action="{{ route('admin.tour.images.main', [$tour->id, $img->id]) }}"
+                                                                    <form action="{{ route('admin.catalog.images.main', [$catalog['kind'], $tour->id, $img->id]) }}"
                                                                         method="POST" class="mb-1">
                                                                         @csrf
                                                                         <button type="submit" class="btn btn-sm btn-outline-primary btn-block"
@@ -467,7 +459,7 @@
                                                                     </form>
                                                                 @endif
                                                                 <form
-                                                                    action="{{ route('admin.tour.images.destroy', [$tour->id, $img->id]) }}"
+                                                                    action="{{ route('admin.catalog.images.destroy', [$catalog['kind'], $tour->id, $img->id]) }}"
                                                                     method="POST" class="d-inline mt-1"
                                                                     onsubmit="return confirm('¿Eliminar esta imagen del disco y de la base de datos?');">
                                                                     @csrf
@@ -595,7 +587,7 @@
 
                                 <div class="table-responsive">
                                     <table class="table table-striped table-hover" id="the_table" style="width: 100%">
-                                        <caption>Lista de Tours</caption>
+                                        <caption>Lista de fechas de {{ $catalog['label'] }}</caption>
                                         <thead>
                                             <tr>
                                                 <th scope="col">ID</th>

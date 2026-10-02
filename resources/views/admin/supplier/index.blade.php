@@ -39,7 +39,7 @@
                                 <td>{{ $supplier->statusRecord?->name ?? '—' }}</td>
                                 <td>{{ $supplier->products_count }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-warning" title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                     <form action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST" class="d-inline"

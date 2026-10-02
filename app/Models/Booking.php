@@ -32,6 +32,45 @@ class Booking extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function canIssueInvoice(): bool
+    {
+        if (!in_array((int) $this->status_id, [
+            Status::BOOKING_PAID,
+            Status::BOOKING_CONFIRMED,
+            Status::BOOKING_COMPLETED,
+        ], true)) {
+            return false;
+        }
+
+        return $this->invoices
+            ->filter(fn (Invoice $invoice) => $invoice->isPositive())
+            ->isEmpty();
+    }
+
+    public function openPositiveInvoice(): ?Invoice
+    {
+        return $this->invoices
+            ->filter(fn (Invoice $invoice) => $invoice->isPositive() && !$invoice->hasBeenCredited())
+            ->first();
+    }
+
+    public function canIssueCreditNote(): bool
+    {
+        if (!in_array((int) $this->status_id, [
+            Status::BOOKING_CANCELLED,
+            Status::BOOKING_REFUNDED,
+        ], true)) {
+            return false;
+        }
+
+        return $this->openPositiveInvoice() !== null;
+    }
+
     public function passengers(): HasMany
     {
         return $this->hasMany(Passenger::class);

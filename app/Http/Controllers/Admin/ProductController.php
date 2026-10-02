@@ -9,166 +9,86 @@ use App\Models\Product;
 use App\Models\Status;
 use App\Models\Supplier;
 use App\Models\Terminal;
-use App\Models\Type;
+use App\Support\ProductCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    public function indexTour()
+    public function index(string $kind)
     {
-        return view('admin.tour.index');
-    }
+        $catalog = ProductCatalog::fromKind($kind);
 
-    public function createTour()
-    {
-        $tour = new Product();
-
-        $parentCategories = Category::whereNull('parent_id')->get();
-
-        $suppliers = Supplier::all();
-
-        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
-        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
-
-        return view('admin.tour.form', [
-            'tour' => $tour,
-            'parentCategories' => $parentCategories,
-            'suppliers' => $suppliers,
-            'productTypes' => $productTypes,
-            'productStatuses' => $productStatuses,
-            'terminals' => [],
-            'new' => true,
+        return view('admin.tour.index', [
+            'catalog' => $catalog,
         ]);
     }
 
-    public function storeTour(Request $request)
+    public function create(string $kind)
     {
-        $validatedFields = $request->validate([
-            'name' => 'required|min:3',
-            'slug' => 'required|min:3',
-            'type_id' => [
-                'required',
-                'integer',
-                Rule::exists('types', 'id')->where('typeable', Product::class),
-            ],
-            'category_id' => 'required|integer',
-            'supplier_id' => 'required|integer',
-            'status_id' => [
-                'required',
-                'integer',
-                Rule::exists('statuses', 'id')->where('statusable', Product::class),
-            ],
-            'meta_description' => 'nullable|string',
-            'meta_includes' => 'nullable|string',
-            'meta_stars' => 'nullable|integer|between:0,5',
-        ], [
-            'name.required' => 'El campo nombre es requerido',
-            'category_id' => 'Tienes que seleccionar una categoría válida',
-            'type_id.required' => 'Selecciona un tipo de producto',
-            'status_id.required' => 'Selecciona un estado del producto',
-            'meta_stars.between' => 'Las estrellas deben ser un entero entre 0 y 5.',
-        ]); // añadir la validación
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = new Product(['type_id' => $catalog['type_id']]);
 
+        return view('admin.tour.form', $this->formViewData($tour, $catalog, [
+            'new' => true,
+            'terminals' => [],
+        ]));
+    }
+
+    public function store(Request $request, string $kind)
+    {
+        $catalog = ProductCatalog::fromKind($kind);
+        $validatedFields = $this->validatedProductFields($request);
         unset($validatedFields['meta_description'], $validatedFields['meta_includes'], $validatedFields['meta_stars']);
+        $validatedFields['type_id'] = $catalog['type_id'];
         $validatedFields['created_user_id'] = auth()->id();
 
         $tour = Product::create($validatedFields);
 
         $this->syncTourMetaFromRequest($tour, $request);
 
-        //return redirect()->route('admin.tour.index')->with('success', 'Tour created successfully.');
-        return redirect()->route('admin.tour.show', $tour->id);
+        return redirect()->route('admin.catalog.show', [$catalog['kind'], $tour->id]);
     }
 
-    public function showTour($id)
+    public function show(string $kind, $id)
     {
-        $tour = Product::with(['images', 'metaData'])->findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id);
 
-        $parentCategories = Category::whereNull('parent_id')->get();
-
-        $suppliers = Supplier::all();
-
-        $terminals = Terminal::all();
-
-        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
-        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
-
-        return view('admin.tour.form', [
-            'tour' => $tour,
-            'parentCategories' => $parentCategories,
-            'suppliers' => $suppliers,
-            'productTypes' => $productTypes,
-            'productStatuses' => $productStatuses,
-            'terminals' => $terminals,
+        return view('admin.tour.form', $this->formViewData($tour, $catalog, [
             'show' => true,
-        ]);
+            'terminals' => Terminal::all(),
+        ]));
     }
 
-    public function editTour($id)
+    public function edit(string $kind, $id)
     {
-        $tour = Product::with(['images', 'metaData'])->findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id);
 
-        $parentCategories = Category::whereNull('parent_id')->get();
-
-        $suppliers = Supplier::all();
-
-        $terminals = Terminal::all();
-
-        $productTypes = Type::where('typeable', Product::class)->orderBy('name')->get();
-        $productStatuses = Status::where('statusable', Product::class)->orderBy('name')->get();
-
-        return view('admin.tour.form', [
-            'tour' => $tour,
-            'parentCategories' => $parentCategories,
-            'suppliers' => $suppliers,
-            'productTypes' => $productTypes,
-            'productStatuses' => $productStatuses,
-            'terminals' => $terminals,
+        return view('admin.tour.form', $this->formViewData($tour, $catalog, [
             'edit' => true,
-        ]);
+            'terminals' => Terminal::all(),
+        ]));
     }
 
-    public function updateTour(Request $request, $id)
+    public function update(Request $request, string $kind, $id)
     {
-        $validatedFields = $request->validate([
-            'name' => 'required|min:3',
-            'slug' => 'required|min:3',
-            'type_id' => [
-                'required',
-                'integer',
-                Rule::exists('types', 'id')->where('typeable', Product::class),
-            ],
-            'category_id' => 'required|integer',
-            'supplier_id' => 'required|integer',
-            'status_id' => [
-                'required',
-                'integer',
-                Rule::exists('statuses', 'id')->where('statusable', Product::class),
-            ],
-            'meta_description' => 'nullable|string',
-            'meta_includes' => 'nullable|string',
-            'meta_stars' => 'nullable|integer|between:0,5',
-        ], [
-            'name.required' => 'El campo nombre es requerido',
-            'category_id' => 'Tienes que seleccionar una categoría válida',
-            'type_id.required' => 'Selecciona un tipo de producto',
-            'status_id.required' => 'Selecciona un estado del producto',
-            'meta_stars.between' => 'Las estrellas deben ser un entero entre 0 y 5.',
-        ]); // añadir la validación
-
+        $catalog = ProductCatalog::fromKind($kind);
+        $validatedFields = $this->validatedProductFields($request);
         unset($validatedFields['meta_description'], $validatedFields['meta_includes'], $validatedFields['meta_stars']);
+        $validatedFields['type_id'] = $catalog['type_id'];
 
-        $tour = Product::findOrFail($id);
+        $tour = $this->findCatalogProduct($catalog, $id);
         $tour->update($validatedFields);
         $tour->refresh();
 
         $this->syncTourMetaFromRequest($tour, $request);
 
-        return redirect()->route('admin.tour.show', $tour->id)
-            ->with('success', 'Tour updated successfully.');
+        return redirect()->route('admin.catalog.show', [$catalog['kind'], $tour->id])
+            ->with('success', $catalog['singular'].' actualizado correctamente.');
     }
 
     /**
@@ -202,12 +122,13 @@ class ProductController extends Controller
     }
 
     /**
-     * Sube imágenes del tour a public/images/{slug}/ con nombre {slug}-{ms}.{ext}
+     * Sube imágenes del producto a public/images/{tipo}/{slug}/ con nombre {slug}-{ms}.{ext}
      * y las registra en la tabla polimórfica images.
      */
-    public function storeTourImages(Request $request, $id)
+    public function storeImages(Request $request, string $kind, $id)
     {
-        $tour = Product::findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id, false);
 
         $request->validate([
             'images' => 'required|array|min:1|max:30',
@@ -219,8 +140,8 @@ class ProductController extends Controller
             'images.*.max' => 'Cada imagen no puede superar 10 MB.',
         ]);
 
-        $safeSlug = $this->safeImageFolderSlug($tour->slug, $tour->id);
-        $relativeDir = 'images/tours/'.$safeSlug;
+        $safeSlug = $this->safeImageFolderSlug($tour->slug, $tour->id, $catalog['kind']);
+        $relativeDir = 'images/'.$catalog['image_folder'].'/'.$safeSlug;
         $absoluteDir = public_path($relativeDir);
 
         if (!File::isDirectory($absoluteDir)) {
@@ -284,9 +205,10 @@ class ProductController extends Controller
             ->with('success', 'Imágenes subidas correctamente.');
     }
 
-    public function destroyTourImage($id, Image $image)
+    public function destroyImage(string $kind, $id, Image $image)
     {
-        $tour = Product::findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id, false);
 
         if ($image->imageable_type !== Product::class || (int) $image->imageable_id !== (int) $tour->id) {
             abort(404);
@@ -323,11 +245,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Marca una imagen como principal del tour (solo una is_main por producto).
+     * Marca una imagen como principal del producto (solo una is_main por producto).
      */
-    public function setMainTourImage($id, Image $image)
+    public function setMainImage(string $kind, $id, Image $image)
     {
-        $tour = Product::findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id, false);
 
         if ($image->imageable_type !== Product::class || (int) $image->imageable_id !== (int) $tour->id) {
             abort(404);
@@ -349,11 +272,12 @@ class ProductController extends Controller
     }
 
     /**
-     * Actualiza los nombres (título / zona) de todas las imágenes del tour en un solo envío.
+     * Actualiza los nombres (título / zona) de todas las imágenes del producto en un solo envío.
      */
-    public function updateTourImagesNames(Request $request, $id)
+    public function updateImagesNames(Request $request, string $kind, $id)
     {
-        $tour = Product::with('images')->findOrFail($id);
+        $catalog = ProductCatalog::fromKind($kind);
+        $tour = $this->findCatalogProduct($catalog, $id);
 
         if ($tour->images->isEmpty()) {
             return redirect()
@@ -390,12 +314,64 @@ class ProductController extends Controller
     }
 
     /**
-     * Carpeta segura bajo public/images/ (solo slug del producto).
+     * @return array<string, mixed>
      */
-    private function safeImageFolderSlug(string $slug, int $productId): string
+    private function validatedProductFields(Request $request): array
+    {
+        return $request->validate([
+            'name' => 'required|min:3',
+            'slug' => 'required|min:3',
+            'category_id' => 'required|integer',
+            'supplier_id' => 'required|integer',
+            'status_id' => [
+                'required',
+                'integer',
+                Rule::exists('statuses', 'id')->where('statusable', Product::class),
+            ],
+            'meta_description' => 'nullable|string',
+            'meta_includes' => 'nullable|string',
+            'meta_stars' => 'nullable|integer|between:0,5',
+        ], [
+            'name.required' => 'El campo nombre es requerido',
+            'category_id' => 'Tienes que seleccionar una categoría válida',
+            'status_id.required' => 'Selecciona un estado del producto',
+            'meta_stars.between' => 'Las estrellas deben ser un entero entre 0 y 5.',
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $flags
+     * @return array<string, mixed>
+     */
+    private function formViewData(Product $tour, array $catalog, array $flags): array
+    {
+        return array_merge([
+            'tour' => $tour,
+            'catalog' => $catalog,
+            'parentCategories' => Category::whereNull('parent_id')->get(),
+            'suppliers' => Supplier::all(),
+            'productStatuses' => Status::where('statusable', Product::class)->orderBy('name')->get(),
+        ], $flags);
+    }
+
+    private function findCatalogProduct(array $catalog, $id, bool $withRelations = true): Product
+    {
+        $query = Product::query()->where('type_id', $catalog['type_id']);
+
+        if ($withRelations) {
+            $query->with(['images', 'metaData']);
+        }
+
+        return $query->findOrFail($id);
+    }
+
+    /**
+     * Carpeta segura bajo public/images/{tipo}/ (solo slug del producto).
+     */
+    private function safeImageFolderSlug(string $slug, int $productId, string $kind): string
     {
         $clean = preg_replace('/[^a-z0-9\-]/', '', strtolower($slug));
 
-        return $clean !== '' ? $clean : 'tour-'.$productId;
+        return $clean !== '' ? $clean : $kind.'-'.$productId;
     }
 }

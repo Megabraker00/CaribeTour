@@ -28,6 +28,10 @@ class Passenger extends Model
         'taxes_at_booking',
     ];
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+    ];
+
     public function __toString()
     {
         return \ucwords($this->name ." ". $this->last_name);

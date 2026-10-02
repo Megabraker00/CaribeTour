@@ -7,13 +7,12 @@
     <div class="col-sm">
         <h1>Facturas</h1>
     </div>
-    <div class="col-sm text-right">
-        <a href="{{ route('admin.facturas.create') }}" class="btn btn-info">Nuevo</a>
-    </div>
 </div>
 @stop
 
 @section('content')
+    @include('admin.partials.flash')
+
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -21,20 +20,22 @@
                     <caption>Lista de Facturas</caption>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Booking ID</th>
-                            <th>Created By</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
+                            <th>Número</th>
+                            <th>Reserva</th>
+                            <th>Tipo</th>
+                            <th>Importe</th>
+                            <th>Fecha</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>ID</th>
-                            <th>Booking ID</th>
-                            <th>Created By</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
+                            <th>Número</th>
+                            <th>Reserva</th>
+                            <th>Tipo</th>
+                            <th>Importe</th>
+                            <th>Fecha</th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -44,20 +45,18 @@
 @stop
 @section('custom-js')
 <script>
-    $(document).ready(function() {        
+    $(document).ready(function() {
         let properties = dtProperties()
         properties.ajax = "{{ route('api.datatable.invoices') }}"
         properties.columns = [
-            {data: 'id'},
-            {data: 'booking_id'},
-            {data: 'created_user_id'},
-            {data: 'created_at'},
+            {data: 'number'},
+            {data: 'booking_ref'},
+            {data: 'kind'},
+            {data: 'amount_label'},
+            {data: 'issued_on'},
             {
                 data: null,
-                render: (data, type, row) => '<div class="row" role="group">' +
-                       '<a class="btn btn-sm btn-info" href="tours/' + row.id + '" title="Más Información">Más Info</a>' +
-                       '<a class="btn btn-sm btn-warning" href="tours/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
-                   '</div>',
+                render: (data, type, row) => '<a class="btn btn-sm btn-info" href="{{ url('admin/facturas') }}/' + row.id + '">Más Info</a>',
             }
         ]
 

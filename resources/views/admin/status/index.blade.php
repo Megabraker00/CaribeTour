@@ -57,7 +57,7 @@
                                     @endif
                                 </td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-outline-primary"
+                                    <a href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-warning"
                                         title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>

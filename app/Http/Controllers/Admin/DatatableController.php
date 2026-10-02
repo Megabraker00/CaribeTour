@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Itinerary;
 use App\Models\Product;
+use App\Support\ProductCatalog;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 
@@ -73,9 +74,47 @@ class DatatableController extends Controller
 
     public function invoices()
     {
-        $query = Invoice::query()->select('id', 'booking_id', 'created_at', 'created_user_id');
+        $query = Invoice::query()
+            ->with(['booking', 'rectifiedInvoice'])
+            ->select('invoices.*');
 
-        return DataTables::eloquent($query)->toJson();
+        return DataTables::eloquent($query)
+            ->addColumn('booking_ref', function (Invoice $invoice) {
+                return $invoice->booking->external_ref ?? '—';
+            })
+            ->addColumn('kind', function (Invoice $invoice) {
+                return $invoice->isCreditNote() ? 'Abono' : 'Factura';
+            })
+            ->addColumn('amount_label', function (Invoice $invoice) {
+                return number_format((float) $invoice->total_amount, 2, ',', '.').' '.($invoice->currency ?? 'EUR');
+            })
+            ->addColumn('issued_on', function (Invoice $invoice) {
+                return $invoice->issue_date?->format('d/m/Y') ?? '—';
+            })
+            ->filterColumn('booking_ref', function ($query, $keyword) {
+                $query->whereHas('booking', function ($q) use ($keyword) {
+                    $q->where('external_ref', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('kind', function ($query, $keyword) {
+                $needle = mb_strtolower($keyword);
+                if (str_contains('abono', $needle) || str_contains($needle, 'abo')) {
+                    $query->whereNotNull('rectifies_invoice_id');
+                } elseif (str_contains('factura', $needle) || str_contains($needle, 'fac')) {
+                    $query->whereNull('rectifies_invoice_id');
+                }
+            })
+            ->filterColumn('amount_label', function ($query, $keyword) {
+                $query->where('total_amount', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('issued_on', function ($query, $keyword) {
+                $query->where('issue_date', 'like', "%{$keyword}%");
+            })
+            ->orderColumn('booking_ref', 'booking_id $1')
+            ->orderColumn('kind', 'rectifies_invoice_id $1')
+            ->orderColumn('amount_label', 'total_amount $1')
+            ->orderColumn('issued_on', 'issue_date $1')
+            ->toJson();
     }
 
     public function clients()
@@ -116,11 +155,19 @@ class DatatableController extends Controller
 
     public function tours()
     {
+        return $this->catalogProducts('tours');
+    }
+
+    public function catalogProducts(string $kind)
+    {
+        $catalog = ProductCatalog::fromKind($kind);
+
         $minByProduct = DB::table('itineraries')
             ->selectRaw('product_id, MIN(price + taxes) as min_total')
             ->groupBy('product_id');
 
         $query = Product::query()
+            ->where('products.type_id', $catalog['type_id'])
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->leftJoin('statuses', function ($join) {
                 $join->on('products.status_id', '=', 'statuses.id')

@@ -27,6 +27,8 @@ Route::controller(ReservationController::class)->group(function () {
     Route::get('/reservas', 'index')->name('admin.booking.index');
     Route::get('/reservas/{booking}', 'show')->name('admin.booking.show');
     Route::put('/reservas/{booking}/meta', 'updateMeta')->name('admin.booking.meta.update');
+    Route::get('/reservas/{booking}/pasajeros/{passenger}/edit', 'editPassenger')->name('admin.booking.passengers.edit');
+    Route::put('/reservas/{booking}/pasajeros/{passenger}', 'updatePassenger')->name('admin.booking.passengers.update');
 });
 
 Route::controller(ClientController::class)->group(function () {
@@ -37,16 +39,18 @@ Route::controller(ClientController::class)->group(function () {
 });
 
 Route::controller(ProductController::class)->group(function () {
-    Route::get('/tours', 'indexTour')->name('admin.tour.index');
-    Route::get('/tours/new', 'createTour')->name('admin.tour.create');
-    Route::post('/tours', 'storeTour')->name('admin.tour.store');
-    Route::get('/tours/{id}', 'showTour')->name('admin.tour.show');
-    Route::get('/tours/{id}/edit', 'editTour')->name('admin.tour.edit');
-    Route::put('/tours/{id}', 'updateTour')->name('admin.tour.update');
-    Route::post('/tours/{id}/images', 'storeTourImages')->name('admin.tour.images.store');
-    Route::post('/tours/{id}/images/names', 'updateTourImagesNames')->name('admin.tour.images.names');
-    Route::post('/tours/{id}/images/{image}/main', 'setMainTourImage')->name('admin.tour.images.main');
-    Route::delete('/tours/{id}/images/{image}', 'destroyTourImage')->name('admin.tour.images.destroy');
+    $kind = 'tours|excursiones|hoteles|seguros';
+
+    Route::get('/{kind}', 'index')->where('kind', $kind)->name('admin.catalog.index');
+    Route::get('/{kind}/new', 'create')->where('kind', $kind)->name('admin.catalog.create');
+    Route::post('/{kind}', 'store')->where('kind', $kind)->name('admin.catalog.store');
+    Route::get('/{kind}/{id}', 'show')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.show');
+    Route::get('/{kind}/{id}/edit', 'edit')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.edit');
+    Route::put('/{kind}/{id}', 'update')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.update');
+    Route::post('/{kind}/{id}/images', 'storeImages')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.images.store');
+    Route::post('/{kind}/{id}/images/names', 'updateImagesNames')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.images.names');
+    Route::post('/{kind}/{id}/images/{image}/main', 'setMainImage')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.images.main');
+    Route::delete('/{kind}/{id}/images/{image}', 'destroyImage')->where('kind', $kind)->whereNumber('id')->name('admin.catalog.images.destroy');
 });
 
 Route::post('/tourDate', [SegmentController::class, 'storeTourDate'])->name('admin.tour.date.store');
@@ -128,9 +132,7 @@ Route::resource('terminals', TerminalController::class)->only([
 
 Route::controller(InvoiceController::class)->group(function () {
     Route::get('/facturas', 'index')->name('admin.facturas.index');
-    Route::get('/facturas/new', 'create')->name('admin.facturas.create');
-    Route::post('/facturas', 'store')->name('admin.facturas.store');
-    Route::get('/facturas/{id}/edit', 'edit')->name('admin.facturas.edit');
-    Route::put('/facturas/{id}', 'update')->name('admin.facturas.update');
-    Route::delete('/facturas/{id}', 'destroy')->name('admin.facturas.destroy');
+    Route::get('/facturas/{invoice}', 'show')->name('admin.facturas.show');
+    Route::post('/reservas/{booking}/facturas', 'store')->name('admin.booking.invoices.store');
+    Route::post('/reservas/{booking}/facturas/{invoice}/abono', 'storeCredit')->name('admin.booking.invoices.credit');
 });

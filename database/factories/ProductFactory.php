@@ -64,6 +64,27 @@ class ProductFactory extends Factory
         ]);
     }
 
+    public function excursion(): static
+    {
+        return $this->state(fn () => [
+            'type_id' => Type::EXCURSION,
+        ]);
+    }
+
+    public function hotel(): static
+    {
+        return $this->state(fn () => [
+            'type_id' => Type::HOTEL,
+        ]);
+    }
+
+    public function insurance(): static
+    {
+        return $this->state(fn () => [
+            'type_id' => Type::INSURANCE,
+        ]);
+    }
+
     public function active(): static
     {
         return $this->state(fn () => [

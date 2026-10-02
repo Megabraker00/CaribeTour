@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Booking;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdatePassengerRequest;
+use App\Models\Booking;
+use App\Models\Passenger;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ReservationController extends Controller
 {
@@ -22,6 +27,9 @@ class ReservationController extends Controller
             'payments.type',
             'payments.statusRecord',
             'passengers.type',
+            'invoices.createdUser',
+            'invoices.creditNotes',
+            'invoices.rectifiedInvoice',
             'itineraries' => function ($q) {
                 $q->orderBy('booking_itinerary.itinerary_order')
                     ->with(['product', 'departure_t', 'arrival_t', 'segments' => function ($sq) {
@@ -60,5 +68,38 @@ class ReservationController extends Controller
         return redirect()
             ->route('admin.booking.show', $booking)
             ->with('success', 'Notas internas guardadas.');
+    }
+
+    public function editPassenger(Booking $booking, Passenger $passenger): View
+    {
+        $this->ensurePassengerBelongsToBooking($booking, $passenger);
+
+        return view('admin.booking.passenger-edit', [
+            'booking' => $booking,
+            'passenger' => $passenger,
+        ]);
+    }
+
+    public function updatePassenger(UpdatePassengerRequest $request, Booking $booking, Passenger $passenger): RedirectResponse
+    {
+        $this->ensurePassengerBelongsToBooking($booking, $passenger);
+
+        $validated = $request->validated();
+        $validated['passenger_type_id'] = Passenger::getPassengerTypeIdByAge(
+            Carbon::parse($validated['date_of_birth'])->age
+        );
+
+        $passenger->update($validated);
+
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', 'Pasajero actualizado correctamente.');
+    }
+
+    private function ensurePassengerBelongsToBooking(Booking $booking, Passenger $passenger): void
+    {
+        if ((int) $passenger->booking_id !== (int) $booking->id) {
+            abort(404);
+        }
     }
 }

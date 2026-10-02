@@ -354,19 +354,22 @@ return [
             'submenu' => [
                 [
                     'text' => 'Tours',
-                    'icon' => 'far fa-fw fa-file',
+                    'icon' => 'fas fa-fw fa-map-marked-alt',
                     'url' => 'admin/tours',
                 ],
                 [
                     'text' => 'Excursiones',
+                    'icon' => 'fas fa-fw fa-hiking',
                     'url' => 'admin/excursiones',
                 ],
                 [
                     'text' => 'Hoteles',
+                    'icon' => 'fas fa-fw fa-hotel',
                     'url' => 'admin/hoteles',
                 ],
                 [
                     'text' => 'Seguros',
+                    'icon' => 'fas fa-fw fa-shield-alt',
                     'url' => 'admin/seguros',
                 ],
             ],

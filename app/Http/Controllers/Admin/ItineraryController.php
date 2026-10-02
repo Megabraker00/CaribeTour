@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Itinerary;
 use App\Models\ItineraryPrice;
+use App\Models\Product;
+use App\Support\ProductCatalog;
 
 class ItineraryController extends Controller
 {
@@ -18,7 +20,9 @@ class ItineraryController extends Controller
         $date->segments()->delete();
         $date->delete();
 
-        return redirect()->to(route('admin.tour.show', $productId).'#tour-itineraries')
+        $product = Product::query()->findOrFail($productId);
+
+        return redirect()->to(ProductCatalog::showUrl($product).'#tour-itineraries')
             ->with('success', 'Fecha de salida eliminada.');
     }
 }

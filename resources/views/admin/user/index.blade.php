@@ -39,7 +39,7 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->created_at?->format('d/m/Y') }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-warning" title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                     @if ((int) $user->id !== (int) auth()->id())

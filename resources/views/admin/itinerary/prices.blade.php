@@ -11,8 +11,8 @@
             </p>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.tour.edit', $itinerary->product_id) }}#tour-itineraries" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver al tour
+            <a href="{{ \App\Support\ProductCatalog::editUrl($itinerary->product) }}#tour-itineraries" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al producto
             </a>
         </div>
     </div>
