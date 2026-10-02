@@ -26,7 +26,7 @@ class AdminInvoiceTest extends TestCase
 
     public function test_guest_cannot_issue_an_invoice(): void
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PAID]);
+        $booking = Booking::factory()->create(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID)]);
 
         $this->post(route('admin.booking.invoices.store', $booking))
             ->assertRedirect(route('login'));
@@ -34,7 +34,7 @@ class AdminInvoiceTest extends TestCase
 
     public function test_admin_cannot_invoice_a_pending_booking(): void
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PENDING]);
+        $booking = Booking::factory()->create(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PENDING)]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.booking.invoices.store', $booking))
@@ -47,7 +47,7 @@ class AdminInvoiceTest extends TestCase
     public function test_admin_can_issue_an_invoice_for_a_paid_booking(): void
     {
         $booking = Booking::factory()->create([
-            'status_id' => Status::BOOKING_PAID,
+            'status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID),
             'total_price' => 199.99,
             'currency' => 'EUR',
         ]);
@@ -74,7 +74,7 @@ class AdminInvoiceTest extends TestCase
 
     public function test_admin_cannot_issue_a_second_positive_invoice(): void
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PAID]);
+        $booking = Booking::factory()->create(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID)]);
 
         $this->actingAs($this->admin)->post(route('admin.booking.invoices.store', $booking));
         $this->actingAs($this->admin)
@@ -86,7 +86,7 @@ class AdminInvoiceTest extends TestCase
 
     public function test_admin_cannot_credit_until_the_booking_is_cancelled(): void
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PAID]);
+        $booking = Booking::factory()->create(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID)]);
         $this->actingAs($this->admin)->post(route('admin.booking.invoices.store', $booking));
         $invoice = Invoice::query()->first();
 
@@ -100,13 +100,13 @@ class AdminInvoiceTest extends TestCase
     public function test_admin_can_issue_a_credit_note_after_cancel(): void
     {
         $booking = Booking::factory()->create([
-            'status_id' => Status::BOOKING_PAID,
+            'status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID),
             'total_price' => 80.50,
         ]);
         $this->actingAs($this->admin)->post(route('admin.booking.invoices.store', $booking));
         $invoice = Invoice::query()->first();
 
-        $booking->update(['status_id' => Status::BOOKING_CANCELLED]);
+        $booking->update(['status_id' => Status::idFor(Booking::class, Status::BOOKING_CANCELLED)]);
 
         $this->actingAs($this->admin)
             ->from(route('admin.booking.show', $booking))
@@ -135,7 +135,7 @@ class AdminInvoiceTest extends TestCase
 
     public function test_invoices_datatable_is_available_for_admin(): void
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PAID]);
+        $booking = Booking::factory()->create(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID)]);
         $this->actingAs($this->admin)->post(route('admin.booking.invoices.store', $booking));
 
         $this->actingAs($this->admin)

@@ -17,7 +17,7 @@ class SegmentSeeder extends Seeder
             // Creamos 3 segmentos por cada itinerario para que tengan contenido
             Segment::factory()->create([
                 'itinerary_id' => $itinerary->id,
-                'type_id' => Type::FLIGHT,
+                'type_id' => Type::idFor(\App\Models\Product::class, Type::FLIGHT),
                 'sort_order' => 1,
                 'origin' => 'MAD (Madrid)',
                 'destination' => 'PUJ (Punta Cana)'
@@ -25,7 +25,7 @@ class SegmentSeeder extends Seeder
 
             Segment::factory()->create([
                 'itinerary_id' => $itinerary->id,
-                'type_id' => Type::TRANSFER,
+                'type_id' => Type::idFor(\App\Models\Product::class, Type::TRANSFER),
                 'sort_order' => 2,
                 'origin' => 'PUJ Airport',
                 'destination' => 'Hotel Resort'
@@ -33,7 +33,7 @@ class SegmentSeeder extends Seeder
 
             Segment::factory()->create([
                 'itinerary_id' => $itinerary->id,
-                'type_id' => Type::EXCURSION,
+                'type_id' => Type::idFor(\App\Models\Product::class, Type::EXCURSION),
                 'sort_order' => 3,
                 'origin' => 'Hotel Resort',
                 'destination' => 'Isla Saona'

@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 
 class Client extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -36,22 +36,6 @@ class Client extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
-    }
-
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(Type::class);
-    }
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
-
-    /** Estado por FK status_id (para mostrar nombre en vistas). */
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function meta()

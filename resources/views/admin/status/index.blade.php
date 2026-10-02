@@ -41,7 +41,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>Modelo (statusable)</th>
+                            <th>Slug</th>
+                            <th>Modelo</th>
                             <th class="text-right" style="width: 1%">Acciones</th>
                         </tr>
                     </thead>
@@ -49,7 +50,13 @@
                         @forelse ($statuses as $s)
                             <tr>
                                 <td>{{ $s->id }}</td>
-                                <td>{{ $s->name }}</td>
+                                <td>
+                                    {{ $s->name }}
+                                    @if ($s->is_system)
+                                        <span class="badge badge-secondary">sistema</span>
+                                    @endif
+                                </td>
+                                <td><code>{{ $s->slug }}</code></td>
                                 <td>
                                     <code class="small">{{ $s->statusable }}</code>
                                     @if (isset($statusableOptions[$s->statusable]))
@@ -61,6 +68,7 @@
                                         title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
+                                    @unless ($s->is_system)
                                     <form action="{{ route('admin.statuses.destroy', $s) }}" method="POST" class="d-inline"
                                         onsubmit="return confirm('¿Eliminar este estado? Solo es posible si no está en uso.');">
                                         @csrf
@@ -69,11 +77,12 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endunless
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">No hay estados registrados.</td>
+                                <td colspan="5" class="text-center text-muted py-4">No hay estados registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>

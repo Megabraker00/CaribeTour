@@ -13,7 +13,7 @@ class PositionSeeder extends Seeder
         foreach (['Guía', 'Comercial', 'Administración'] as $name) {
             Position::query()->firstOrCreate(
                 ['name' => $name],
-                ['status_id' => Status::POSITION_ACTIVE]
+                ['status_id' => Status::idFor(\App\Models\Position::class, Status::POSITION_ACTIVE)]
             );
         }
     }

@@ -51,7 +51,7 @@ class SegmentController extends Controller
 
             Segment::create([
                 'itinerary_id' => $itinerary->id,
-                'type_id' => Type::FLIGHT,
+                'type_id' => Type::idFor(Product::class, Type::FLIGHT),
                 'sort_order' => 1,
                 'departure_date' => $validated['departure_date'],
                 'departure_terminal_id' => $validated['departure_terminal_id'],

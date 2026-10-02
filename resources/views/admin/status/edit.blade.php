@@ -29,8 +29,22 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="slug">Slug <span class="text-danger">*</span></label>
+                    <input type="text" name="slug" id="slug" maxlength="50"
+                        class="form-control @error('slug') is-invalid @enderror"
+                        value="{{ old('slug', $status->slug) }}"
+                        @if ($status->is_system) readonly @else required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" @endif>
+                    @error('slug')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    @if ($status->is_system)
+                        <small class="form-text text-muted">Estado de sistema: el slug no se puede cambiar.</small>
+                    @endif
+                </div>
+                <div class="form-group">
                     <label for="statusable">Aplica a (modelo) <span class="text-danger">*</span></label>
-                    <select name="statusable" id="statusable" class="form-control @error('statusable') is-invalid @enderror" required>
+                    <select name="statusable" id="statusable" class="form-control @error('statusable') is-invalid @enderror" required
+                        @if ($status->is_system) disabled @endif>
                         @foreach ($statusableOptions as $class => $label)
                             <option value="{{ $class }}"
                                 {{ (string) old('statusable', $status->statusable) === $class ? 'selected' : '' }}>
@@ -46,6 +60,9 @@
                     @error('statusable')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
+                    @if ($status->is_system)
+                        <input type="hidden" name="statusable" value="{{ $status->statusable }}">
+                    @endif
                     <small class="form-text text-muted">Si el estado ya está en uso, no podrás cambiar el modelo.</small>
                 </div>
                 <button type="submit" class="btn btn-primary">Actualizar</button>

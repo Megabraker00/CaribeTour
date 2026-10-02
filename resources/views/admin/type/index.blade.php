@@ -41,7 +41,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>Modelo (typeable)</th>
+                            <th>Slug</th>
+                            <th>Modelo</th>
                             <th class="text-right" style="width: 1%">Acciones</th>
                         </tr>
                     </thead>
@@ -49,7 +50,13 @@
                         @forelse ($types as $t)
                             <tr>
                                 <td>{{ $t->id }}</td>
-                                <td>{{ $t->name }}</td>
+                                <td>
+                                    {{ $t->name }}
+                                    @if ($t->is_system)
+                                        <span class="badge badge-secondary">sistema</span>
+                                    @endif
+                                </td>
+                                <td><code>{{ $t->slug }}</code></td>
                                 <td>
                                     <code class="small">{{ $t->typeable }}</code>
                                     @if (isset($typeableOptions[$t->typeable]))
@@ -61,6 +68,7 @@
                                         title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
+                                    @unless ($t->is_system)
                                     <form action="{{ route('admin.types.destroy', $t) }}" method="POST" class="d-inline"
                                         onsubmit="return confirm('¿Eliminar este tipo? Solo es posible si no está en uso.');">
                                         @csrf
@@ -69,11 +77,12 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endunless
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-4">No hay tipos registrados.</td>
+                                <td colspan="5" class="text-center text-muted py-4">No hay tipos registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>

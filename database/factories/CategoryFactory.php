@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'status_id' => Status::CATEGORY_ACTIVE,
+            'status_id' => Status::idFor(\App\Models\Category::class, Status::CATEGORY_ACTIVE),
             'parent_id' => null,
         ];
     }

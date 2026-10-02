@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Comment extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
 }

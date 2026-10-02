@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\Itinerary;
 use App\Models\Passenger;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
@@ -93,7 +94,7 @@ class ReservationService
         $this->configureStripe();
 
         $existingPayment = $booking->payments()
-            ->where('type_id', Type::PAID_BY_STRIPE)
+            ->where('type_id', Type::idFor(Payment::class, Type::PAID_BY_STRIPE))
             ->whereNotNull('transaction_id')
             ->latest('id')
             ->first();
@@ -127,8 +128,8 @@ class ReservationService
             'amount' => $booking->total_price,
             'currency' => $booking->currency,
             'transaction_id' => $intent->id,
-            'status_id' => Status::PAYMENT_PENDING,
-            'type_id' => Type::PAID_BY_STRIPE,
+            'status_id' => Status::idFor(Payment::class, Status::PAYMENT_PENDING),
+            'type_id' => Type::idFor(Payment::class, Type::PAID_BY_STRIPE),
         ]);
 
         return $intent;
@@ -145,17 +146,17 @@ class ReservationService
     {
         $alreadyPaid = $booking->payments()
             ->where('transaction_id', $paymentIntentId)
-            ->where('status_id', Status::PAYMENT_PAID)
+            ->where('status_id', Status::idFor(Payment::class, Status::PAYMENT_PAID))
             ->exists();
 
-        if ($alreadyPaid && (int) $booking->status_id === Status::BOOKING_PAID) {
+        if ($alreadyPaid && $booking->hasStatusSlug(Status::BOOKING_PAID)) {
             return;
         }
 
         DB::transaction(function () use ($booking, $paymentIntentId, $amountCents) {
             $locked = Booking::query()->whereKey($booking->id)->lockForUpdate()->firstOrFail();
 
-            $locked->update(['status_id' => Status::BOOKING_PAID]);
+            $locked->update(['status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID)]);
 
             $amount = bcdiv((string) $amountCents, '100', 2);
             $payment = $locked->payments()->where('transaction_id', $paymentIntentId)->first();
@@ -163,16 +164,16 @@ class ReservationService
             if ($payment) {
                 $payment->update([
                     'amount' => $amount,
-                    'status_id' => Status::PAYMENT_PAID,
-                    'type_id' => Type::PAID_BY_STRIPE,
+                    'status_id' => Status::idFor(Payment::class, Status::PAYMENT_PAID),
+                    'type_id' => Type::idFor(Payment::class, Type::PAID_BY_STRIPE),
                 ]);
             } else {
                 $locked->payments()->create([
                     'amount' => $amount,
                     'currency' => $locked->currency,
                     'transaction_id' => $paymentIntentId,
-                    'status_id' => Status::PAYMENT_PAID,
-                    'type_id' => Type::PAID_BY_STRIPE,
+                    'status_id' => Status::idFor(Payment::class, Status::PAYMENT_PAID),
+                    'type_id' => Type::idFor(Payment::class, Type::PAID_BY_STRIPE),
                 ]);
             }
         });
@@ -214,7 +215,7 @@ class ReservationService
             'phone' => $validated['customer_phone'] ?? null,
             'dni_passport' => $validated['customer_document'],
             'nationality' => $validated['customer_nationality'],
-            'status_id' => Status::CLIENT_ACTIVE,
+            'status_id' => Status::idFor(Client::class, Status::CLIENT_ACTIVE),
         ];
 
         $pax1 = $validated['passengers'][1] ?? null;
@@ -234,7 +235,7 @@ class ReservationService
         return Booking::create([
             'client_id' => $clientId,
             'external_ref' => 'LOC-'.Str::upper(Str::random(8)),
-            'status_id' => Status::BOOKING_PENDING,
+            'status_id' => Status::idFor(Booking::class, Status::BOOKING_PENDING),
             'total_price' => 0,
             'currency' => 'EUR',
         ]);
@@ -264,7 +265,7 @@ class ReservationService
                 'nationality' => $passenger['nationality'],
                 'gender' => $passenger['gender'],
                 'passenger_type_id' => $typeId,
-                'status_id' => Status::CLIENT_ACTIVE,
+                'status_id' => Status::idFor(Client::class, Status::CLIENT_ACTIVE),
                 'price_at_booking' => $price,
                 'taxes_at_booking' => $taxes,
             ]);

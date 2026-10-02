@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
+use App\Models\Concerns\BelongsToStatus;
 use Illuminate\Support\Str;
 
 class Blog extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -35,11 +36,6 @@ class Blog extends Model
     public function user(): BelongsTo
     {
         return $this->createdUser();
-    }
-
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function images(): MorphMany
@@ -194,11 +190,6 @@ class Blog extends Model
         $clean = preg_replace('/[^a-z0-9\-]/', '', strtolower((string) $this->slug));
 
         return $clean !== '' ? $clean : 'blog-'.$this->id;
-    }
-
-    public function state(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
     }
 
     public function create_date()

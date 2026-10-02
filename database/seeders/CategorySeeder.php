@@ -28,7 +28,7 @@ class CategorySeeder extends Seeder
                 'name' => $name,
                 'slug' => \Illuminate\Support\Str::slug($name),
                 'parent_id' => $parentId,
-                'status_id' => \App\Models\Status::CATEGORY_ACTIVE,
+                'status_id' => \App\Models\Status::idFor(\App\Models\Category::class, \App\Models\Status::CATEGORY_ACTIVE),
             ]);
         }
     }

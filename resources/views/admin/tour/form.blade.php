@@ -215,7 +215,7 @@
                                             <option value=""> — </option>
                                             @foreach ($productStatuses as $productStatus)
                                                 <option value="{{ $productStatus->id }}"
-                                                    {{ (string) old('status_id', $tour->status_id ?? \App\Models\Status::PRODUCT_DRAFT) === (string) $productStatus->id ? 'selected' : '' }}>
+                                                    {{ (string) old('status_id', $tour->status_id ?? \App\Models\Status::idFor(\App\Models\Product::class, \App\Models\Status::PRODUCT_DRAFT)) === (string) $productStatus->id ? 'selected' : '' }}>
                                                     {{ $productStatus->name }}</option>
                                             @endforeach
                                         </select>

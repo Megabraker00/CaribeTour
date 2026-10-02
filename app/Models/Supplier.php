@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 
 class Supplier extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -22,18 +22,8 @@ class Supplier extends Model
         return $this->name;
     }
 
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
-    }
-
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
-    }
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
     }
 }

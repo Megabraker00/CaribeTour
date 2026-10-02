@@ -68,17 +68,17 @@ class AdminProductCatalogTest extends TestCase
             ['excursiones', Type::EXCURSION, 'Excursión Saona'],
             ['hoteles', Type::HOTEL, 'Hotel Caribe'],
             ['seguros', Type::INSURANCE, 'Seguro de viaje'],
-        ] as [$kind, $typeId, $name]) {
+        ] as [$kind, $typeSlug, $name]) {
             $slug = strtolower(str_replace(' ', '-', $name)).'-test';
 
             $this->actingAs($this->admin)
                 ->post(route('admin.catalog.store', $kind), [
                     'name' => $name,
                     'slug' => $slug,
-                    'type_id' => Type::TOUR,
+                    'type_id' => Type::idFor(Product::class, Type::TOUR),
                     'category_id' => $category->id,
                     'supplier_id' => $supplier->id,
-                    'status_id' => Status::PRODUCT_ACTIVE,
+                    'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
                     'meta_description' => '<p>Descripción</p>',
                     'meta_includes' => "Traslado\nGuía",
                     'meta_stars' => 4,
@@ -87,7 +87,7 @@ class AdminProductCatalogTest extends TestCase
 
             $product = Product::query()->where('slug', $slug)->first();
             $this->assertNotNull($product);
-            $this->assertSame($typeId, (int) $product->type_id);
+            $this->assertSame($typeSlug, $product->type?->slug);
             $this->assertSame($this->admin->id, $product->created_user_id);
             $this->assertSame(4, $product->stars());
         }
@@ -97,11 +97,11 @@ class AdminProductCatalogTest extends TestCase
     {
         $hotel = Product::factory()->hotel()->create([
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
         $tour = Product::factory()->tour()->create([
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
 
         $this->actingAs($this->admin)
@@ -124,7 +124,7 @@ class AdminProductCatalogTest extends TestCase
             'name' => 'Hotel Viejo',
             'slug' => 'hotel-viejo',
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_DRAFT,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_DRAFT),
         ]);
 
         $this->actingAs($this->admin)
@@ -133,7 +133,7 @@ class AdminProductCatalogTest extends TestCase
                 'slug' => 'hotel-nuevo',
                 'category_id' => $hotel->category_id,
                 'supplier_id' => $hotel->supplier_id,
-                'status_id' => Status::PRODUCT_ACTIVE,
+                'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
                 'meta_description' => '<p>Actualizado</p>',
                 'meta_includes' => 'Desayuno',
                 'meta_stars' => 5,
@@ -142,8 +142,8 @@ class AdminProductCatalogTest extends TestCase
 
         $hotel->refresh();
         $this->assertSame('Hotel Nuevo', $hotel->name);
-        $this->assertSame(Type::HOTEL, (int) $hotel->type_id);
-        $this->assertSame(Status::PRODUCT_ACTIVE, (int) $hotel->status_id);
+        $this->assertSame(Type::HOTEL, $hotel->type?->slug);
+        $this->assertTrue($hotel->hasStatusSlug(Status::PRODUCT_ACTIVE));
         $this->assertSame(5, $hotel->stars());
     }
 
@@ -152,12 +152,12 @@ class AdminProductCatalogTest extends TestCase
         Product::factory()->tour()->create([
             'name' => 'Tour Visible',
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
         Product::factory()->excursion()->create([
             'name' => 'Excursión Visible',
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
 
         $columns = [
@@ -201,7 +201,7 @@ class AdminProductCatalogTest extends TestCase
         $hotel = Product::factory()->hotel()->create([
             'slug' => 'hotel-imagen-test',
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
 
         $this->actingAs($this->admin)

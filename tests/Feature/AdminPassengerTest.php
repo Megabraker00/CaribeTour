@@ -71,7 +71,7 @@ class AdminPassengerTest extends TestCase
         $this->assertSame('ES', $passenger->nationality);
         $this->assertSame('female', $passenger->gender);
         $this->assertSame('1990-05-01', $passenger->date_of_birth->format('Y-m-d'));
-        $this->assertSame(Type::ADULT, $passenger->passenger_type_id);
+        $this->assertSame(Type::ADULT, $passenger->type?->slug);
         $this->assertEquals(100, $passenger->price_at_booking);
         $this->assertEquals(10, $passenger->taxes_at_booking);
     }
@@ -81,7 +81,9 @@ class AdminPassengerTest extends TestCase
      */
     private function makeBookingWithPassenger(): array
     {
-        $booking = Booking::factory()->create(['status_id' => Status::BOOKING_PAID]);
+        $booking = Booking::factory()->create([
+            'status_id' => Status::idFor(Booking::class, Status::BOOKING_PAID),
+        ]);
         $passenger = Passenger::query()->create([
             'booking_id' => $booking->id,
             'name' => 'Ana',
@@ -90,8 +92,8 @@ class AdminPassengerTest extends TestCase
             'dni_passport' => '11111111A',
             'nationality' => 'ES',
             'gender' => 'female',
-            'passenger_type_id' => Type::ADULT,
-            'status_id' => Status::CLIENT_ACTIVE,
+            'passenger_type_id' => Type::idFor(Passenger::class, Type::ADULT),
+            'status_id' => Status::idFor(\App\Models\Client::class, Status::CLIENT_ACTIVE),
             'price_at_booking' => 100,
             'taxes_at_booking' => 10,
         ]);

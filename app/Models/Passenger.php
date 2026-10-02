@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 
 class Passenger extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     public const GENDER_MALE = "Male";
@@ -44,12 +45,7 @@ class Passenger extends Model
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
-    }
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
+        return $this->belongsTo(Type::class, 'passenger_type_id');
     }
 
     public function meta()
@@ -60,15 +56,15 @@ class Passenger extends Model
     public static function getPassengerTypeIdByAge(int $age)
     {
         if ($age < 2) {
-            return Type::INFANT;
-        } // Infante
+            return Type::idFor(self::class, Type::INFANT);
+        }
         if ($age < 12) {
-            return Type::CHILD;
-        } // Niño
+            return Type::idFor(self::class, Type::CHILD);
+        }
         if ($age >= 70) {
-            return Type::SENIOR;
-        } // Sénior (como definimos antes)
+            return Type::idFor(self::class, Type::SENIOR);
+        }
 
-        return Type::ADULT; // Adulto
+        return Type::idFor(self::class, Type::ADULT);
     }
 }

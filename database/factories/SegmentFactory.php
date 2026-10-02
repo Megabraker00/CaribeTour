@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Itinerary;
+use App\Models\Product;
 use App\Models\Terminal;
+use App\Models\Type;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Segment>
@@ -24,7 +26,7 @@ class SegmentFactory extends Factory
 
         return [
             'itinerary_id' => Itinerary::factory(),
-            'type_id' => $this->faker->numberBetween(1, 8), // IDs de TOUR a FREETOUR
+            'type_id' => Type::idFor(Product::class, Type::FLIGHT),
             'sort_order' => 1,
             'departure_date' => $departure,
             'departure_terminal_id' => Terminal::inRandomOrder()->first()?->id ?? Terminal::factory(),

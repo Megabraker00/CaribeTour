@@ -60,35 +60,35 @@ class ProductFactory extends Factory
     public function tour(): static
     {
         return $this->state(fn () => [
-            'type_id' => Type::TOUR,
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
         ]);
     }
 
     public function excursion(): static
     {
         return $this->state(fn () => [
-            'type_id' => Type::EXCURSION,
+            'type_id' => Type::idFor(Product::class, Type::EXCURSION),
         ]);
     }
 
     public function hotel(): static
     {
         return $this->state(fn () => [
-            'type_id' => Type::HOTEL,
+            'type_id' => Type::idFor(Product::class, Type::HOTEL),
         ]);
     }
 
     public function insurance(): static
     {
         return $this->state(fn () => [
-            'type_id' => Type::INSURANCE,
+            'type_id' => Type::idFor(Product::class, Type::INSURANCE),
         ]);
     }
 
     public function active(): static
     {
         return $this->state(fn () => [
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
     }
 }

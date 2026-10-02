@@ -17,7 +17,7 @@ use Illuminate\View\View;
 class TypeController extends Controller
 {
     /**
-     * Modelos permitidos para el campo polimórfico typeable (valor = FQCN).
+     * Modelos permitidos para typeable (FQCN → etiqueta).
      *
      * @return array<string, string>
      */
@@ -53,14 +53,24 @@ class TypeController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:50',
+            'slug' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('types')->where(fn ($q) => $q->where('typeable', $request->input('typeable'))),
+            ],
             'typeable' => ['required', 'string', Rule::in($allowed)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
+            'slug.required' => 'El slug es obligatorio.',
+            'slug.regex' => 'El slug solo puede tener minúsculas, números y guiones.',
+            'slug.unique' => 'Ya existe un tipo con ese slug para este modelo.',
             'typeable.required' => 'Selecciona el modelo al que aplica el tipo.',
             'typeable.in' => 'El modelo seleccionado no es válido.',
         ]);
 
-        Type::create($validated);
+        Type::create($validated + ['is_system' => false]);
 
         return redirect()
             ->route('admin.types.index')
@@ -84,12 +94,30 @@ class TypeController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:50',
+            'slug' => $type->is_system ? 'nullable' : [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('types')->where(fn ($q) => $q->where('typeable', $request->input('typeable', $type->typeable)))->ignore($type->id),
+            ],
             'typeable' => ['required', 'string', Rule::in($allowed)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
+            'slug.required' => 'El slug es obligatorio.',
+            'slug.regex' => 'El slug solo puede tener minúsculas, números y guiones.',
+            'slug.unique' => 'Ya existe un tipo con ese slug para este modelo.',
             'typeable.required' => 'Selecciona el modelo al que aplica el tipo.',
             'typeable.in' => 'El modelo seleccionado no es válido.',
         ]);
+
+        if ($type->is_system) {
+            $type->update(['name' => $validated['name']]);
+
+            return redirect()
+                ->route('admin.types.index')
+                ->with('success', 'Tipo actualizado correctamente. El slug de sistema no se puede cambiar.');
+        }
 
         if ($validated['typeable'] !== $type->typeable && $this->typeHasReferences($type)) {
             return redirect()
@@ -109,6 +137,12 @@ class TypeController extends Controller
 
     public function destroy(Type $type): RedirectResponse
     {
+        if ($type->is_system) {
+            return redirect()
+                ->route('admin.types.index')
+                ->with('error', 'No se puede eliminar un tipo de sistema.');
+        }
+
         if ($this->typeHasReferences($type)) {
             return redirect()
                 ->route('admin.types.index')

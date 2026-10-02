@@ -17,8 +17,8 @@ class ServiceController extends Controller
     {
         $service = Product::query()
             ->where('slug', $servicio)
-            ->where('type_id', '!=', Type::TOUR)
-            ->where('status_id', Status::PRODUCT_ACTIVE)
+            ->whereHas('type', static fn ($type) => $type->where('slug', '!=', Type::TOUR))
+            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
             ->with(['images', 'category.parentCategory', 'metaData', 'type'])
             ->firstOrFail();
 

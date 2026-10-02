@@ -25,7 +25,7 @@ class StatusController extends Controller
 {
     /**
      * Modelos permitidos para statusable (FQCN → etiqueta).
-     * Deben coincidir con los usos reales de status_id en la BD.
+     * Discriminan el dominio del lookup; la FK real es status_id.
      *
      * @return array<string, string>
      */
@@ -70,14 +70,24 @@ class StatusController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:50',
+            'slug' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('statuses')->where(fn ($q) => $q->where('statusable', $request->input('statusable'))),
+            ],
             'statusable' => ['required', 'string', Rule::in($allowed)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
+            'slug.required' => 'El slug es obligatorio.',
+            'slug.regex' => 'El slug solo puede tener minúsculas, números y guiones.',
+            'slug.unique' => 'Ya existe un estado con ese slug para este modelo.',
             'statusable.required' => 'Selecciona el modelo al que aplica el estado.',
             'statusable.in' => 'El modelo seleccionado no es válido.',
         ]);
 
-        Status::create($validated);
+        Status::create($validated + ['is_system' => false]);
 
         return redirect()
             ->route('admin.statuses.index')
@@ -101,12 +111,30 @@ class StatusController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:50',
+            'slug' => $status->is_system ? 'nullable' : [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('statuses')->where(fn ($q) => $q->where('statusable', $request->input('statusable', $status->statusable)))->ignore($status->id),
+            ],
             'statusable' => ['required', 'string', Rule::in($allowed)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
+            'slug.required' => 'El slug es obligatorio.',
+            'slug.regex' => 'El slug solo puede tener minúsculas, números y guiones.',
+            'slug.unique' => 'Ya existe un estado con ese slug para este modelo.',
             'statusable.required' => 'Selecciona el modelo al que aplica el estado.',
             'statusable.in' => 'El modelo seleccionado no es válido.',
         ]);
+
+        if ($status->is_system) {
+            $status->update(['name' => $validated['name']]);
+
+            return redirect()
+                ->route('admin.statuses.index')
+                ->with('success', 'Estado actualizado correctamente. El slug de sistema no se puede cambiar.');
+        }
 
         if ($validated['statusable'] !== $status->statusable && $this->statusHasReferences($status)) {
             return redirect()
@@ -126,6 +154,12 @@ class StatusController extends Controller
 
     public function destroy(Status $status): RedirectResponse
     {
+        if ($status->is_system) {
+            return redirect()
+                ->route('admin.statuses.index')
+                ->with('error', 'No se puede eliminar un estado de sistema.');
+        }
+
         if ($this->statusHasReferences($status)) {
             return redirect()
                 ->route('admin.statuses.index')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TypeController extends Controller
 {
@@ -94,9 +95,17 @@ class TypeController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('types')->where(fn ($q) => $q->where('typeable', $request->input('typeable'))),
+            ],
+            'typeable' => 'required|string|max:255',
         ]);
 
-        $type = Type::create($validatedData);
+        $type = Type::create($validatedData + ['is_system' => false]);
 
         return response()->json($type, 201);
     }
@@ -155,6 +164,12 @@ class TypeController extends Controller
             'name' => 'sometimes|required|string|max:255',
         ]);
 
+        if ($type->is_system) {
+            $type->update(['name' => $validatedData['name'] ?? $type->name]);
+
+            return response()->json($type);
+        }
+
         $type->update($validatedData);
 
         return response()->json($type);
@@ -180,6 +195,10 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
+        if ($type->is_system) {
+            return response()->json(['message' => 'No se puede eliminar un tipo de sistema.'], 403);
+        }
+
         $type->delete();
 
         return response()->json(null, 204);

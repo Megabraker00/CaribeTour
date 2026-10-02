@@ -20,11 +20,11 @@ class StatusSeeder extends Seeder
         Status::factory()->count(2)->forSupplier()->create();
         Status::factory()->count(2)->forBlog()->create();
 
-        if (!Status::query()->where('id', Status::EMPLOYEE_ACTIVE)->exists()) {
+        if (!Status::query()->where('statusable', \App\Models\Employee::class)->where('slug', Status::EMPLOYEE_ACTIVE)->exists()) {
             Status::factory()->count(2)->forEmployee()->create();
         }
 
-        if (!Status::query()->where('id', Status::POSITION_ACTIVE)->exists()) {
+        if (!Status::query()->where('statusable', \App\Models\Position::class)->where('slug', Status::POSITION_ACTIVE)->exists()) {
             Status::factory()->count(1)->forPosition()->create();
         }
     }

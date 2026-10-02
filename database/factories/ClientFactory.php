@@ -20,7 +20,7 @@ class ClientFactory extends Factory
             'date_of_birth' => fake()->date(),
             'dni_passport' => strtoupper(fake()->bothify('########?')),
             'nationality' => 'ES',
-            'status_id' => Status::CLIENT_ACTIVE,
+            'status_id' => Status::idFor(\App\Models\Client::class, Status::CLIENT_ACTIVE),
         ];
     }
 }
