@@ -12,8 +12,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 /**
  * @property-read array $meta Contenido de meta_data (p. ej. description).
  */
+use App\Models\Concerns\BelongsToStatus;
+
 class Category extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $table = 'categories';
@@ -33,17 +36,6 @@ class Category extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
-    }
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
-
-    /** Estado por FK status_id (listados, admin). */
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function parentCategory(): BelongsTo

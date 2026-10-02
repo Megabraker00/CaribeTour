@@ -2,59 +2,64 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesLookupCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Type extends Model
 {
     use HasFactory;
+    use ResolvesLookupCode;
 
     protected $fillable = [
         'name',
+        'slug',
         'typeable',
+        'is_system',
     ];
 
-    // from 1 to 9 belongs to Product model
-    public const TOUR = 1;
-    public const EXCURSION = 2;
-    public const HOTEL = 3;
-    public const INSURANCE = 4;
-    public const CRUISE = 5;
-    public const FLIGHT = 6;
-    public const TRANSFER = 7;
-    public const FREETOUR = 8;
+    protected $casts = [
+        'is_system' => 'boolean',
+    ];
 
-    // from 10 to 19 belongs to Payment model
-    public const PAID_BY_CARD = 10;
-    public const MONETARY_TRANSFER = 11;
-    public const PAID_BY_STRIPE = 12;
-    public const PAID_BY_PAYPAL = 13;
-    public const PAID_BY_CASH = 14;
+    public const TOUR = 'tour';
+    public const EXCURSION = 'excursion';
+    public const HOTEL = 'hotel';
+    public const INSURANCE = 'insurance';
+    public const CRUISE = 'cruise';
+    public const FLIGHT = 'flight';
+    public const TRANSFER = 'transfer';
+    public const FREETOUR = 'freetour';
 
-    // from 20 to 29 belongs to Passenger
-    public const INFANT = 20;
-    public const CHILD = 21;
-    public const ADULT = 22;
-    public const SENIOR = 23;
+    public const PAID_BY_CARD = 'card';
+    public const MONETARY_TRANSFER = 'bank_transfer';
+    public const PAID_BY_STRIPE = 'stripe';
+    public const PAID_BY_PAYPAL = 'paypal';
+    public const PAID_BY_CASH = 'cash';
+
+    public const INFANT = 'infant';
+    public const CHILD = 'child';
+    public const ADULT = 'adult';
+    public const SENIOR = 'senior';
 
     public function __toString()
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
-    public function typeable()
+    protected static function ownerColumn(): string
     {
-        return $this->morphTo();
+        return 'typeable';
     }
 
-    public function payments(): MorphMany
+    public function products(): HasMany
     {
-        return $this->morphMany(Payment::class, 'typeable');
+        return $this->hasMany(Product::class, 'type_id');
     }
 
-    public function products(): MorphMany
+    public function payments(): HasMany
     {
-        return $this->morphMany(Product::class, 'typeable');
+        return $this->hasMany(Payment::class, 'type_id');
     }
 }

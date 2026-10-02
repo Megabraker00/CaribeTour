@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class StatusController extends Controller
 {
@@ -94,9 +95,17 @@ class StatusController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('statuses')->where(fn ($q) => $q->where('statusable', $request->input('statusable'))),
+            ],
+            'statusable' => 'required|string|max:255',
         ]);
 
-        $status = Status::create($validatedData);
+        $status = Status::create($validatedData + ['is_system' => false]);
 
         return response()->json($status, 201);
     }
@@ -155,6 +164,12 @@ class StatusController extends Controller
             'name' => 'sometimes|required|string|max:255',
         ]);
 
+        if ($status->is_system) {
+            $status->update(['name' => $validatedData['name'] ?? $status->name]);
+
+            return response()->json($status);
+        }
+
         $status->update($validatedData);
 
         return response()->json($status);
@@ -180,6 +195,10 @@ class StatusController extends Controller
      */
     public function destroy(Status $status)
     {
+        if ($status->is_system) {
+            return response()->json(['message' => 'No se puede eliminar un estado de sistema.'], 403);
+        }
+
         $status->delete();
 
         return response()->json(null, 204);

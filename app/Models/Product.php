@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -24,11 +25,6 @@ class Product extends Model
         'supplier_id',
         'created_user_id',
     ];
-
-    public const TYPE_TOUR = 1;
-    public const TYPE_SERVICE = 2;
-    public const STATUS_AVAILABLE = 1;
-    public const STATUS_UNAVAILABLE = 2;
 
     public function __toString()
     {
@@ -91,11 +87,6 @@ class Product extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
-
     public function tourSlug(): string
     {
         $ret = [
@@ -149,8 +140,8 @@ class Product extends Model
     public function scopePublicVisibleTour(Builder $query): Builder
     {
         return $query
-            ->where('status_id', Status::PRODUCT_ACTIVE)
-            ->where('type_id', Type::TOUR)
+            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
+            ->whereHas('type', static fn ($type) => $type->where('slug', Type::TOUR))
             ->whereHas('itineraries.segments', function ($q) {
                 $q->where('departure_date', '>', now());
             });

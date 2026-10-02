@@ -19,7 +19,7 @@ class SupplierFactory extends Factory
     {
         return [
             'name' => fake()->company(),
-            'status_id' => Status::SUPPLIER_ACTIVE,
+            'status_id' => Status::idFor(\App\Models\Supplier::class, Status::SUPPLIER_ACTIVE),
         ];
     }
 }

@@ -29,8 +29,22 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="slug">Slug <span class="text-danger">*</span></label>
+                    <input type="text" name="slug" id="slug" maxlength="50"
+                        class="form-control @error('slug') is-invalid @enderror"
+                        value="{{ old('slug', $type->slug) }}"
+                        @if ($type->is_system) readonly @else required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" @endif>
+                    @error('slug')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    @if ($type->is_system)
+                        <small class="form-text text-muted">Tipo de sistema: el slug no se puede cambiar.</small>
+                    @endif
+                </div>
+                <div class="form-group">
                     <label for="typeable">Aplica a (modelo) <span class="text-danger">*</span></label>
-                    <select name="typeable" id="typeable" class="form-control @error('typeable') is-invalid @enderror" required>
+                    <select name="typeable" id="typeable" class="form-control @error('typeable') is-invalid @enderror" required
+                        @if ($type->is_system) disabled @endif>
                         @foreach ($typeableOptions as $class => $label)
                             <option value="{{ $class }}"
                                 {{ (string) old('typeable', $type->typeable) === $class ? 'selected' : '' }}>
@@ -46,6 +60,9 @@
                     @error('typeable')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
+                    @if ($type->is_system)
+                        <input type="hidden" name="typeable" value="{{ $type->typeable }}">
+                    @endif
                     <small class="form-text text-muted">Si el tipo ya está en uso, no podrás cambiar el modelo.</small>
                 </div>
                 <button type="submit" class="btn btn-primary">Actualizar</button>

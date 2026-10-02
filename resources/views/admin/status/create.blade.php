@@ -28,6 +28,17 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="slug">Slug <span class="text-danger">*</span></label>
+                    <input type="text" name="slug" id="slug" maxlength="50"
+                        class="form-control @error('slug') is-invalid @enderror"
+                        value="{{ old('slug') }}" required placeholder="ej.: pendiente-revision"
+                        pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$">
+                    @error('slug')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="form-text text-muted">Código estable. El sistema filtra por slug, no por el nombre visible.</small>
+                </div>
+                <div class="form-group">
                     <label for="statusable">Aplica a (modelo) <span class="text-danger">*</span></label>
                     <select name="statusable" id="statusable" class="form-control @error('statusable') is-invalid @enderror" required>
                         <option value="">— Selecciona —</option>
@@ -40,7 +51,7 @@
                     @error('statusable')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
-                    <small class="form-text text-muted">Se guarda el FQCN en <code>statuses.statusable</code> (relación polimórfica).</small>
+                    <small class="form-text text-muted">Indica a qué entidad aplica este estado (producto, reserva, blog…).</small>
                 </div>
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </form>

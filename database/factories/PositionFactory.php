@@ -14,7 +14,7 @@ class PositionFactory extends Factory
     {
         return [
             'name' => fake()->unique()->jobTitle(),
-            'status_id' => Status::POSITION_ACTIVE,
+            'status_id' => Status::idFor(\App\Models\Position::class, Status::POSITION_ACTIVE),
         ];
     }
 }

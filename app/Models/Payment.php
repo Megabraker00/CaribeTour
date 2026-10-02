@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 
 class Payment extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -36,13 +37,4 @@ class Payment extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
-
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
-    }
 }

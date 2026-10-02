@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Booking extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -39,11 +41,11 @@ class Booking extends Model
 
     public function canIssueInvoice(): bool
     {
-        if (!in_array((int) $this->status_id, [
+        if (!$this->hasStatusSlug(
             Status::BOOKING_PAID,
             Status::BOOKING_CONFIRMED,
             Status::BOOKING_COMPLETED,
-        ], true)) {
+        )) {
             return false;
         }
 
@@ -61,10 +63,7 @@ class Booking extends Model
 
     public function canIssueCreditNote(): bool
     {
-        if (!in_array((int) $this->status_id, [
-            Status::BOOKING_CANCELLED,
-            Status::BOOKING_REFUNDED,
-        ], true)) {
+        if (!$this->hasStatusSlug(Status::BOOKING_CANCELLED, Status::BOOKING_REFUNDED)) {
             return false;
         }
 
@@ -85,17 +84,6 @@ class Booking extends Model
     public function documents(): MorphMany
     {
         return $this->morphMany(Document::class, 'documentable');
-    }
-
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
-
-    /** Estado por FK status_id (para mostrar nombre en vistas). */
-    public function statusRecord(): BelongsTo
-    {
-        return $this->belongsTo(Status::class, 'status_id');
     }
 
     public function metaData(): MorphOne

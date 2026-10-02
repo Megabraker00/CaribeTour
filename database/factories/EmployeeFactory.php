@@ -22,7 +22,7 @@ class EmployeeFactory extends Factory
             'dni_passport' => strtoupper(fake()->bothify('########?')),
             'phone' => fake()->numerify('+34#########'),
             'position_id' => Position::factory(),
-            'status_id' => Status::EMPLOYEE_ACTIVE,
+            'status_id' => Status::idFor(\App\Models\Employee::class, Status::EMPLOYEE_ACTIVE),
             'created_user_id' => User::factory(),
         ];
     }

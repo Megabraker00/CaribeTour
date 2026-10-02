@@ -2,126 +2,80 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesLookupCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Status extends Model
 {
     use HasFactory;
+    use ResolvesLookupCode;
 
     protected $fillable = [
         'name',
+        'slug',
         'statusable',
+        'is_system',
     ];
 
-    // from 1 to 9 belongs to Product model
-    public const PRODUCT_ACTIVE = 1;
-    public const PRODUCT_NOT_ACTIVE = 2;
-    public const PRODUCT_DRAFT = 3;
+    protected $casts = [
+        'is_system' => 'boolean',
+    ];
 
-    // from 10 to 19 belongs to Booking model
-    public const BOOKING_PENDING_PAYMENT = 10;
-    public const BOOKING_PAID = 11;
-    public const BOOKING_PENDING = 12;
-    public const BOOKING_CONFIRMED = 13;
-    public const BOOKING_COMPLETED = 14;
-    public const BOOKING_CANCELLED = 15;
-    public const BOOKING_REFUNDED = 16;
-    public const BOOKING_NO_SHOW = 17;
+    public const PRODUCT_ACTIVE = 'active';
+    public const PRODUCT_NOT_ACTIVE = 'inactive';
+    public const PRODUCT_DRAFT = 'draft';
 
-    // from 20 to 29 belongs to Client model
-    public const CLIENT_ACTIVE = 20;
+    public const BOOKING_PENDING_PAYMENT = 'pending_payment';
+    public const BOOKING_PAID = 'paid';
+    public const BOOKING_PENDING = 'pending';
+    public const BOOKING_CONFIRMED = 'confirmed';
+    public const BOOKING_COMPLETED = 'completed';
+    public const BOOKING_CANCELLED = 'cancelled';
+    public const BOOKING_REFUNDED = 'refunded';
+    public const BOOKING_NO_SHOW = 'no_show';
 
-    // from 30 to 39 belongs to Category model
-    public const CATEGORY_ACTIVE = 30;
-    public const CATEGORY_INACTIVE = 31;
+    public const CLIENT_ACTIVE = 'active';
 
-    // from 40 to 49 belongs to Supplier model
-    public const SUPPLIER_ACTIVE = 40;
-    public const SUPPLIER_INACTIVE = 41;
+    public const CATEGORY_ACTIVE = 'active';
+    public const CATEGORY_INACTIVE = 'inactive';
 
-    // from 50 to 59 belongs to Payment model
-    public const PAYMENT_PENDING   = 50;
-    public const PAYMENT_PAID      = 51;
-    public const PAYMENT_CANCELLED = 52;
+    public const SUPPLIER_ACTIVE = 'active';
+    public const SUPPLIER_INACTIVE = 'inactive';
+
+    public const PAYMENT_PENDING = 'pending';
+    public const PAYMENT_PAID = 'paid';
+    public const PAYMENT_CANCELLED = 'cancelled';
     public const PAYMENT_STRIPE_SUCCEEDED = 'succeeded';
 
-    // from 60 to 69 belongs to Blog model
-    public const BLOG_PUBLISHED = 60;
-    public const BLOG_DRAFT = 61;
+    public const BLOG_PUBLISHED = 'published';
+    public const BLOG_DRAFT = 'draft';
 
-    // from 70 to 79 belongs to Employee model
-    public const EMPLOYEE_ACTIVE = 70;
-    public const EMPLOYEE_INACTIVE = 71;
+    public const EMPLOYEE_ACTIVE = 'active';
+    public const EMPLOYEE_INACTIVE = 'inactive';
 
-    // from 80 to 89 belongs to Position model
-    public const POSITION_ACTIVE = 80;
+    public const POSITION_ACTIVE = 'active';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'statuses';
 
     public function __toString()
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
-    public function statusable()
+    protected static function ownerColumn(): string
     {
-        return $this->morphTo();
+        return 'statusable';
     }
 
-    public function employees(): MorphMany
+    public function products(): HasMany
     {
-        return $this->morphMany(Employee::class, 'statusable');
+        return $this->hasMany(Product::class, 'status_id');
     }
 
-    public function positions(): MorphMany
+    public function bookings(): HasMany
     {
-        return $this->morphMany(Position::class, 'statusable');
-    }
-
-    public function payments(): MorphMany
-    {
-        return $this->morphMany(Payment::class, 'statusable');
-    }
-
-    public function bookings(): MorphMany
-    {
-        return $this->morphMany(Booking::class, 'statusable');
-    }
-
-    public function clients(): MorphMany
-    {
-        return $this->morphMany(Client::class, 'statusable');
-    }
-
-    public function suppliers(): MorphMany
-    {
-        return $this->morphMany(Supplier::class, 'statusable');
-    }
-
-    public function products(): MorphMany
-    {
-        return $this->morphMany(Product::class, 'statusable');
-    }
-
-    public function categories(): MorphMany
-    {
-        return $this->morphMany(Category::class, 'statusable');
-    }
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'statusable');
-    }
-
-    public function blogs(): MorphMany
-    {
-        return $this->morphMany(Blog::class, 'statusable');
+        return $this->hasMany(Booking::class, 'status_id');
     }
 }

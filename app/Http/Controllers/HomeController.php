@@ -22,7 +22,7 @@ class HomeController extends Controller
             ->joinSub($cheapest, 'cheapest', function ($join) {
                 $join->on('products.id', '=', 'cheapest.product_id');
             })
-            ->where('products.status_id', Status::PRODUCT_ACTIVE)
+            ->whereHas('status', static fn ($status) => $status->where('slug', Status::PRODUCT_ACTIVE))
             ->whereHas('itineraries.segments', function ($q) {
                 $q->where('departure_date', '>', now());
             })
@@ -37,13 +37,13 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $blog = Blog::where('status_id', Status::BLOG_PUBLISHED)
+        $blog = Blog::whereStatusSlug(Status::BLOG_PUBLISHED)
             ->orderBy('id', 'DESC')
             ->first() ?? new Blog();
 
         $featured_excursions = Product::with('category.parentCategory')
-            ->where('type_id', Type::EXCURSION)
-            ->where('status_id', Status::PRODUCT_ACTIVE)
+            ->whereHas('type', static fn ($type) => $type->where('slug', Type::EXCURSION))
+            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
             ->take(6)
             ->get();
 

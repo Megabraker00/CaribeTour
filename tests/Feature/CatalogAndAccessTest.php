@@ -102,8 +102,8 @@ class CatalogAndAccessTest extends TestCase
         $user = User::factory()->create();
         $product = Product::factory()->create([
             'slug' => 'tour-no-servicio',
-            'type_id' => Type::TOUR,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
             'created_user_id' => $user->id,
         ]);
 

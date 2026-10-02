@@ -11,7 +11,7 @@ class PostController extends Controller
     {
         $blogs = Blog::query()
             ->with(['images', 'createdUser'])
-            ->where('status_id', Status::BLOG_PUBLISHED)
+            ->whereStatusSlug(Status::BLOG_PUBLISHED)
             ->orderByDesc('id')
             ->get();
 
@@ -23,7 +23,7 @@ class PostController extends Controller
         $post = Blog::query()
             ->with(['images', 'createdUser'])
             ->where('slug', $postSlug)
-            ->where('status_id', Status::BLOG_PUBLISHED)
+            ->whereStatusSlug(Status::BLOG_PUBLISHED)
             ->firstOrFail();
 
         return view('blog_post', ['post' => $post]);

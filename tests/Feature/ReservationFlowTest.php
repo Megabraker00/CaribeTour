@@ -120,11 +120,11 @@ class ReservationFlowTest extends TestCase
         $service->confirmSuccessfulPayment($booking, 'pi_test_123', 19999);
 
         $booking->refresh();
-        $this->assertSame(Status::BOOKING_PAID, $booking->status_id);
+        $this->assertTrue($booking->hasStatusSlug(Status::BOOKING_PAID));
         $this->assertDatabaseHas('payments', [
             'booking_id' => $booking->id,
             'transaction_id' => 'pi_test_123',
-            'status_id' => Status::PAYMENT_PAID,
+            'status_id' => Status::idFor(\App\Models\Payment::class, Status::PAYMENT_PAID),
         ]);
         Mail::assertSent(BookingConfirmed::class);
     }
@@ -161,8 +161,8 @@ class ReservationFlowTest extends TestCase
         $supplier = Supplier::factory()->create();
         $product = Product::factory()->create([
             'category_id' => $category->id,
-            'type_id' => Type::TOUR,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
             'supplier_id' => $supplier->id,
             'created_user_id' => $user->id,
         ]);
@@ -176,7 +176,7 @@ class ReservationFlowTest extends TestCase
         $terminal = Terminal::factory()->create();
         Segment::factory()->create([
             'itinerary_id' => $itinerary->id,
-            'type_id' => Type::FLIGHT,
+            'type_id' => Type::idFor(Product::class, Type::FLIGHT),
             'departure_terminal_id' => $terminal->id,
             'arrival_terminal_id' => $terminal->id,
         ]);

@@ -16,7 +16,7 @@ class BookingFactory extends Factory
         return [
             'external_ref' => 'LOC-'.strtoupper(fake()->bothify('????????')),
             'client_id' => Client::factory(),
-            'status_id' => Status::BOOKING_PENDING,
+            'status_id' => Status::idFor(\App\Models\Booking::class, Status::BOOKING_PENDING),
             'total_price' => 199.99,
             'currency' => 'EUR',
         ];

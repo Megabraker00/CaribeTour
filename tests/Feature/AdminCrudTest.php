@@ -43,7 +43,7 @@ class AdminCrudTest extends TestCase
         Blog::factory()->create([
             'name' => 'Post DataTable',
             'created_user_id' => $this->admin->id,
-            'status_id' => Status::BLOG_PUBLISHED,
+            'status_id' => Status::idFor(Blog::class, Status::BLOG_PUBLISHED),
         ]);
 
         $this->actingAs($this->admin)
@@ -72,7 +72,7 @@ class AdminCrudTest extends TestCase
                 'name' => 'Guía Punta Cana',
                 'slug' => 'guia-punta-cana',
                 'content' => 'Texto del post',
-                'status_id' => Status::BLOG_PUBLISHED,
+                'status_id' => Status::idFor(Blog::class, Status::BLOG_PUBLISHED),
             ])
             ->assertRedirect(route('admin.blogs.index'));
 
@@ -87,7 +87,7 @@ class AdminCrudTest extends TestCase
                 'name' => 'Guía Punta Cana 2026',
                 'slug' => 'guia-punta-cana',
                 'content' => 'Actualizado',
-                'status_id' => Status::BLOG_DRAFT,
+                'status_id' => Status::idFor(Blog::class, Status::BLOG_DRAFT),
                 'blog_image' => $image,
                 'blog_image_alt' => 'Playa de Punta Cana al atardecer',
                 'author_linkedin' => 'https://www.linkedin.com/in/guia-punta-cana',
@@ -96,7 +96,7 @@ class AdminCrudTest extends TestCase
 
         $blog = $blog->fresh();
         $this->assertSame('Guía Punta Cana 2026', $blog->name);
-        $this->assertSame(Status::BLOG_DRAFT, $blog->status_id);
+        $this->assertTrue($blog->hasStatusSlug(Status::BLOG_DRAFT));
         $this->assertSame('https://www.linkedin.com/in/guia-punta-cana', $blog->author_linkedin);
 
         $mainImage = $blog->mainImage();
@@ -135,7 +135,7 @@ class AdminCrudTest extends TestCase
         $this->actingAs($this->admin)
             ->post(route('admin.suppliers.store'), [
                 'name' => 'Hotelera Caribe',
-                'status_id' => Status::SUPPLIER_ACTIVE,
+                'status_id' => Status::idFor(Supplier::class, Status::SUPPLIER_ACTIVE),
             ])
             ->assertRedirect(route('admin.suppliers.index'));
 
@@ -143,8 +143,8 @@ class AdminCrudTest extends TestCase
         Product::factory()->create([
             'supplier_id' => $supplier->id,
             'created_user_id' => $this->admin->id,
-            'type_id' => Type::TOUR,
-            'status_id' => Status::PRODUCT_ACTIVE,
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
         ]);
 
         $this->actingAs($this->admin)
@@ -168,7 +168,7 @@ class AdminCrudTest extends TestCase
                 'dni_passport' => '12345678A',
                 'phone' => '+34600111222',
                 'position_id' => $position->id,
-                'status_id' => Status::EMPLOYEE_ACTIVE,
+                'status_id' => Status::idFor(Employee::class, Status::EMPLOYEE_ACTIVE),
             ])
             ->assertRedirect(route('admin.employees.index'));
 

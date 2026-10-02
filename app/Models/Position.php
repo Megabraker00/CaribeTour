@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use App\Models\Concerns\BelongsToStatus;
 
 class Position extends Model
 {
+    use BelongsToStatus;
     use HasFactory;
 
     protected $fillable = [
@@ -21,8 +22,4 @@ class Position extends Model
         return $this->hasMany(Employee::class);
     }
 
-    public function status(): MorphOne
-    {
-        return $this->morphOne(Status::class, 'statusable');
-    }
 }
