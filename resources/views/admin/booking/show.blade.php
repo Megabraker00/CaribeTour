@@ -16,14 +16,7 @@
 @section('content')
 <div class="container-fluid">
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+    @include('admin.partials.flash')
 
     <div class="row">
 
@@ -121,6 +114,78 @@
         </div>
     </div>
 
+    {{-- Facturas --}}
+    <div class="card card-outline card-secondary">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap">
+            <h3 class="card-title mb-0"><i class="fas fa-file-invoice"></i> Facturas</h3>
+            <div>
+                @if ($booking->canIssueInvoice())
+                    <form action="{{ route('admin.booking.invoices.store', $booking) }}" method="POST" class="d-inline" data-disable-on-submit>
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-primary"
+                            onclick="return confirm('¿Emitir factura por {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}?');">
+                            <i class="fas fa-file-invoice-dollar"></i> Emitir factura
+                        </button>
+                    </form>
+                @endif
+                @if ($booking->canIssueCreditNote() && $booking->openPositiveInvoice())
+                    <form action="{{ route('admin.booking.invoices.credit', [$booking, $booking->openPositiveInvoice()]) }}" method="POST" class="d-inline" data-disable-on-submit>
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-warning"
+                            onclick="return confirm('¿Emitir un abono que anule la factura {{ $booking->openPositiveInvoice()->number }}?');">
+                            <i class="fas fa-file-invoice"></i> Emitir abono
+                        </button>
+                    </form>
+                @endif
+            </div>
+        </div>
+        <div class="card-body p-0">
+            @if ($booking->invoices->isNotEmpty())
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Tipo</th>
+                                <th>Importe</th>
+                                <th>Fecha</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($booking->invoices->sortBy('id') as $invoice)
+                                <tr>
+                                    <td><code>{{ $invoice->number }}</code></td>
+                                    <td>
+                                        @if ($invoice->isCreditNote())
+                                            <span class="badge badge-warning">Abono</span>
+                                            @if ($invoice->rectifiedInvoice)
+                                                <small class="text-muted">de {{ $invoice->rectifiedInvoice->number }}</small>
+                                            @endif
+                                        @else
+                                            <span class="badge badge-success">Factura</span>
+                                            @if ($invoice->hasBeenCredited())
+                                                <small class="text-muted">abonada</small>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    <td>{{ number_format((float) $invoice->total_amount, 2, ',', '.') }} {{ $invoice->currency }}</td>
+                                    <td>{{ $invoice->issue_date?->format('d/m/Y') ?? '—' }}</td>
+                                    <td class="text-right">
+                                        <a href="{{ route('admin.facturas.show', $invoice) }}" class="btn btn-sm btn-info">Más Info</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="p-3 text-muted mb-0">Todavía no hay facturas para esta reserva.</p>
+            @endif
+        </div>
+    </div>
+    @include('admin.partials.disable-on-submit')
+
     {{-- Pagos --}}
     <div class="card card-outline card-success">
         <div class="card-header">
@@ -180,6 +245,7 @@
                             <th>Nacionalidad</th>
                             <th>Precio</th>
                             <th>Tasas</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -188,10 +254,15 @@
                             <td>{{ $pax->name }}</td>
                             <td>{{ $pax->last_name }}</td>
                             <td>{{ $pax->dni_passport ?? '—' }}</td>
-                            <td>{{ $pax->date_of_birth ? \Carbon\Carbon::parse($pax->date_of_birth)->format('d/m/Y') : '—' }}</td>
+                            <td>{{ $pax->date_of_birth ? $pax->date_of_birth->format('d/m/Y') : '—' }}</td>
                             <td>{{ $pax->nationality ?? '—' }}</td>
                             <td>{{ $pax->price_at_booking ? number_format((float) $pax->price_at_booking, 2, ',', '.') : '—' }}</td>
                             <td>{{ $pax->taxes_at_booking ? number_format((float) $pax->taxes_at_booking, 2, ',', '.') : '—' }}</td>
+                            <td class="text-right">
+                                <a href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-pencil-alt"></i> Editar
+                                </a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

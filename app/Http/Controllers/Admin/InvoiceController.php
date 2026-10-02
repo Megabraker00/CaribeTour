@@ -3,61 +3,64 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Booking;
 use App\Models\Invoice;
+use App\Services\InvoiceService;
+use DomainException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function __construct(private InvoiceService $invoices)
     {
-        $invoices = Invoice::with(['booking', 'createdUser'])->get();
-
-        return view('admin.facturas.index', compact('invoices'));
     }
 
-    public function create()
+    public function index(): View
     {
-        return view('admin.facturas.create');
+        return view('admin.facturas.index');
     }
 
-    public function store(Request $request)
+    public function show(Invoice $invoice): View
     {
-        $validated = $request->validate([
-            'client_name' => 'required|string|max:255',
-            'total' => 'required|numeric',
-            'status' => 'required|string|in:pending,paid,cancelled',
-            'booking_id' => 'required|exists:bookings,id',
+        $invoice->load([
+            'booking.client',
+            'booking.statusRecord',
+            'createdUser',
+            'rectifiedInvoice',
+            'creditNotes',
         ]);
 
-        $validated['created_user_id'] = auth()->id();
-
-        Invoice::create($validated);
-
-        return redirect()->route('admin.facturas.index')->with('success', 'Invoice created successfully.');
+        return view('admin.facturas.show', compact('invoice'));
     }
 
-    public function edit(Invoice $invoice)
+    public function store(Booking $booking): RedirectResponse
     {
-        return view('admin.facturas.edit', compact('invoice'));
+        try {
+            $invoice = $this->invoices->issueForBooking($booking, auth()->id());
+        } catch (DomainException $exception) {
+            return redirect()
+                ->route('admin.booking.show', $booking)
+                ->with('error', $exception->getMessage());
+        }
+
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', 'Factura '.$invoice->number.' emitida correctamente.');
     }
 
-    public function update(Request $request, Invoice $invoice)
+    public function storeCredit(Booking $booking, Invoice $invoice): RedirectResponse
     {
-        $validated = $request->validate([
-            'client_name' => 'required|string|max:255',
-            'total' => 'required|numeric',
-            'status' => 'required|string|in:pending,paid,cancelled',
-        ]);
+        try {
+            $credit = $this->invoices->issueCreditNote($booking, $invoice, auth()->id());
+        } catch (DomainException $exception) {
+            return redirect()
+                ->route('admin.booking.show', $booking)
+                ->with('error', $exception->getMessage());
+        }
 
-        $invoice->update($validated);
-
-        return redirect()->route('admin.facturas.index')->with('success', 'Invoice updated successfully.');
-    }
-
-    public function destroy(Invoice $invoice)
-    {
-        $invoice->delete();
-
-        return redirect()->route('admin.facturas.index')->with('success', 'Invoice deleted successfully.');
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', 'Abono '.$credit->number.' emitido correctamente.');
     }
 }

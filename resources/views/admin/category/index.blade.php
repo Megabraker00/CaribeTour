@@ -64,7 +64,7 @@
                                 <td>{{ $cat->parentCategory?->name ?? '—' }}</td>
                                 <td>{{ $cat->statusRecord?->name ?? $cat->status_id }}</td>
                                 <td class="text-right">
-                                    <a href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-outline-primary"
+                                    <a href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-warning"
                                         title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>

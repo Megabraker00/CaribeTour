@@ -41,7 +41,7 @@
                                 <td>{{ $employee->position?->name ?? '—' }}</td>
                                 <td>{{ $employee->statusRecord?->name ?? '—' }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm btn-warning" title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                     <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="d-inline"

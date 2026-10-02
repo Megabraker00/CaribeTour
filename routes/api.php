@@ -29,6 +29,7 @@ Route::middleware(['web', 'auth', 'can:access-admin'])->controller(DatatableCont
     Route::get('datatable/bookings', 'bookings')->name('api.datatable.bookings');
     Route::get('datatable/clientes', 'clients')->name('api.datatable.clients');
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');
+    Route::get('datatable/catalog/{kind}', 'catalogProducts')->where('kind', 'tours|excursiones|hoteles|seguros')->name('api.datatable.catalog');
     Route::get('datatable/tours/{id}/itineraries', 'tourItinerarys')->name('api.datatable.tours.itineraries');
     Route::get('datatable/invoices', 'invoices')->name('api.datatable.invoices');
     Route::get('datatable/blogs', 'blogs')->name('api.datatable.blogs');

@@ -142,7 +142,7 @@
                     <div class="my-4 p-4 bg-white rounded shadow-sm border-start border-success border-4">
                         <h5>¿Qué sigue ahora?</h5>
                         <p class="text-muted mb-0">
-                            En breve recibirás un correo electrónico con los bonos de viaje y la factura detallada. 
+                            En breve recibirás un correo electrónico de confirmación.
                             Si tienes alguna duda, contacta con nuestro equipo citando tu referencia <strong>{{ $booking->external_ref }}</strong>.
                         </p>
                     </div>

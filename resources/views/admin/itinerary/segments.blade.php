@@ -11,8 +11,8 @@
             </p>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.tour.edit', $itinerary->product_id) }}#tour-itineraries" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver al tour
+            <a href="{{ \App\Support\ProductCatalog::editUrl($itinerary->product) }}#tour-itineraries" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al producto
             </a>
         </div>
     </div>
@@ -178,7 +178,7 @@
                                 </td>
                                 <td class="align-middle text-right text-nowrap">
                                     <a href="{{ route('admin.itineraries.segments.edit', [$itinerary, $segment]) }}"
-                                        class="btn btn-sm btn-outline-primary" title="Editar">
+                                        class="btn btn-sm btn-warning" title="Editar">
                                         <i class="fas fa-pencil-alt"></i> Editar
                                     </a>
                                     <form action="{{ route('admin.itineraries.segments.destroy', [$itinerary, $segment]) }}"

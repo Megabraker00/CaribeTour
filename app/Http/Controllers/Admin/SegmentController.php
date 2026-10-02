@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Segment;
 use App\Models\Terminal;
 use App\Models\Type;
+use App\Support\ProductCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +62,9 @@ class SegmentController extends Controller
             ]);
         });
 
-        return redirect()->to(route('admin.tour.show', $productId).'#tour-itineraries')
+        $product = Product::query()->findOrFail($productId);
+
+        return redirect()->to(ProductCatalog::showUrl($product).'#tour-itineraries')
             ->with('success', 'Fecha de salida añadida correctamente.');
     }
 
