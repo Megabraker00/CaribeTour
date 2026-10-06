@@ -111,34 +111,20 @@ class UserRoleTest extends TestCase
         $this->assertSame(UserRole::Viewer, $second->fresh()->role);
     }
 
-    public function test_later_public_registration_is_read_only(): void
+    public function test_public_registration_is_closed(): void
     {
-        User::factory()->admin()->create();
+        $this->get('/register')->assertNotFound();
 
         $this->post('/register', [
             'name' => 'Publico',
             'email' => 'publico@caribetour.test',
             'password' => 'password1',
             'password_confirmation' => 'password1',
-        ])->assertRedirect('/admin');
+        ])->assertNotFound();
 
-        $registered = User::query()->where('email', 'publico@caribetour.test')->first();
-        $this->assertSame(UserRole::Viewer, $registered->role);
-        $this->assertFalse($registered->isAdmin());
-    }
-
-    public function test_first_registered_user_becomes_admin(): void
-    {
-        $this->post('/register', [
-            'name' => 'Primero',
-            'email' => 'primero@caribetour.test',
-            'password' => 'password1',
-            'password_confirmation' => 'password1',
-        ])->assertRedirect('/admin');
-
-        $this->assertTrue(
-            User::query()->where('email', 'primero@caribetour.test')->first()->isAdmin()
-        );
+        $this->assertDatabaseMissing('users', [
+            'email' => 'publico@caribetour.test',
+        ]);
     }
 
     /**
