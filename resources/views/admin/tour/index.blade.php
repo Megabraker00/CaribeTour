@@ -8,7 +8,9 @@
         <h1>{{ $catalog['label'] }}</h1>
     </div>
     <div class="col-sm text-right">
-        <a href="{{ route('admin.catalog.create', $catalog['kind']) }}" class="btn btn-info">Nuevo</a>
+        @can('write-admin')
+            <a href="{{ route('admin.catalog.create', $catalog['kind']) }}" class="btn btn-info">Nuevo</a>
+        @endcan
     </div>
 </div>
 @stop
@@ -50,6 +52,7 @@
 @section('custom-js')
 <script>
     $(document).ready(function() {
+        const canWrite = @json(auth()->user()?->can('write-admin'));
         const showBase = "{{ url('admin/'.$catalog['kind']) }}";
         let properties = dtProperties()
         properties.ajax = "{{ route('api.datatable.catalog', $catalog['kind']) }}"
@@ -74,10 +77,14 @@
             },
             {
                 data: null,
-                render: (data, type, row) => '<div class="btn-group" role="group">' +
-                       '<a role="button" class="btn btn-sm btn-info" href="' + showBase + '/' + row.id + '" title="Más Información">Más Info</a>' +
-                       '<a role="button" class="btn btn-sm btn-warning" href="' + showBase + '/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
-                   '</div>',
+                render: (data, type, row) => {
+                    let buttons = '<div class="btn-group" role="group">' +
+                       '<a role="button" class="btn btn-sm btn-info" href="' + showBase + '/' + row.id + '" title="Más Información">Más Info</a>';
+                    if (canWrite) {
+                        buttons += '<a role="button" class="btn btn-sm btn-warning" href="' + showBase + '/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>';
+                    }
+                    return buttons + '</div>';
+                },
             }
         ]
         properties.columnDefs = [

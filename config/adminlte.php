@@ -137,7 +137,7 @@ return [
     'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
     'usermenu_image' => true,
-    'usermenu_desc' => false,
+    'usermenu_desc' => true,
     'usermenu_profile_url' => true,
 
     /*
@@ -412,6 +412,7 @@ return [
                     'text' => 'Usuarios',
                     'icon' => 'fas fa-fw fa-users',
                     'url' => 'admin/usuarios',
+                    'can' => 'manage-users',
                 ],
             ],
         ],

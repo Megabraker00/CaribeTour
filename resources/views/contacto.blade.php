@@ -12,7 +12,7 @@
         <!-- mapa -->
         <div class="row">
 
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.654620915151!2d-3.7030016492002553!3d40.41650141731886!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287e9fd06215%3A0xd5e109ff23e3d0c1!2sCentro%2C%20Madrid!5e0!3m2!1ses-419!2ses!4v1771006974508!5m2!1ses-419!2ses" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe class="w-100" title="Mapa de la oficina en Madrid" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.654620915151!2d-3.7030016492002553!3d40.41650141731886!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287e9fd06215%3A0xd5e109ff23e3d0c1!2sCentro%2C%20Madrid!5e0!3m2!1ses-419!2ses!4v1771006974508!5m2!1ses-419!2ses" height="450" style="border:0;" allow="local-network; loopback-network; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
         </div>
         <!-- /mapa -->

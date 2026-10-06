@@ -8,9 +8,11 @@
             <h1>Terminales</h1>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.terminals.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nuevo terminal
-            </a>
+            @can('write-admin')
+                <a href="{{ route('admin.terminals.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo terminal
+                </a>
+            @endcan
         </div>
     </div>
 @stop
@@ -46,10 +48,12 @@
                                 <td>{{ $t->address ?: '—' }}</td>
                                 <td>{{ $t->parentTerminal?->name ?? '—' }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.terminals.edit', $t) }}" class="btn btn-sm btn-warning"
-                                        title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
+                                    @can('write-admin')
+                                        <a href="{{ route('admin.terminals.edit', $t) }}" class="btn btn-sm btn-warning"
+                                            title="Editar">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

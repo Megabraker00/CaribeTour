@@ -22,6 +22,12 @@
                     </li>
 
                     <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excursiones" type="button">
+                            <i class="bi bi-map-fill"></i> Excursiones
+                        </button>
+                    </li>
+                    
+                    <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#hoteles" type="button">
                             <i class="bi bi-building-fill-check"></i> Hoteles
                         </button>
@@ -34,22 +40,18 @@
                     </li>
 
                     <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#seguros" type="button">
+                            <i class="bi bi-shield-lock-fill"></i> Seguros
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trenes" type="button">
                             <i class="bi bi-train-front-fill"></i> Trenes
                         </button>
                     </li>
 
-                    <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excursiones" type="button">
-                            <i class="bi bi-map-fill"></i> Excursiones
-                        </button>
-                    </li>
 
-                    <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#seguros" type="button">
-                            <i class="bi bi-shield-lock-fill"></i> Seguros
-                        </button>
-                    </li>
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#souvenirs" type="button">

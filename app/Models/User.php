@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +27,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+    ];
+
+    protected $attributes = [
+        'role' => 'viewer',
     ];
 
     /**
@@ -46,6 +52,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'role' => UserRole::class,
     ];
 
     public function blogs(): HasMany
@@ -95,12 +102,29 @@ class User extends Authenticatable
 
     public function adminlte_desc()
     {
-        return $this->isAdmin() ? 'Administrador' : 'Usuario';
+        return $this->role?->label() ?? 'Usuario';
     }
 
     public function isAdmin(): bool
     {
-        return true;
+        return $this->role === UserRole::Admin;
+    }
+
+    public function canWrite(): bool
+    {
+        return $this->role === UserRole::Admin || $this->role === UserRole::Agent;
+    }
+
+    public function isLastAdmin(): bool
+    {
+        if (!$this->isAdmin()) {
+            return false;
+        }
+
+        return !static::query()
+            ->where('role', UserRole::Admin)
+            ->whereKeyNot($this->getKey())
+            ->exists();
     }
 
     public function adminlte_profile_url()

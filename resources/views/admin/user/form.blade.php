@@ -25,6 +25,36 @@
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
+    @php
+        $selectedRole = old('role', $user?->role?->value);
+        $lockRole = $isEdit && $user->isLastAdmin();
+    @endphp
+    <div class="form-group">
+        <label for="role">Rol <span class="text-danger">*</span></label>
+        @if ($lockRole)
+            <input type="hidden" name="role" value="{{ $user->role->value }}">
+        @endif
+        <select id="role" class="form-control @error('role') is-invalid @enderror"
+            @unless ($lockRole) name="role" required @endunless @disabled($lockRole)>
+            <option value="">Selecciona un rol</option>
+            @foreach (\App\Enums\UserRole::cases() as $roleOption)
+                <option value="{{ $roleOption->value }}" @selected($selectedRole === $roleOption->value)>
+                    {{ $roleOption->label() }}
+                </option>
+            @endforeach
+        </select>
+        @error('role')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        <small class="form-text text-muted">
+            Administrador: acceso completo y gestión de usuarios.
+            Agente: puede crear y modificar datos.
+            Solo lectura: solo consulta.
+        </small>
+        @if ($lockRole)
+            <small class="form-text text-warning">Es el único administrador. Asigna ese rol a otra persona antes de cambiarlo.</small>
+        @endif
+    </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="password">Contraseña @unless($isEdit)<span class="text-danger">*</span>@endunless</label>

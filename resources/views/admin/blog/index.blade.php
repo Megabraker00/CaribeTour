@@ -8,7 +8,9 @@
         <h1>Blog</h1>
     </div>
     <div class="col-sm text-right">
-        <a href="{{ route('admin.blogs.create') }}" class="btn btn-info">Nuevo</a>
+        @can('write-admin')
+            <a href="{{ route('admin.blogs.create') }}" class="btn btn-info">Nuevo</a>
+        @endcan
     </div>
 </div>
 @stop
@@ -50,6 +52,7 @@
 @section('custom-js')
 <script>
     $(document).ready(function() {
+        const canWrite = @json(auth()->user()?->can('write-admin'));
         let properties = dtProperties()
         properties.ajax = "{{ route('api.datatable.blogs') }}"
         properties.columns = [
@@ -68,10 +71,12 @@
                 render: function(data, type, row) {
                     let showUrl = "{{ url('admin/blogs') }}/" + row.id;
                     let editUrl = showUrl + "/edit";
-                    return '<div class="btn-group" role="group">' +
-                        '<a role="button" class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información">Más Info</a>' +
-                        '<a role="button" class="btn btn-sm btn-warning" href="' + editUrl + '" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
-                        '</div>';
+                    let buttons = '<div class="btn-group" role="group">' +
+                        '<a role="button" class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información">Más Info</a>';
+                    if (canWrite) {
+                        buttons += '<a role="button" class="btn btn-sm btn-warning" href="' + editUrl + '" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>';
+                    }
+                    return buttons + '</div>';
                 }
             }
         ]

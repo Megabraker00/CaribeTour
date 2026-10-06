@@ -185,6 +185,7 @@ class AdminCrudTest extends TestCase
                 'email' => 'editor@caribetour.test',
                 'password' => 'password1',
                 'password_confirmation' => 'password1',
+                'role' => 'agent',
             ])
             ->assertRedirect(route('admin.users.index'));
 

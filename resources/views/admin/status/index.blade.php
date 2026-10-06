@@ -8,9 +8,11 @@
             <h1>Estados</h1>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.statuses.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nuevo estado
-            </a>
+            @can('write-admin')
+                <a href="{{ route('admin.statuses.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo estado
+                </a>
+            @endcan
         </div>
     </div>
 @stop
@@ -64,20 +66,22 @@
                                     @endif
                                 </td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-warning"
-                                        title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    @unless ($s->is_system)
-                                    <form action="{{ route('admin.statuses.destroy', $s) }}" method="POST" class="d-inline"
-                                        onsubmit="return confirm('¿Eliminar este estado? Solo es posible si no está en uso.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                    @endunless
+                                    @can('write-admin')
+                                        <a href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-warning"
+                                            title="Editar">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        @unless ($s->is_system)
+                                        <form action="{{ route('admin.statuses.destroy', $s) }}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('¿Eliminar este estado? Solo es posible si no está en uso.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endunless
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

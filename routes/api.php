@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /**
  * DataTables used by the authenticated admin panel (session cookie).
  */
-Route::middleware(['web', 'auth', 'can:access-admin'])->controller(DatatableController::class)->group(function () {
+Route::middleware(['web', 'auth', 'can:access-admin', 'role.writable'])->controller(DatatableController::class)->group(function () {
     Route::get('datatable/bookings', 'bookings')->name('api.datatable.bookings');
     Route::get('datatable/clientes', 'clients')->name('api.datatable.clients');
     Route::get('datatable/tours', 'tours')->name('api.datatable.tours');
@@ -44,7 +44,7 @@ Route::prefix('v1')->group(function () {
     Route::get('products/{product}/itineraries', [App\Http\Controllers\Api\ProductController::class, 'tourItineraries'])
         ->name('api.products.itineraries');
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'can:write-admin'])->group(function () {
         Route::apiResource('products', App\Http\Controllers\Api\ProductController::class)->except(['index', 'show']);
         Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class)->except(['index', 'show']);
         Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class)->except(['index', 'show']);

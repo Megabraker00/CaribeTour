@@ -13,7 +13,9 @@
     </div>
     <div class="col-sm text-right">
         <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver al listado</a>
-        <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-warning"><i class="fas fa-pencil-alt"></i> Editar</a>
+        @can('write-admin')
+            <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-warning"><i class="fas fa-pencil-alt"></i> Editar</a>
+        @endcan
     </div>
 </div>
 @stop

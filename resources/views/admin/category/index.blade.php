@@ -8,9 +8,11 @@
             <h1>Categorías</h1>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nueva categoría
-            </a>
+            @can('write-admin')
+                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nueva categoría
+                </a>
+            @endcan
         </div>
     </div>
 @stop
@@ -64,10 +66,12 @@
                                 <td>{{ $cat->parentCategory?->name ?? '—' }}</td>
                                 <td>{{ $cat->statusRecord?->name ?? $cat->status_id }}</td>
                                 <td class="text-right">
-                                    <a href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-warning"
-                                        title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
+                                    @can('write-admin')
+                                        <a href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-warning"
+                                            title="Editar">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

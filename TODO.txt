@@ -1,0 +1,28 @@
+Prioridad 1 — no publicar sin esto
+- [x] Roles reales en BD (admin / agente / solo lectura).
+- Cerrar el registro público (/register) o dejarlo solo por invitación.
+- Entorno producción: APP_DEBUG=false, APP_ENV=production, HTTPS, APP_URL real.
+- Stripe live + webhook en el Dashboard (POST /api/stripe/webhook) y STRIPE_WEBHOOK_SECRET.
+- Correo real (SMTP + SPF/DKIM): confirmación de reserva y reset de contraseña.
+- Liberar stock de reservas pending sin pago a los X minutos (y cancelar el PaymentIntent).
+- Flujo cancelar reserva: refund Stripe + soltar stock + abono.
+
+Prioridad 2 — operar el día a día
+- Cola (database o Redis) para webhook, emails e imágenes. Quitar QUEUE_CONNECTION=sync en prod.
+- Copias automáticas de MySQL y de las fotos (hoy están en public/images/).
+- Rate limit en login, registro, /reserva/consulta y creación de reserva.
+- Sentry (o similar) y alerta si falla el webhook de Stripe.
+- Factura con datos fiscales de la agencia (NIF, razón social, domicilio) y dirección del cliente.
+
+Prioridad 3 — legal (España / UE)
+- Aviso de privacidad, cookies y consentimiento (DNI, email, fecha de nacimiento de pasajeros).
+- Política de retención de datos de viaje / pasajeros.
+
+Prioridad 4 — producto / UX (puede esperar)
+- que cuando se guarde un nuevo registro (tour, proveedor, user, etc) mostrar un mensaje de exito y que desaparezca a lo pocos segundos.
+- crear el CRUD para blog post
+- en el formulario de reservas, que la fecha de nacimiento del pasajero 1 tenga el valor por defecto fecha actual - 18 años
+- en el formulario de reservas, en el campo de nacionalidad poner un listado (datalist) de todos los paises para que muestre sugerencias y se vaya autocompletando
+- hacer el apartado de perfil de usuario en el admin
+- detro de una reserva, el campo "notas internas" el comentario se queda guardado el el mismo campo, a lo mejor sería bueno de deshabilitar el campo o ponerlo read only y cuando se haga clic encima entonces habilitarlo de nuevo.
+- Galería más rica; Vite; itinerario distinto por hotel/seguro; venta pública de no-tours.

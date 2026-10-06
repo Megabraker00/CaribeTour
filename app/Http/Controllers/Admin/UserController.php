@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -39,7 +41,16 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $user->update($this->validatedUser($request, $user));
+        $validated = $this->validatedUser($request, $user);
+        $newRole = UserRole::from($validated['role']);
+
+        if ($user->isAdmin() && $newRole !== UserRole::Admin && $user->isLastAdmin()) {
+            throw ValidationException::withMessages([
+                'role' => 'Debe quedar al menos un administrador.',
+            ]);
+        }
+
+        $user->update($validated);
 
         return redirect()
             ->route('admin.users.index')
@@ -52,6 +63,12 @@ class UserController extends Controller
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'No puedes eliminar tu propio usuario.');
+        }
+
+        if ($user->isLastAdmin()) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error', 'Debe quedar al menos un administrador.');
         }
 
         if ($user->blogs()->exists() || $user->products()->exists()) {
@@ -85,6 +102,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', $emailUnique],
             'password' => $passwordRules,
+            'role' => ['required', Rule::enum(UserRole::class)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'email.required' => 'El email es obligatorio.',
@@ -92,6 +110,8 @@ class UserController extends Controller
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
+            'role.required' => 'El rol es obligatorio.',
+            'role.enum' => 'El rol seleccionado no es válido.',
         ]);
 
         if ($user && blank($validated['password'] ?? null)) {

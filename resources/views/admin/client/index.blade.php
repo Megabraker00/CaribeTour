@@ -8,7 +8,9 @@
         <h1>Clientes</h1>
     </div>
     <div class="col-sm text-right">
-        <button class="btn btn-info">Nuevo</button>
+        @can('write-admin')
+            <button class="btn btn-info">Nuevo</button>
+        @endcan
     </div>
 </div>
 @stop
@@ -49,7 +51,8 @@
 
 @section('custom-js')
 <script>
-    $(document).ready(function() {        
+    $(document).ready(function() {
+        const canWrite = @json(auth()->user()?->can('write-admin'));
         let properties = dtProperties()
         properties.ajax = "{{ route('api.datatable.clients') }}"
         properties.columns = [
@@ -59,10 +62,14 @@
             {data: 'dni_passport'},
             {
                 data: null,
-                render: (data, type, row) => '<div class="row" role="group">' +
-                       '<a class="btn btn-sm btn-info" href="clientes/' + row.id + '" title="Más Información"> Más Info <i class="fa fa-info"></i></a>' +
-                       '<a class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>' +
-                   '</div>',
+                render: (data, type, row) => {
+                    let buttons = '<div class="row" role="group">' +
+                       '<a class="btn btn-sm btn-info" href="clientes/' + row.id + '" title="Más Información"> Más Info <i class="fa fa-info"></i></a>';
+                    if (canWrite) {
+                        buttons += '<a class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>';
+                    }
+                    return buttons + '</div>';
+                },
                  //'<a class="btn btn-sm btn-info" href="clientes/'+ row.id +'" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/'+ row.id +'/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>',
                 // defaultContent: '<a class="btn btn-sm btn-info" href="clientes/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/3/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>'
             }

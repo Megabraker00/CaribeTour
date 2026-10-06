@@ -8,7 +8,9 @@
         <h1>Reservas</h1>
     </div>
     <div class="col-sm text-right">
-        <button class="btn btn-info">Nuevo</button>
+        @can('write-admin')
+            <button class="btn btn-info">Nuevo</button>
+        @endcan
     </div>
 </div>
 @stop
