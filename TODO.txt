@@ -1,6 +1,6 @@
 Prioridad 1 — no publicar sin esto
 - [x] Roles reales en BD (admin / agente / solo lectura).
-- Cerrar el registro público (/register) o dejarlo solo por invitación.
+- [x] Cerrar el registro público (/register) o dejarlo solo por invitación.
 - Entorno producción: APP_DEBUG=false, APP_ENV=production, HTTPS, APP_URL real.
 - Stripe live + webhook en el Dashboard (POST /api/stripe/webhook) y STRIPE_WEBHOOK_SECRET.
 - Correo real (SMTP + SPF/DKIM): confirmación de reserva y reset de contraseña.
