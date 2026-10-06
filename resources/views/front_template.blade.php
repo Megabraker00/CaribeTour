@@ -2,6 +2,7 @@
 <html lang="es-ES">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com https://maps.googleapis.com https://maps.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://js.stripe.com https://cdn.jsdelivr.net https://maps.googleapis.com https://maps.gstatic.com; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com; manifest-src 'self'; worker-src 'self' blob:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow" />
     <meta name="application-name" content="CaribeTour.es" />
@@ -19,9 +20,6 @@
     <meta name="twitter:title" content="@yield('og_title', 'Viaja al Caribe con CaribeTour')">
     <meta name="twitter:description" content="@yield('og_description', 'Ofertas increíbles en vuelos y hoteles. ¡Reserva tu paraíso hoy!')">
     <meta name="twitter:image" content="@yield('og_image', asset('images/og-default.jpg'))">
-
-    <!-- Content-Security-Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://js.stripe.com https://cdn.jsdelivr.net; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com; manifest-src 'self'; worker-src 'self';">
 
     <!-- App -->
     <meta name="theme-color" content="#ff9000">

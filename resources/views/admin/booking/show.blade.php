@@ -97,18 +97,26 @@
                     <h3 class="card-title"><i class="fas fa-lock"></i> Notas internas (solo admin)</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.booking.meta.update', $booking) }}">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="internal_notes">Notas internas</label>
-                            <textarea class="form-control @error('internal_notes') is-invalid @enderror" id="internal_notes" name="internal_notes" rows="5" placeholder="Uso interno: no visible para el cliente.">{{ old('internal_notes', $booking->meta['internal_notes'] ?? '') }}</textarea>
-                            @error('internal_notes')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar notas internas</button>
-                    </form>
+                    @can('write-admin')
+                        <form method="POST" action="{{ route('admin.booking.meta.update', $booking) }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="form-group">
+                                <label for="internal_notes">Notas internas</label>
+                                <textarea class="form-control @error('internal_notes') is-invalid @enderror" id="internal_notes" name="internal_notes" rows="5" placeholder="Uso interno: no visible para el cliente.">{{ old('internal_notes', $booking->meta['internal_notes'] ?? '') }}</textarea>
+                                @error('internal_notes')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar notas internas</button>
+                        </form>
+                    @else
+                        @if(filled($booking->meta['internal_notes'] ?? null))
+                            <div class="text-break">{{ $booking->meta['internal_notes'] }}</div>
+                        @else
+                            <p class="text-muted mb-0">Sin notas internas.</p>
+                        @endif
+                    @endcan
                 </div>
             </div>
         </div>
@@ -119,6 +127,7 @@
         <div class="card-header d-flex align-items-center justify-content-between flex-wrap">
             <h3 class="card-title mb-0"><i class="fas fa-file-invoice"></i> Facturas</h3>
             <div>
+                @can('write-admin')
                 @if ($booking->canIssueInvoice())
                     <form action="{{ route('admin.booking.invoices.store', $booking) }}" method="POST" class="d-inline" data-disable-on-submit>
                         @csrf
@@ -137,6 +146,7 @@
                         </button>
                     </form>
                 @endif
+                @endcan
             </div>
         </div>
         <div class="card-body p-0">
@@ -259,9 +269,11 @@
                             <td>{{ $pax->price_at_booking ? number_format((float) $pax->price_at_booking, 2, ',', '.') : '—' }}</td>
                             <td>{{ $pax->taxes_at_booking ? number_format((float) $pax->taxes_at_booking, 2, ',', '.') : '—' }}</td>
                             <td class="text-right">
-                                <a href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-pencil-alt"></i> Editar
-                                </a>
+                                @can('write-admin')
+                                    <a href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-pencil-alt"></i> Editar
+                                    </a>
+                                @endcan
                             </td>
                         </tr>
                         @endforeach

@@ -40,7 +40,10 @@ Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
 Route::get('/blogs/{post:slug}', [PostController::class, 'show'])->name('blogs.show');
 
 Route::get('/contacto', function () {
-    return view('contacto');
+    return response()->view('contacto')->header(
+        'Permissions-Policy',
+        'local-network=(self "https://www.google.com" "https://maps.google.com"), loopback-network=(self "https://www.google.com" "https://maps.google.com")'
+    );
 })->name('contacto');
 
 Route::controller(DestinationController::class)->group(function () {

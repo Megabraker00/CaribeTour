@@ -307,12 +307,14 @@
                                 </div>{{-- /.row tour-info --}}
 
 
-                                @if (isset($show))
-                                        <a href="{{ route('admin.catalog.edit', [$catalog['kind'], $tour->id]) }}"
-                                            class="btn btn-warning">Editar</a>
-                                @else
-                                        <button type="submit" id="submit" class="btn btn-info">Guardar</button>
-                                @endif
+                                @can('write-admin')
+                                    @if (isset($show))
+                                            <a href="{{ route('admin.catalog.edit', [$catalog['kind'], $tour->id]) }}"
+                                                class="btn btn-warning">Editar</a>
+                                    @else
+                                            <button type="submit" id="submit" class="btn btn-info">Guardar</button>
+                                    @endif
+                                @endcan
 
                             </form>
                             <!-- /form -->
@@ -329,6 +331,7 @@
                                 <div class="row">
                                     {{-- Columna izquierda: subida + carrusel (vista previa) --}}
                                     <div class="col-md-4 mb-4">
+                                        @can('write-admin')
                                         <form action="{{ route('admin.catalog.images.store', [$catalog['kind'], $tour->id]) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
@@ -355,6 +358,7 @@
                                                 </p>
                                             </div>
                                         </form>
+                                        @endcan
 
                                         @if ($tour->images->isNotEmpty())
                                             <p class="text-muted small mb-2 mt-3">Vista previa del carrusel (misma ruta que el frontend: <code>asset('…')</code>). Clic en una miniatura de la derecha para sincronizar.</p>
@@ -442,13 +446,14 @@
                                                                     value="{{ old('image_names.'.$img->id, $img->name) }}"
                                                                     maxlength="255"
                                                                     placeholder="Ej.: Piscina, habitación deluxe…"
-                                                                    title="Texto que verá el usuario en la galería (no cambia el archivo)">
+                                                                    title="Texto que verá el usuario en la galería (no cambia el archivo)"
+                                                                    @cannot('write-admin') readonly @endcannot>
                                                                 @error('image_names.'.$img->id)
                                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                                 @enderror
                                                                 @if ($img->is_main)
                                                                     <span class="badge badge-success mb-1 d-inline-block"><i class="fas fa-star"></i> Principal</span>
-                                                                @else
+                                                                @elseif (auth()->user()?->can('write-admin'))
                                                                     <form action="{{ route('admin.catalog.images.main', [$catalog['kind'], $tour->id, $img->id]) }}"
                                                                         method="POST" class="mb-1">
                                                                         @csrf
@@ -458,6 +463,7 @@
                                                                         </button>
                                                                     </form>
                                                                 @endif
+                                                                @can('write-admin')
                                                                 <form
                                                                     action="{{ route('admin.catalog.images.destroy', [$catalog['kind'], $tour->id, $img->id]) }}"
                                                                     method="POST" class="d-inline mt-1"
@@ -468,17 +474,20 @@
                                                                         <i class="fas fa-trash"></i> Eliminar
                                                                     </button>
                                                                 </form>
+                                                                @endcan
                                                             </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
 
+                                            @can('write-admin')
                                             <div class="mt-2 mb-3">
                                                 <button type="submit" class="btn btn-secondary" form="tour-images-names-form">
                                                     <i class="fas fa-save"></i> Guardar nombres de todas las imágenes
                                                 </button>
                                             </div>
+                                            @endcan
                                         @endif
                                     </div>
                                 </div>
@@ -575,7 +584,9 @@
                                     </fieldset>
 
                                 </div>
-                                <input type="submit" value="Aceptar" class="btn btn-info">
+                                @can('write-admin')
+                                    <input type="submit" value="Aceptar" class="btn btn-info">
+                                @endcan
                                 <input type="hidden" name="product_id" value="{{ $tour->id }}">
                             </form>
 
@@ -887,6 +898,9 @@
                     orderable: false,
                     searchable: false,
                     render: (data, type, row) => {
+                        if (!@json(auth()->user()?->can('write-admin'))) {
+                            return '';
+                        }
                         let routePhp = "{{ route('admin.tour.date.destroy', 0) }}";
                         let newRoute = routePhp.replace('/0/', `/${row.id}/`);
                         return `<form method="POST" action="${newRoute}" class="d-inline">

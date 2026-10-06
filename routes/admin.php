@@ -115,10 +115,12 @@ Route::resource('proveedores', SupplierController::class)
     ->except(['show'])
     ->names('admin.suppliers');
 
-Route::resource('usuarios', UserController::class)
-    ->parameters(['usuarios' => 'user'])
-    ->except(['show'])
-    ->names('admin.users');
+Route::middleware('can:manage-users')->group(function () {
+    Route::resource('usuarios', UserController::class)
+        ->parameters(['usuarios' => 'user'])
+        ->except(['show'])
+        ->names('admin.users');
+});
 
 Route::resource('terminals', TerminalController::class)->only([
     'index', 'create', 'store', 'edit', 'update',

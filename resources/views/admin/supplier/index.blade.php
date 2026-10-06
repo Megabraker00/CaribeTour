@@ -8,9 +8,11 @@
             <h1>Proveedores</h1>
         </div>
         <div class="col-sm text-right">
-            <a href="{{ route('admin.suppliers.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nuevo proveedor
-            </a>
+            @can('write-admin')
+                <a href="{{ route('admin.suppliers.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo proveedor
+                </a>
+            @endcan
         </div>
     </div>
 @stop
@@ -39,17 +41,19 @@
                                 <td>{{ $supplier->statusRecord?->name ?? '—' }}</td>
                                 <td>{{ $supplier->products_count }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-warning" title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <form action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST" class="d-inline"
-                                        onsubmit="return confirm('¿Eliminar este proveedor?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    @can('write-admin')
+                                        <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-warning" title="Editar">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <form action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST" class="d-inline"
+                                            onsubmit="return confirm('¿Eliminar este proveedor?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

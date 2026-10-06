@@ -40,6 +40,7 @@
         Orden de los tramos: <code>sort_order</code> ascendente. El primer y último segmento definen la duración mostrada al cliente.
     </p>
 
+    @can('write-admin')
     <div class="card card-outline card-primary mb-4">
         <div class="card-header">
             <strong>Añadir segmento</strong>
@@ -136,6 +137,7 @@
             </form>
         </div>
     </div>
+    @endcan
 
     <div class="card card-outline card-secondary">
         <div class="card-header">
@@ -177,19 +179,21 @@
                                     @endif
                                 </td>
                                 <td class="align-middle text-right text-nowrap">
-                                    <a href="{{ route('admin.itineraries.segments.edit', [$itinerary, $segment]) }}"
-                                        class="btn btn-sm btn-warning" title="Editar">
-                                        <i class="fas fa-pencil-alt"></i> Editar
-                                    </a>
-                                    <form action="{{ route('admin.itineraries.segments.destroy', [$itinerary, $segment]) }}"
-                                        method="POST" class="d-inline"
-                                        onsubmit="return confirm('¿Eliminar este segmento?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                            <i class="fas fa-trash"></i> Borrar
-                                        </button>
-                                    </form>
+                                    @can('write-admin')
+                                        <a href="{{ route('admin.itineraries.segments.edit', [$itinerary, $segment]) }}"
+                                            class="btn btn-sm btn-warning" title="Editar">
+                                            <i class="fas fa-pencil-alt"></i> Editar
+                                        </a>
+                                        <form action="{{ route('admin.itineraries.segments.destroy', [$itinerary, $segment]) }}"
+                                            method="POST" class="d-inline"
+                                            onsubmit="return confirm('¿Eliminar este segmento?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i> Borrar
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

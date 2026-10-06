@@ -42,6 +42,7 @@
             <form action="{{ route('admin.itineraries.prices.update', $itinerary) }}" method="POST">
                 @csrf
                 @method('PUT')
+                <fieldset @cannot('write-admin') disabled @endcannot>
 
                 <p class="text-muted">
                     Deja <strong>precio y tasas vacíos</strong> para ese tipo de pasajero: se aplicará la tarifa base del itinerario.
@@ -99,8 +100,11 @@
                         Ejecuta los seeders o crea esos tipos en el admin.
                     </div>
                 @else
-                    <button type="submit" class="btn btn-primary">Guardar tarifas</button>
+                    @can('write-admin')
+                        <button type="submit" class="btn btn-primary">Guardar tarifas</button>
+                    @endcan
                 @endif
+                </fieldset>
             </form>
         </div>
     </div>

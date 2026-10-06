@@ -27,6 +27,7 @@
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Email</th>
+                            <th>Rol</th>
                             <th>Creado</th>
                             <th class="text-right" style="width: 1%">Acciones</th>
                         </tr>
@@ -37,6 +38,11 @@
                                 <td>{{ $user->id }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>
+                                    @if ($user->role)
+                                        <span class="badge {{ $user->role->badgeClass() }}">{{ $user->role->label() }}</span>
+                                    @endif
+                                </td>
                                 <td>{{ $user->created_at?->format('d/m/Y') }}</td>
                                 <td class="text-right text-nowrap">
                                     <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-warning" title="Editar">
@@ -56,7 +62,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">No hay usuarios registrados.</td>
+                                <td colspan="6" class="text-center text-muted py-4">No hay usuarios registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
