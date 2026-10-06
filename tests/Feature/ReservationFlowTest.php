@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Client;
 use App\Models\Itinerary;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Segment;
 use App\Models\Status;
@@ -15,10 +16,14 @@ use App\Models\Terminal;
 use App\Models\Type;
 use App\Models\User;
 use App\Services\ReservationService;
+use Carbon\Carbon;
 use Database\Seeders\StatusSeeder;
 use Database\Seeders\TypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Stripe\ApiRequestor;
+use Stripe\HttpClient\CurlClient;
+use Tests\Support\FakeStripeClient;
 use Tests\TestCase;
 
 class ReservationFlowTest extends TestCase
@@ -29,6 +34,13 @@ class ReservationFlowTest extends TestCase
     {
         parent::setUp();
         $this->seed([TypeSeeder::class, StatusSeeder::class]);
+    }
+
+    protected function tearDown(): void
+    {
+        ApiRequestor::setHttpClient(CurlClient::instance());
+        Carbon::setTestNow();
+        parent::tearDown();
     }
 
     public function test_reservation_create_returns_404_when_itinerary_does_not_belong_to_product(): void
@@ -149,6 +161,121 @@ class ReservationFlowTest extends TestCase
             'external_ref' => 'LOC-ABCDEFGH',
             'email' => 'lookup@example.com',
         ])->assertOk()->assertSee($booking->external_ref);
+    }
+
+    public function test_unpaid_reservation_inside_the_hold_keeps_its_stock(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:14:00'));
+        $this->artisan('reservations:release-unpaid')->assertSuccessful();
+
+        $this->assertSame(3, $itinerary->fresh()->available_stock);
+        $this->assertTrue(Booking::query()->first()->hasStatusSlug(Status::BOOKING_PENDING));
+    }
+
+    public function test_expired_unpaid_reservation_releases_stock_and_cancels_the_booking(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:15:00'));
+        $this->artisan('reservations:release-unpaid')
+            ->expectsOutput('Released 1 unpaid reservation(s).')
+            ->assertSuccessful();
+
+        $this->assertSame(5, $itinerary->fresh()->available_stock);
+        $this->assertTrue(Booking::query()->first()->hasStatusSlug(Status::BOOKING_CANCELLED));
+    }
+
+    public function test_expired_unpaid_reservation_cancels_the_open_payment_intent(): void
+    {
+        $stripe = new FakeStripeClient();
+        ApiRequestor::setHttpClient($stripe);
+        config(['services.stripe.secret' => 'sk_test_fake']);
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+        $booking = Booking::query()->first();
+        $booking->payments()->create([
+            'amount' => $booking->total_price,
+            'currency' => 'EUR',
+            'transaction_id' => 'pi_test_expire',
+            'status_id' => Status::idFor(Payment::class, Status::PAYMENT_PENDING),
+            'type_id' => Type::idFor(Payment::class, Type::PAID_BY_STRIPE),
+        ]);
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:15:00'));
+        $this->artisan('reservations:release-unpaid')->assertSuccessful();
+
+        $this->assertSame(5, $itinerary->fresh()->available_stock);
+        $this->assertTrue($booking->fresh()->hasStatusSlug(Status::BOOKING_CANCELLED));
+        $this->assertDatabaseHas('payments', [
+            'booking_id' => $booking->id,
+            'transaction_id' => 'pi_test_expire',
+            'status_id' => Status::idFor(Payment::class, Status::PAYMENT_CANCELLED),
+        ]);
+        $this->assertTrue(collect($stripe->requests)->contains(
+            fn (array $request) => $request[0] === 'post' && str_contains($request[1], '/cancel')
+        ));
+    }
+
+    public function test_expired_reservation_is_kept_when_stripe_already_succeeded(): void
+    {
+        Mail::fake();
+        ApiRequestor::setHttpClient(new FakeStripeClient(Status::PAYMENT_STRIPE_SUCCEEDED));
+        config(['services.stripe.secret' => 'sk_test_fake']);
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+        $booking = Booking::query()->first();
+        $booking->payments()->create([
+            'amount' => $booking->total_price,
+            'currency' => 'EUR',
+            'transaction_id' => 'pi_test_expire',
+            'status_id' => Status::idFor(Payment::class, Status::PAYMENT_PENDING),
+            'type_id' => Type::idFor(Payment::class, Type::PAID_BY_STRIPE),
+        ]);
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:15:00'));
+        $this->artisan('reservations:release-unpaid')
+            ->expectsOutput('Released 0 unpaid reservation(s).')
+            ->assertSuccessful();
+
+        $this->assertSame(3, $itinerary->fresh()->available_stock);
+        $this->assertTrue($booking->fresh()->hasStatusSlug(Status::BOOKING_PAID));
+        Mail::assertSent(BookingConfirmed::class);
+    }
+
+    public function test_pending_booking_without_an_itinerary_is_not_released(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        $booking = Booking::factory()->create();
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:15:00'));
+        $this->artisan('reservations:release-unpaid')->assertSuccessful();
+
+        $this->assertTrue($booking->fresh()->hasStatusSlug(Status::BOOKING_PENDING));
+    }
+
+    public function test_returning_to_payment_after_the_hold_redirects_and_releases_stock(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+
+        Carbon::setTestNow(Carbon::parse('2026-10-06 10:15:00'));
+        $this->get(route('reservation.payment', [$product, $itinerary]))
+            ->assertRedirect(route('reservation.create', [$product, $itinerary]))
+            ->assertSessionHas('error', 'La reserva ha caducado y las plazas se han liberado. Vuelve a intentarlo.');
+
+        $this->assertSame(5, $itinerary->fresh()->available_stock);
+        $this->assertTrue(Booking::query()->first()->hasStatusSlug(Status::BOOKING_CANCELLED));
     }
 
     /**

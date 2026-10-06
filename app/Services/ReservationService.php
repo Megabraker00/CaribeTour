@@ -182,6 +182,44 @@ class ReservationService
         $this->sendConfirmationEmail($booking);
     }
 
+    public function releaseExpiredUnpaidReservations(): int
+    {
+        $cutoff = now()->subMinutes($this->unpaidHoldMinutes());
+        $pendingStatusIds = Status::query()
+            ->where('statusable', Booking::class)
+            ->whereIn('slug', [Status::BOOKING_PENDING, Status::BOOKING_PENDING_PAYMENT])
+            ->pluck('id');
+
+        $bookingIds = Booking::query()
+            ->whereIn('status_id', $pendingStatusIds)
+            ->where('created_at', '<=', $cutoff)
+            ->whereHas('itineraries')
+            ->pluck('id');
+
+        $released = 0;
+
+        foreach ($bookingIds as $bookingId) {
+            if ($this->releaseUnpaidReservation((int) $bookingId)) {
+                $released++;
+            }
+        }
+
+        return $released;
+    }
+
+    public function releaseIfUnpaidHoldElapsed(Booking $booking): bool
+    {
+        if (!$booking->hasStatusSlug(Status::BOOKING_PENDING, Status::BOOKING_PENDING_PAYMENT)) {
+            return false;
+        }
+
+        if ($booking->created_at === null || $booking->created_at->gt(now()->subMinutes($this->unpaidHoldMinutes()))) {
+            return false;
+        }
+
+        return $this->releaseUnpaidReservation($booking->id);
+    }
+
     public function findByLocatorAndEmail(string $locator, string $email): ?Booking
     {
         return Booking::query()
@@ -191,6 +229,136 @@ class ReservationService
             })
             ->with(['client', 'passengers', 'itineraries.product', 'statusRecord', 'payments'])
             ->first();
+    }
+
+    private function releaseUnpaidReservation(int $bookingId): bool
+    {
+        $booking = Booking::query()->with('payments')->find($bookingId);
+
+        if (!$booking || !$booking->hasStatusSlug(Status::BOOKING_PENDING, Status::BOOKING_PENDING_PAYMENT)) {
+            return false;
+        }
+
+        $stripePayment = $booking->payments
+            ->where('type_id', Type::idFor(Payment::class, Type::PAID_BY_STRIPE))
+            ->whereNotNull('transaction_id')
+            ->sortByDesc('id')
+            ->first();
+
+        if ($stripePayment && $this->settleOpenPaymentIntent($booking, $stripePayment) !== 'release') {
+            return false;
+        }
+
+        return DB::transaction(function () use ($bookingId) {
+            $locked = Booking::query()->whereKey($bookingId)->lockForUpdate()->first();
+
+            if (!$locked || !$locked->hasStatusSlug(Status::BOOKING_PENDING, Status::BOOKING_PENDING_PAYMENT)) {
+                return false;
+            }
+
+            $quantity = $locked->passengers()->count();
+            $itinerary = $locked->itineraries()->orderByPivot('itinerary_order')->first();
+
+            if ($itinerary && $quantity > 0) {
+                $itinerary = Itinerary::query()->whereKey($itinerary->id)->lockForUpdate()->first();
+            }
+
+            if ($itinerary && $quantity > 0) {
+                $room = max(0, (int) $itinerary->total_stock - (int) $itinerary->available_stock);
+                $restored = min($quantity, $room);
+
+                if ($restored > 0) {
+                    $itinerary->increment('available_stock', $restored);
+                }
+            }
+
+            $locked->payments()
+                ->where('status_id', Status::idFor(Payment::class, Status::PAYMENT_PENDING))
+                ->update(['status_id' => Status::idFor(Payment::class, Status::PAYMENT_CANCELLED)]);
+
+            $locked->update([
+                'status_id' => Status::idFor(Booking::class, Status::BOOKING_CANCELLED),
+            ]);
+
+            Log::info('Released unpaid reservation.', ['booking_id' => $locked->id]);
+
+            return true;
+        });
+    }
+
+    private function settleOpenPaymentIntent(Booking $booking, Payment $payment): string
+    {
+        try {
+            $this->configureStripe();
+            $intent = PaymentIntent::retrieve($payment->transaction_id);
+        } catch (\Throwable $e) {
+            Log::warning('Could not retrieve PaymentIntent for an unpaid reservation.', [
+                'booking_id' => $booking->id,
+                'transaction_id' => $payment->transaction_id,
+                'exception' => $e,
+            ]);
+
+            return 'wait';
+        }
+
+        if ($intent->status === Status::PAYMENT_STRIPE_SUCCEEDED) {
+            $this->confirmSuccessfulPayment($booking, $intent->id, (int) $intent->amount);
+
+            return 'paid';
+        }
+
+        if (in_array($intent->status, ['processing', 'requires_capture'], true)) {
+            return 'wait';
+        }
+
+        if ($intent->status !== 'canceled') {
+            try {
+                $intent->cancel();
+            } catch (\Throwable $e) {
+                return $this->resolvePaymentIntentAfterCancelFailure($booking, $payment, $e);
+            }
+        }
+
+        return 'release';
+    }
+
+    private function resolvePaymentIntentAfterCancelFailure(Booking $booking, Payment $payment, \Throwable $error): string
+    {
+        try {
+            $intent = PaymentIntent::retrieve($payment->transaction_id);
+        } catch (\Throwable $e) {
+            Log::warning('Could not cancel PaymentIntent for an unpaid reservation.', [
+                'booking_id' => $booking->id,
+                'transaction_id' => $payment->transaction_id,
+                'exception' => $error,
+            ]);
+
+            return 'wait';
+        }
+
+        if ($intent->status === Status::PAYMENT_STRIPE_SUCCEEDED) {
+            $this->confirmSuccessfulPayment($booking, $intent->id, (int) $intent->amount);
+
+            return 'paid';
+        }
+
+        if ($intent->status === 'canceled') {
+            return 'release';
+        }
+
+        Log::warning('Could not cancel PaymentIntent for an unpaid reservation.', [
+            'booking_id' => $booking->id,
+            'transaction_id' => $payment->transaction_id,
+            'status' => $intent->status,
+            'exception' => $error,
+        ]);
+
+        return 'wait';
+    }
+
+    private function unpaidHoldMinutes(): int
+    {
+        return max(1, (int) config('reservations.unpaid_hold_minutes', 15));
     }
 
     private function configureStripe(): void

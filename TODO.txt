@@ -4,7 +4,7 @@ Prioridad 1 — no publicar sin esto
 - Entorno producción: APP_DEBUG=false, APP_ENV=production, HTTPS, APP_URL real.
 - Stripe live + webhook en el Dashboard (POST /api/stripe/webhook) y STRIPE_WEBHOOK_SECRET.
 - Correo real (SMTP + SPF/DKIM): confirmación de reserva y reset de contraseña.
-- Liberar stock de reservas pending sin pago a los X minutos (y cancelar el PaymentIntent).
+- [x] Liberar stock de reservas pending sin pago a los X minutos (y cancelar el PaymentIntent).
 - Flujo cancelar reserva: refund Stripe + soltar stock + abono.
 
 Prioridad 2 — operar el día a día
