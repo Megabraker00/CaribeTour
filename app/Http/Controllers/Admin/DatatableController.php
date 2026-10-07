@@ -254,7 +254,7 @@ class DatatableController extends Controller
     {
         return match ($slug) {
             Status::BOOKING_PAID => 'bg-success',
-            Status::BOOKING_CANCELLED => 'bg-danger',
+            Status::BOOKING_CANCELLED, Status::BOOKING_REFUNDED => 'bg-danger',
             Status::BOOKING_PENDING => 'bg-secondary',
             default => 'bg-secondary',
         };

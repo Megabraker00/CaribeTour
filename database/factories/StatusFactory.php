@@ -77,6 +77,7 @@ class StatusFactory extends Factory
             ['id' => 50, 'slug' => Status::PAYMENT_PENDING, 'name' => 'Pendiente de Pago', 'statusable' => Payment::class, 'is_system' => true],
             ['id' => 51, 'slug' => Status::PAYMENT_PAID, 'name' => 'Pagado', 'statusable' => Payment::class, 'is_system' => true],
             ['id' => 52, 'slug' => Status::PAYMENT_CANCELLED, 'name' => 'Cancelado', 'statusable' => Payment::class, 'is_system' => true],
+            ['id' => 53, 'slug' => Status::PAYMENT_REFUNDED, 'name' => 'Reembolsado', 'statusable' => Payment::class, 'is_system' => true],
         );
     }
 

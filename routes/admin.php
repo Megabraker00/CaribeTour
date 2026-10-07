@@ -27,6 +27,7 @@ Route::controller(ReservationController::class)->group(function () {
     Route::get('/reservas', 'index')->name('admin.booking.index');
     Route::get('/reservas/{booking}', 'show')->name('admin.booking.show');
     Route::put('/reservas/{booking}/meta', 'updateMeta')->name('admin.booking.meta.update');
+    Route::post('/reservas/{booking}/cancelar', 'cancel')->name('admin.booking.cancel');
     Route::get('/reservas/{booking}/pasajeros/{passenger}/edit', 'editPassenger')->name('admin.booking.passengers.edit');
     Route::put('/reservas/{booking}/pasajeros/{passenger}', 'updatePassenger')->name('admin.booking.passengers.update');
 });

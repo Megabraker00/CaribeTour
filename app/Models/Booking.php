@@ -70,6 +70,39 @@ class Booking extends Model
         return $this->openPositiveInvoice() !== null;
     }
 
+    public function canCancelAndRefund(): bool
+    {
+        if (!$this->hasStatusSlug(
+            Status::BOOKING_PAID,
+            Status::BOOKING_CONFIRMED,
+            Status::BOOKING_COMPLETED,
+        )) {
+            return false;
+        }
+
+        return $this->refundableStripePayment() !== null;
+    }
+
+    public function refundableStripePayment(): ?Payment
+    {
+        $payments = $this->relationLoaded('payments')
+            ? $this->payments
+            : $this->payments()->get();
+
+        $stripeTypeId = Type::idFor(Payment::class, Type::PAID_BY_STRIPE);
+        $paidStatusId = Status::idFor(Payment::class, Status::PAYMENT_PAID);
+
+        return $payments
+            ->filter(function (Payment $payment) use ($stripeTypeId, $paidStatusId) {
+                return (int) $payment->type_id === $stripeTypeId
+                    && (int) $payment->status_id === $paidStatusId
+                    && filled($payment->transaction_id)
+                    && blank($payment->refund_id);
+            })
+            ->sortByDesc('id')
+            ->first();
+    }
+
     public function passengers(): HasMany
     {
         return $this->hasMany(Passenger::class);

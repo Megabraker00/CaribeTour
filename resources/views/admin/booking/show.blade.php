@@ -71,6 +71,17 @@
                     <p class="mb-1"><strong>Creada:</strong> {{ $booking->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—' }}</p>
                     <p class="mb-1"><strong>Total:</strong> {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}</p>
                     <p class="mb-0"><strong>Estado:</strong> {{ $booking->statusRecord->name ?? $booking->status_id }}</p>
+                    @can('write-admin')
+                        @if ($booking->canCancelAndRefund())
+                            <form action="{{ route('admin.booking.cancel', $booking) }}" method="POST" class="mt-3 mb-0" data-disable-on-submit>
+                                @csrf
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Se reembolsará el pago en Stripe, se devolverán las plazas y se emitirá un abono. ¿Cancelar esta reserva?');">
+                                    <i class="fas fa-undo"></i> Cancelar y reembolsar
+                                </button>
+                            </form>
+                        @endif
+                    @endcan
                 </div>
             </div>
         </div>

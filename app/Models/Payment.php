@@ -18,6 +18,7 @@ class Payment extends Model
         'amount',
         'currency',
         'transaction_id',
+        'refund_id',
         'status_id',
         'type_id',
     ];

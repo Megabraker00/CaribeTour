@@ -5,22 +5,30 @@ namespace App\Services;
 use App\Mail\BookingConfirmed;
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\Invoice;
 use App\Models\Itinerary;
 use App\Models\Passenger;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Type;
+use DomainException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
+use Stripe\Refund;
 use Stripe\Stripe;
 
 class ReservationService
 {
+    public function __construct(private readonly InvoiceService $invoices)
+    {
+    }
+
     public function assertItineraryBelongsToProduct(Product $product, Itinerary $itinerary): void
     {
         abort_unless($itinerary->product_id === $product->id, 404);
@@ -256,21 +264,7 @@ class ReservationService
                 return false;
             }
 
-            $quantity = $locked->passengers()->count();
-            $itinerary = $locked->itineraries()->orderByPivot('itinerary_order')->first();
-
-            if ($itinerary && $quantity > 0) {
-                $itinerary = Itinerary::query()->whereKey($itinerary->id)->lockForUpdate()->first();
-            }
-
-            if ($itinerary && $quantity > 0) {
-                $room = max(0, (int) $itinerary->total_stock - (int) $itinerary->available_stock);
-                $restored = min($quantity, $room);
-
-                if ($restored > 0) {
-                    $itinerary->increment('available_stock', $restored);
-                }
-            }
+            $this->restoreReservedSeats($locked);
 
             $locked->payments()
                 ->where('status_id', Status::idFor(Payment::class, Status::PAYMENT_PENDING))
@@ -354,6 +348,151 @@ class ReservationService
         ]);
 
         return 'wait';
+    }
+
+    public function cancelPaidReservation(Booking $booking, ?int $userId = null): Invoice
+    {
+        $booking->loadMissing('payments');
+
+        if (!$booking->canCancelAndRefund()) {
+            throw new DomainException('Esta reserva no se puede reembolsar.');
+        }
+
+        if (round((float) $booking->total_price, 2) <= 0) {
+            throw new DomainException('El importe de la reserva debe ser mayor que cero.');
+        }
+
+        $payment = $booking->refundableStripePayment();
+        if ($payment === null) {
+            throw new DomainException('Esta reserva no tiene un pago de Stripe que reembolsar.');
+        }
+
+        $refundId = $this->refundStripeCharge($payment);
+
+        return DB::transaction(function () use ($booking, $payment, $refundId, $userId) {
+            $locked = Booking::query()->whereKey($booking->id)->lockForUpdate()->firstOrFail();
+
+            if (!$locked->hasStatusSlug(
+                Status::BOOKING_PAID,
+                Status::BOOKING_CONFIRMED,
+                Status::BOOKING_COMPLETED,
+            )) {
+                throw new DomainException('Esta reserva ya no se puede reembolsar.');
+            }
+
+            $this->restoreReservedSeats($locked);
+
+            $locked->load(['client', 'invoices.creditNotes']);
+            if ($locked->openPositiveInvoice() === null) {
+                $this->invoices->issueForBooking($locked, $userId);
+                $locked->unsetRelation('invoices');
+                $locked->load(['invoices.creditNotes']);
+            }
+
+            $locked->update([
+                'status_id' => Status::idFor(Booking::class, Status::BOOKING_REFUNDED),
+            ]);
+            $locked->unsetRelation('status');
+
+            Payment::query()->whereKey($payment->id)->lockForUpdate()->update([
+                'status_id' => Status::idFor(Payment::class, Status::PAYMENT_REFUNDED),
+                'refund_id' => $refundId,
+            ]);
+
+            $invoice = $locked->openPositiveInvoice();
+            if ($invoice === null) {
+                throw new DomainException('No hay una factura que abonar.');
+            }
+
+            return $this->invoices->issueCreditNote($locked, $invoice, $userId);
+        });
+    }
+
+    private function refundStripeCharge(Payment $payment): string
+    {
+        try {
+            $this->configureStripe();
+            $intent = PaymentIntent::retrieve((string) $payment->transaction_id);
+        } catch (\Throwable $e) {
+            Log::warning('Could not retrieve PaymentIntent to refund a booking.', [
+                'payment_id' => $payment->id,
+                'transaction_id' => $payment->transaction_id,
+                'exception' => $e,
+            ]);
+
+            throw new DomainException('No se ha podido consultar el pago en Stripe.');
+        }
+
+        if ($intent->status !== Status::PAYMENT_STRIPE_SUCCEEDED) {
+            throw new DomainException('El pago de Stripe no está cobrado y no se puede reembolsar.');
+        }
+
+        $amount = (int) $intent->amount;
+        $alreadyRefunded = (int) ($intent->amount_refunded ?? 0);
+        if ($amount > 0 && $alreadyRefunded >= $amount) {
+            return $this->existingRefundId((string) $intent->id);
+        }
+
+        try {
+            $refund = Refund::create([
+                'payment_intent' => $intent->id,
+            ]);
+        } catch (ApiErrorException $e) {
+            if ($e->getStripeCode() === 'charge_already_refunded') {
+                return $this->existingRefundId((string) $intent->id);
+            }
+
+            Log::warning('Stripe refused the booking refund.', [
+                'payment_id' => $payment->id,
+                'transaction_id' => $payment->transaction_id,
+                'exception' => $e,
+            ]);
+
+            throw new DomainException('Stripe no ha podido reembolsar el pago.');
+        }
+
+        if (!in_array($refund->status, ['succeeded', 'pending'], true)) {
+            throw new DomainException('Stripe no ha completado el reembolso.');
+        }
+
+        return (string) $refund->id;
+    }
+
+    private function existingRefundId(string $paymentIntentId): string
+    {
+        $refunds = Refund::all([
+            'payment_intent' => $paymentIntentId,
+            'limit' => 1,
+        ]);
+
+        $refundId = $refunds->data[0]->id ?? null;
+        if (!$refundId) {
+            throw new DomainException('El pago ya está reembolsado en Stripe, pero no se encontró el reembolso.');
+        }
+
+        return (string) $refundId;
+    }
+
+    private function restoreReservedSeats(Booking $booking): void
+    {
+        $quantity = $booking->passengers()->count();
+        $itinerary = $booking->itineraries()->orderByPivot('itinerary_order')->first();
+
+        if (!$itinerary || $quantity < 1) {
+            return;
+        }
+
+        $itinerary = Itinerary::query()->whereKey($itinerary->id)->lockForUpdate()->first();
+        if (!$itinerary) {
+            return;
+        }
+
+        $room = max(0, (int) $itinerary->total_stock - (int) $itinerary->available_stock);
+        $restored = min($quantity, $room);
+
+        if ($restored > 0) {
+            $itinerary->increment('available_stock', $restored);
+        }
     }
 
     private function unpaidHoldMinutes(): int
