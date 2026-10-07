@@ -47,6 +47,7 @@ class Status extends Model
     public const PAYMENT_PENDING = 'pending';
     public const PAYMENT_PAID = 'paid';
     public const PAYMENT_CANCELLED = 'cancelled';
+    public const PAYMENT_REFUNDED = 'refunded';
     public const PAYMENT_STRIPE_SUCCEEDED = 'succeeded';
 
     public const BLOG_PUBLISHED = 'published';

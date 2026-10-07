@@ -17,6 +17,16 @@ class StatusSeeder extends Seeder
         Status::factory()->count(8)->forBooking()->create();
         Status::factory()->count(1)->forClient()->create();
         Status::factory()->count(3)->forPayment()->create();
+
+        if (!Status::query()->where('statusable', \App\Models\Payment::class)->where('slug', Status::PAYMENT_REFUNDED)->exists()) {
+            Status::query()->create([
+                'id' => 53,
+                'name' => 'Reembolsado',
+                'slug' => Status::PAYMENT_REFUNDED,
+                'statusable' => \App\Models\Payment::class,
+                'is_system' => true,
+            ]);
+        }
         Status::factory()->count(2)->forSupplier()->create();
         Status::factory()->count(2)->forBlog()->create();
 

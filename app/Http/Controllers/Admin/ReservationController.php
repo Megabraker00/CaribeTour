@@ -6,13 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdatePassengerRequest;
 use App\Models\Booking;
 use App\Models\Passenger;
+use App\Services\ReservationService;
 use Carbon\Carbon;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ReservationController extends Controller
 {
+    public function __construct(private readonly ReservationService $reservations)
+    {
+    }
     public function index()
     {
         return view('admin.booking.index');
@@ -68,6 +73,21 @@ class ReservationController extends Controller
         return redirect()
             ->route('admin.booking.show', $booking)
             ->with('success', 'Notas internas guardadas.');
+    }
+
+    public function cancel(Booking $booking): RedirectResponse
+    {
+        try {
+            $credit = $this->reservations->cancelPaidReservation($booking, auth()->id());
+        } catch (DomainException $exception) {
+            return redirect()
+                ->route('admin.booking.show', $booking)
+                ->with('error', $exception->getMessage());
+        }
+
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', 'Reserva reembolsada y plazas liberadas. Abono '.$credit->number.' emitido.');
     }
 
     public function editPassenger(Booking $booking, Passenger $passenger): View
