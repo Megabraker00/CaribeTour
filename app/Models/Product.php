@@ -150,8 +150,9 @@ class Product extends Model
     public function cheapestItinerary()
     {
         return $this->itineraries()
+            ->where('available_stock', '>', 0)
             ->whereHas('segments', function ($q) {
-                $q->where('departure_date', '>', now());
+                $q->where('departure_date', '>=', now()->startOfDay());
             })
             ->with(['segments' => function ($q) {
                 $q->orderBy('sort_order', 'asc');

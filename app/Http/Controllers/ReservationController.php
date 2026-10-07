@@ -104,10 +104,11 @@ class ReservationController extends Controller
 
     private function summaryData(Product $product, Itinerary $itinerary, string $productKey): array
     {
-        $days = $itinerary->days;
-        $nights = $itinerary->nights;
-        $departure = $itinerary->firstSegment()?->departure_date;
-        $return = $itinerary->lastSegment()?->departure_date;
+        $summary = $itinerary->reservableSummary();
+        $days = $summary['days'];
+        $nights = $summary['nights'];
+        $departure = $summary['departure'];
+        $return = $summary['return'];
         $price = $itinerary->fullPrice();
 
         if ($productKey === self::VIEW_AS_TOUR) {

@@ -26,3 +26,4 @@ Prioridad 4 — producto / UX (puede esperar)
 - hacer el apartado de perfil de usuario en el admin
 - detro de una reserva, el campo "notas internas" el comentario se queda guardado el el mismo campo, a lo mejor sería bueno de deshabilitar el campo o ponerlo read only y cuando se haga clic encima entonces habilitarlo de nuevo.
 - Galería más rica; Vite; itinerario distinto por hotel/seguro; venta pública de no-tours.
+- en el correo de confirmación de reserva, poner un enlace a /reserva/consulta?emain={email-usuario}&localizador={localizador-reserva} y validar que si los parámetros GET están seteados entonces hacer el submit del formulario y mostrar directamente la información de la reserva

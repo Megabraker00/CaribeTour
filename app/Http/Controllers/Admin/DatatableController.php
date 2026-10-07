@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Itinerary;
 use App\Models\Product;
+use App\Models\Status;
 use App\Support\ProductCatalog;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +47,12 @@ class DatatableController extends Controller
                 return number_format($totalPrice, 2, ',', '.').' '.($booking->currency ?? 'EUR');
             })
             ->addColumn('status_name', function (Booking $booking) {
-                return $booking->statusRecord->name ?? (string) $booking->status_id;
+                $name = $booking->statusRecord->name ?? (string) $booking->status_id;
+                $slug = $booking->statusRecord->slug ?? null;
+
+                return '<span class="badge '.self::bookingStatusBadgeClass($slug).'">'.e($name).'</span>';
             })
+            ->rawColumns(['status_name'])
             ->filterColumn('titular', function ($query, $keyword) {
                 $query->whereHas('client', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
@@ -243,5 +248,15 @@ class DatatableController extends Controller
                 return $itinerary->fullPrice();
             })
             ->toJson();
+    }
+
+    private static function bookingStatusBadgeClass(?string $slug): string
+    {
+        return match ($slug) {
+            Status::BOOKING_PAID => 'bg-success',
+            Status::BOOKING_CANCELLED => 'bg-danger',
+            Status::BOOKING_PENDING => 'bg-secondary',
+            default => 'bg-secondary',
+        };
     }
 }

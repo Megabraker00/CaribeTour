@@ -68,6 +68,7 @@
                 </div>
                 <div class="card-body">
                     <p class="mb-1"><strong>Ref. externa:</strong> {{ $booking->external_ref ?? '—' }}</p>
+                    <p class="mb-1"><strong>Creada:</strong> {{ $booking->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—' }}</p>
                     <p class="mb-1"><strong>Total:</strong> {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}</p>
                     <p class="mb-0"><strong>Estado:</strong> {{ $booking->statusRecord->name ?? $booking->status_id }}</p>
                 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Itinerary;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -267,31 +268,40 @@ class ProductController extends Controller
             'year'  => 'nullable|integer|min:2000|max:2100',
         ]);
 
-        $query = $product->segments()
-            ->select([
-                'segments.id',
-                'itineraries.product_id',
-                'segments.departure_date',
-                'segments.departure_terminal_id',
-                'segments.arrival_date',
-                'segments.arrival_terminal_id',
-                'itineraries.price',
-                'itineraries.taxes'
-            ]);
+        $data = $product->itineraries()
+            ->where('available_stock', '>', 0)
+            ->with(['segments' => function ($query) {
+                $query->orderBy('departure_date');
+            }])
+            ->get()
+            ->map(function (Itinerary $itinerary) use ($request) {
+                $segment = $itinerary->upcomingSegments()->first();
 
-        $query->whereDate('segments.departure_date', '>=', now());
+                if (!$segment) {
+                    return null;
+                }
 
-        if ($request->filled(['month', 'year'])) {
-            $query->whereYear('segments.departure_date', $request->year)
-                ->whereMonth('segments.departure_date', $request->month);
-        }
+                if ($request->filled(['month', 'year']) && (
+                    (int) $segment->departure_date->year !== (int) $request->year
+                    || (int) $segment->departure_date->month !== (int) $request->month
+                )) {
+                    return null;
+                }
 
-        $ret = [
+                return [
+                    'id' => $itinerary->id,
+                    'departure_date' => $segment->departure_date->toDateString(),
+                    'price' => $itinerary->price,
+                    'taxes' => $itinerary->taxes,
+                ];
+            })
+            ->filter()
+            ->values();
+
+        return response()->json([
             'product_id' => $product->id,
             'currency' => 'EUR',
-            'data' => $query->get(),
-        ];
-
-        return response()->json($ret);
+            'data' => $data,
+        ]);
     }
 }
