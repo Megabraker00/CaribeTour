@@ -66,7 +66,7 @@
             {data: 'total_amount'},
             {
                 data: 'status_name',
-                render: (data) => data ? '<span class="badge badge-secondary">' + data + '</span>' : '—',
+                render: (data) => data || '—',
             },
             {
                 data: null,

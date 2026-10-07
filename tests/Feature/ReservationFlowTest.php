@@ -75,6 +75,18 @@ class ReservationFlowTest extends TestCase
         $this->assertSame(1, $itinerary->fresh()->available_stock);
     }
 
+    public function test_stock_error_is_shown_and_the_form_keeps_what_was_typed(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary(1);
+
+        $this->followingRedirects()
+            ->from(route('reservation.create', [$product, $itinerary]))
+            ->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2))
+            ->assertOk()
+            ->assertSee('No hay plazas suficientes para esta salida.')
+            ->assertSee('Ana');
+    }
+
     public function test_store_creates_booking_decrements_stock_and_keeps_session(): void
     {
         [$product, $itinerary] = $this->makeTourWithItinerary(5);
@@ -276,6 +288,91 @@ class ReservationFlowTest extends TestCase
 
         $this->assertSame(5, $itinerary->fresh()->available_stock);
         $this->assertTrue(Booking::query()->first()->hasStatusSlug(Status::BOOKING_CANCELLED));
+    }
+
+    public function test_calendar_omits_sold_out_departures_and_connecting_segments(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-07 21:00:00'));
+        [$product, $open] = $this->makeTourWithItinerary(5);
+        $open->update(['price' => 100, 'taxes' => 10]);
+        $open->segments()->update([
+            'departure_date' => '2026-10-13 10:00:00',
+            'arrival_date' => '2026-10-13 18:00:00',
+            'sort_order' => 1,
+        ]);
+        $terminalId = $open->segments()->value('departure_terminal_id');
+        Segment::factory()->create([
+            'itinerary_id' => $open->id,
+            'sort_order' => 2,
+            'departure_date' => '2026-10-14 16:00:00',
+            'arrival_date' => '2026-10-14 20:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+        $soldOut = Itinerary::factory()->create([
+            'product_id' => $product->id,
+            'available_stock' => 0,
+            'total_stock' => 12,
+            'price' => 10,
+            'taxes' => 0,
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $soldOut->id,
+            'departure_date' => '2026-10-14 01:00:00',
+            'arrival_date' => '2026-10-14 08:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+
+        $this->assertSame($open->id, $product->cheapestItinerary()->id);
+
+        $this->getJson('/api/v1/products/'.$product->id.'/itineraries?month=10&year=2026')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $open->id)
+            ->assertJsonPath('data.0.departure_date', '2026-10-13');
+    }
+
+    public function test_reservation_summary_shows_the_reservable_departure(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-07 21:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary();
+        $terminalId = $itinerary->segments()->value('departure_terminal_id');
+        $itinerary->segments()->update([
+            'sort_order' => 1,
+            'departure_date' => '2026-09-24 22:00:00',
+            'arrival_date' => '2026-09-25 02:00:00',
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 3,
+            'departure_date' => '2026-09-30 02:00:00',
+            'arrival_date' => '2026-09-30 09:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 2,
+            'departure_date' => '2026-10-07 16:00:00',
+            'arrival_date' => '2026-10-07 21:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 4,
+            'departure_date' => '2026-10-12 11:00:00',
+            'arrival_date' => '2026-10-12 18:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('07 de octubre de 2026', false)
+            ->assertSee('12 de octubre de 2026', false)
+            ->assertDontSee('septiembre', false);
     }
 
     /**

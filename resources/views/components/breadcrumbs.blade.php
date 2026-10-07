@@ -1,6 +1,7 @@
 @php
     $segments = request()->segments();
     $url = url('/');
+    $clickable = ! request()->routeIs('reservation.create');
 @endphp
 <section class="container mt-4">
     <nav aria-label="breadcrumb" style="min-height: 24px;">
@@ -8,7 +9,11 @@
 
             {{-- Home --}}
             <li class="breadcrumb-item">
-                <a href="{{ url('/') }}" title="Inicio">Inicio</a>
+                @if ($clickable)
+                    <a href="{{ url('/') }}" title="Inicio">Inicio</a>
+                @else
+                    <span>Inicio</span>
+                @endif
             </li>
 
             @foreach($segments as $index => $segment)
@@ -20,7 +25,11 @@
 
                 @if($index + 1 < count($segments))
                     <li class="breadcrumb-item">
-                        <a href="{{ $url }}" title="{{ $name }}">{{ $name }}</a>
+                        @if ($clickable)
+                            <a href="{{ $url }}" title="{{ $name }}">{{ $name }}</a>
+                        @else
+                            <span>{{ $name }}</span>
+                        @endif
                     </li>
                 @else
                     <li class="breadcrumb-item active" aria-current="page">

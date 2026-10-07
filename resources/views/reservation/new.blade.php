@@ -60,6 +60,23 @@
             </div>
 
             <div class="col-md-6 col-sm-12 col-lg-8">
+                @if (session('error'))
+                    <div class="alert alert-warning">{{ session('error') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if ($itinerary->available_stock < $quantity)
+                    <div class="alert alert-warning">
+                        No hay plazas suficientes para esta salida. Quedan {{ $itinerary->available_stock }}.
+                    </div>
+                @endif
                 <form action="{{ route('reservation.store', ['product' => $tour, 'itinerary' => $itinerary]) }}" method="POST" data-disable-on-submit>
                     @csrf
 
@@ -75,27 +92,27 @@
                         <div class="card-body row">
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_name" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="customer_name" name="customer_name" required value="{{-- auth()->user()->name ?? '' --}}">
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" required value="{{ old('customer_name') }}">
                             </div>
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_last_name" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="customer_last_name" name="customer_last_name" required value="{{-- auth()->user()->last_name ?? '' --}}">
+                                <input type="text" class="form-control" id="customer_last_name" name="customer_last_name" required value="{{ old('customer_last_name') }}">
                             </div>
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_nationality" class="form-label">Nacionalidad</label>
-                                <input type="text" class="form-control" id="customer_nationality" name="customer_nationality" required value="{{-- auth()->user()->last_name ?? '' --}}">
+                                <input type="text" class="form-control" id="customer_nationality" name="customer_nationality" required value="{{ old('customer_nationality') }}">
                             </div>
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_document" class="form-label">Pasaporte / DNI</label>
-                                <input type="text" class="form-control" id="customer_document" name="customer_document" required value="{{-- auth()->user()->last_name ?? '' --}}">
+                                <input type="text" class="form-control" id="customer_document" name="customer_document" required value="{{ old('customer_document') }}">
                             </div>
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_email" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="customer_email" name="customer_email" required value="{{-- auth()->user()->email ?? '' --}}">
+                                <input type="email" class="form-control" id="customer_email" name="customer_email" required value="{{ old('customer_email') }}">
                             </div>
                             <div class="col-md-12 col-lg-6 mb-3">
                                 <label for="customer_phone" class="form-label">Teléfono de Contacto</label>
-                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" placeholder="+34...">
+                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" required placeholder="+34..." value="{{ old('customer_phone') }}">
                             </div>
                         </div>
                     </div>
@@ -116,33 +133,33 @@
                                     <div class="row">
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][first_name]" class="form-label">Nombre</label>
-                                            <input type="text" id="passengers[{{ $i }}][first_name]" name="passengers[{{ $i }}][first_name]" class="form-control" required>
+                                            <input type="text" id="passengers[{{ $i }}][first_name]" name="passengers[{{ $i }}][first_name]" class="form-control" required value="{{ old('passengers.'.$i.'.first_name') }}">
                                         </div>
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][last_name]" class="form-label">Apellidos</label>
-                                            <input type="text" id="passengers[{{ $i }}][last_name]" name="passengers[{{ $i }}][last_name]" class="form-control" required>
+                                            <input type="text" id="passengers[{{ $i }}][last_name]" name="passengers[{{ $i }}][last_name]" class="form-control" required value="{{ old('passengers.'.$i.'.last_name') }}">
                                         </div>
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][nationality]" class="form-label">Nacionalidad</label>
-                                            <input type="text" id="passengers[{{ $i }}][nationality]" name="passengers[{{ $i }}][nationality]" class="form-control" required value="{{-- auth()->user()->last_name ?? '' --}}">
+                                            <input type="text" id="passengers[{{ $i }}][nationality]" name="passengers[{{ $i }}][nationality]" class="form-control" required value="{{ old('passengers.'.$i.'.nationality') }}">
                                         </div>
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][document]" class="form-label">Pasaporte / DNI</label>
-                                            <input type="text" id="passengers[{{ $i }}][document]" name="passengers[{{ $i }}][document]" class="form-control" required>
+                                            <input type="text" id="passengers[{{ $i }}][document]" name="passengers[{{ $i }}][document]" class="form-control" required value="{{ old('passengers.'.$i.'.document') }}">
                                         </div>
                                         <div class="col-md-12 col-lg-6 mb-3">                                            
                                             <label for="passengers[{{ $i }}][gender]" class="form-label">Genero</label>
-                                            <select name="passengers[{{ $i }}][gender]" class="form-control" required>
-                                                <option> - </option>
-                                                <option value="male">Masculino</option>
-                                                <option value="female">Femenino</option>
+                                            <select id="passengers[{{ $i }}][gender]" name="passengers[{{ $i }}][gender]" class="form-control" required>
+                                                <option value="" @selected(old('passengers.'.$i.'.gender') === null || old('passengers.'.$i.'.gender') === '')>Selecciona</option>
+                                                <option value="male" @selected(old('passengers.'.$i.'.gender') === 'male')>Masculino</option>
+                                                <option value="female" @selected(old('passengers.'.$i.'.gender') === 'female')>Femenino</option>
                                             </select>
                                         </div>
 
                                         
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][birth_date]" class="form-label">Fecha de Nacimiento</label>
-                                            <input type="date" id="passengers[{{ $i }}][birth_date]" name="passengers[{{ $i }}][birth_date]" class="form-control" required>
+                                            <input type="date" id="passengers[{{ $i }}][birth_date]" name="passengers[{{ $i }}][birth_date]" class="form-control" required value="{{ old('passengers.'.$i.'.birth_date') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -153,11 +170,11 @@
                     {{-- 3. COMENTARIOS Y ENVÍO --}}
                     <div class="mb-4">
                         <label for="notes" class="form-label">Observaciones adicionales (Alergias, peticiones especiales...)</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">Confirmar y proceder al pago</button>
+                        <button type="submit" class="btn btn-success btn-lg" @disabled($itinerary->available_stock < $quantity)>Confirmar y proceder al pago</button>
                     </div>
                 </form>
             </div>

@@ -107,9 +107,10 @@ class DestinationController extends Controller
             ->publicVisibleTour()
             ->with(['metaData', 'images'])
             ->with(['itineraries' => function ($query) {
-                $query->whereHas('segments', function ($q) {
-                    $q->where('departure_date', '>', now());
-                })
+                $query->where('available_stock', '>', 0)
+                    ->whereHas('segments', function ($q) {
+                        $q->where('departure_date', '>=', now()->startOfDay());
+                    })
                     ->with(['segments' => function ($q) {
                         $q->orderBy('sort_order', 'asc');
                     }]);

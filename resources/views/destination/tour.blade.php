@@ -279,24 +279,28 @@
             let priceMap = {};
 
             // Función para crear mapa de precios de la API
+            const reservationBase = @json(url('/reserva/'.$tour->slug));
+
             function buildPriceMap(apiResponse) {
                 priceMap = {};
 
                 apiResponse.data.forEach(item => {
-                    const date = new Date(item.departure_date);
-                    const key =
-                        `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+                    const key = String(item.departure_date).slice(0, 10);
+                    const amount = Number(item.price) + Number(item.taxes);
+                    const current = priceMap[key];
 
-                    let finalPrice = Number(item.price) + Number(item.taxes);
+                    if (current && current.amount <= amount) {
+                        return;
+                    }
 
-                    // Configuramos el formateador para España (es-ES)
-                    const formatter = new Intl.NumberFormat('es-ES', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-                    priceMap[key] = formatter.format(finalPrice);
-                    //priceMap[key]['idIt'] = item.id;
+                    priceMap[key] = {
+                        amount,
+                        label: new Intl.NumberFormat('es-ES', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(amount),
+                        itineraryId: item.id,
+                    };
                 });
             }
 
@@ -346,14 +350,13 @@
 
                             const key =
                                 `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                            const price = priceMap[key] || null;
-                            const idIt = 5;//priceMap[key]['idIt']
+                            const slot = priceMap[key] || null;
 
                             row += `
 <td class="${isToday ? 'table-warning fw-bold' : ''}">
     <div class="d-flex flex-column align-items-center">
         <span>${day}</span>
-        ${price ? `<a href="?idIt=${day}" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${price}€</small></a>` : ''}
+        ${slot ? `<a href="${reservationBase}/${slot.itineraryId}" class="text-decoration-none" title="Reserva para el ${day} de ${monthNames[viewMonth]}"><small class="text-success fw-bold fs-6">${slot.label}€</small></a>` : ''}
     </div>
 </td>
 `;
