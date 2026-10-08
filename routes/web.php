@@ -60,14 +60,22 @@ Route::get('/galeria', function () {
 })->name('galeria');
 
 Route::get('/reserva/consulta', [BookingLookupController::class, 'show'])->name('reservation.lookup');
-Route::post('/reserva/consulta', [BookingLookupController::class, 'lookup'])->name('reservation.lookup.submit');
+Route::post('/reserva/consulta', [BookingLookupController::class, 'lookup'])
+    ->middleware('throttle:reservation-lookup')
+    ->name('reservation.lookup.submit');
 
 Route::controller(ReservationController::class)->scopeBindings()->group(function () {
     Route::get("/reserva/{product:slug}/{itinerary}", 'create')->name('reservation.create');
-    Route::post("/reserva/{product:slug}/{itinerary}", 'store')->name('reservation.store');
+    Route::post("/reserva/{product:slug}/{itinerary}", 'store')
+        ->middleware('throttle:reservation-store')
+        ->name('reservation.store');
     Route::get("/reserva/{product:slug}/{itinerary}/pago", 'payment')->name('reservation.payment');
     Route::get("/reserva/{product:slug}/{itinerary}/pago/finalizar", 'paymentCallback')->name('reservation.payment.callback');
 });
+
+Route::match(['GET', 'POST'], '/register', function () {
+    abort(404);
+})->middleware('throttle:register');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
