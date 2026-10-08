@@ -270,14 +270,15 @@ class ProductController extends Controller
 
         $data = $product->itineraries()
             ->where('available_stock', '>', 0)
+            ->withBookableDeparture()
             ->with(['segments' => function ($query) {
-                $query->orderBy('departure_date');
+                $query->orderBy('sort_order');
             }])
             ->get()
             ->map(function (Itinerary $itinerary) use ($request) {
-                $segment = $itinerary->upcomingSegments()->first();
+                $segment = $itinerary->openingSegment();
 
-                if (!$segment) {
+                if (!$segment?->departure_date) {
                     return null;
                 }
 

@@ -135,15 +135,15 @@ class Product extends Model
     }
 
     /**
-     * Tours activos visibles en la web: al menos un segmento con salida estrictamente futura.
+     * Tours activos visibles en la web: el primer tramo de alguna salida es de hoy o posterior.
      */
     public function scopePublicVisibleTour(Builder $query): Builder
     {
         return $query
             ->whereStatusSlug(Status::PRODUCT_ACTIVE)
             ->whereHas('type', static fn ($type) => $type->where('slug', Type::TOUR))
-            ->whereHas('itineraries.segments', function ($q) {
-                $q->where('departure_date', '>', now());
+            ->whereHas('itineraries', function ($itineraries) {
+                $itineraries->withBookableDeparture();
             });
     }
 
@@ -151,9 +151,7 @@ class Product extends Model
     {
         return $this->itineraries()
             ->where('available_stock', '>', 0)
-            ->whereHas('segments', function ($q) {
-                $q->where('departure_date', '>=', now()->startOfDay());
-            })
+            ->withBookableDeparture()
             ->with(['segments' => function ($q) {
                 $q->orderBy('sort_order', 'asc');
             }])

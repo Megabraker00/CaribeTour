@@ -23,8 +23,8 @@ class HomeController extends Controller
                 $join->on('products.id', '=', 'cheapest.product_id');
             })
             ->whereHas('status', static fn ($status) => $status->where('slug', Status::PRODUCT_ACTIVE))
-            ->whereHas('itineraries.segments', function ($q) {
-                $q->where('departure_date', '>', now());
+            ->whereHas('itineraries', function ($itineraries) {
+                $itineraries->withBookableDeparture();
             })
             ->orderBy('cheapest.total')
             ->select('products.*', 'cheapest.total')

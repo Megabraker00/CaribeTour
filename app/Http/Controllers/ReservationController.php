@@ -23,6 +23,7 @@ class ReservationController extends Controller
     public function create(Product $product, Itinerary $itinerary)
     {
         $this->reservations->assertItineraryBelongsToProduct($product, $itinerary);
+        abort_unless($itinerary->hasBookableDeparture(), 404);
 
         return view('reservation.new', $this->summaryData($product, $itinerary, self::VIEW_AS_TOUR));
     }

@@ -100,17 +100,12 @@ class SegmentController extends Controller
 
     public function storeSegment(Request $request, Itinerary $itinerary): RedirectResponse
     {
-        $validated = $this->validatedSegment($request);
-
-        $sortOrder = (int) $validated['sort_order'];
-        if ($sortOrder < 1) {
-            $sortOrder = 1;
-        }
+        $validated = $this->validatedSegment($request, $itinerary);
 
         Segment::create([
             'itinerary_id' => $itinerary->id,
             'type_id' => $validated['type_id'],
-            'sort_order' => $sortOrder,
+            'sort_order' => (int) $validated['sort_order'],
             'departure_date' => $validated['departure_date'],
             'departure_terminal_id' => $validated['departure_terminal_id'],
             'arrival_date' => $validated['arrival_date'],
@@ -146,16 +141,11 @@ class SegmentController extends Controller
     {
         $segment = $this->segmentBelongsToItinerary($itinerary, $segment);
 
-        $validated = $this->validatedSegment($request);
-
-        $sortOrder = (int) $validated['sort_order'];
-        if ($sortOrder < 1) {
-            $sortOrder = 1;
-        }
+        $validated = $this->validatedSegment($request, $itinerary, $segment);
 
         $segment->update([
             'type_id' => $validated['type_id'],
-            'sort_order' => $sortOrder,
+            'sort_order' => (int) $validated['sort_order'],
             'departure_date' => $validated['departure_date'],
             'departure_terminal_id' => $validated['departure_terminal_id'],
             'arrival_date' => $validated['arrival_date'],
@@ -200,13 +190,17 @@ class SegmentController extends Controller
      *
      * @return array<string, mixed>
      */
-    private function validatedSegment(Request $request): array
+    private function validatedSegment(Request $request, Itinerary $itinerary, ?Segment $segment = null): array
     {
         $typeRule = Rule::exists('types', 'id')->where('typeable', Product::class);
+        $uniqueOrder = Rule::unique('segments', 'sort_order')->where('itinerary_id', $itinerary->id);
+        if ($segment) {
+            $uniqueOrder->ignore($segment->id);
+        }
 
         return $request->validate([
             'type_id' => ['required', 'integer', $typeRule],
-            'sort_order' => 'required|integer|min:1',
+            'sort_order' => ['required', 'integer', 'min:1', $uniqueOrder],
             'departure_date' => 'required|date',
             'departure_terminal_id' => 'required|integer|exists:terminals,id',
             'arrival_date' => 'required|date|after:departure_date',
@@ -215,6 +209,7 @@ class SegmentController extends Controller
             'destination' => 'nullable|string|max:255',
         ], [
             'type_id.required' => 'Selecciona el tipo de segmento.',
+            'sort_order.unique' => 'Ya existe un tramo con ese orden.',
             'arrival_date.after' => 'La fecha de llegada debe ser posterior a la de salida.',
         ]);
     }
