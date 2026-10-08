@@ -40,6 +40,35 @@
         Orden de los tramos: <code>sort_order</code> ascendente. El primer y último segmento definen la duración mostrada al cliente.
     </p>
 
+    <div class="card card-outline card-info mb-4">
+        <div class="card-header">
+            <strong>Plazas</strong>
+        </div>
+        <div class="card-body">
+            <p class="mb-3">
+                Disponibles: <strong>{{ $itinerary->available_stock }}</strong>.
+                Vendidas: <strong>{{ $itinerary->soldSeats() }}</strong>.
+            </p>
+            @can('write-admin')
+                <form action="{{ route('admin.itineraries.stock.update', $itinerary) }}" method="POST" class="form-inline">
+                    @csrf
+                    @method('PUT')
+                    <label for="total_stock" class="mr-2">Plazas totales</label>
+                    <input type="number" name="total_stock" id="total_stock" min="{{ $itinerary->soldSeats() }}" max="9999" step="1" required
+                        class="form-control mr-2 @error('total_stock') is-invalid @enderror"
+                        value="{{ old('total_stock', $itinerary->total_stock) }}">
+                    <button type="submit" class="btn btn-info">Guardar plazas</button>
+                    @error('total_stock')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </form>
+                <small class="form-text text-muted mt-2">Las plazas ya vendidas se mantienen. Solo cambian las que siguen libres.</small>
+            @else
+                <p class="mb-0">Plazas totales: <strong>{{ $itinerary->total_stock }}</strong></p>
+            @endcan
+        </div>
+    </div>
+
     @can('write-admin')
     <div class="card card-outline card-primary mb-4">
         <div class="card-header">

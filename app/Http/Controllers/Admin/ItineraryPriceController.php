@@ -31,6 +31,30 @@ class ItineraryPriceController extends Controller
         ]);
     }
 
+    public function updateBase(Request $request, Itinerary $itinerary): RedirectResponse
+    {
+        $validated = $request->validate([
+            'price' => 'required|numeric|min:0',
+            'taxes' => 'required|numeric|min:0',
+        ], [
+            'price.required' => 'Indica el precio base.',
+            'price.numeric' => 'El precio base debe ser un número.',
+            'price.min' => 'El precio base no puede ser negativo.',
+            'taxes.required' => 'Indica las tasas.',
+            'taxes.numeric' => 'Las tasas deben ser un número.',
+            'taxes.min' => 'Las tasas no pueden ser negativas.',
+        ]);
+
+        $itinerary->update([
+            'price' => $validated['price'],
+            'taxes' => $validated['taxes'],
+        ]);
+
+        return redirect()
+            ->route('admin.itineraries.prices.edit', $itinerary)
+            ->with('success', 'Tarifa base actualizada.');
+    }
+
     public function update(Request $request, Itinerary $itinerary): RedirectResponse
     {
         $allowedTypeIds = Type::query()
