@@ -539,6 +539,15 @@
                                             @enderror
                                         </div>
 
+                                        <div class="form-group">
+                                            <label for="plazas">Plazas</label>
+                                            <input type="number" name="total_stock" id="plazas" class="form-control @error('total_stock') is-invalid @enderror" min="1" max="9999" step="1" value="{{ old('total_stock', 20) }}">
+                                            @error('total_stock')
+                                                <div class="error invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">Al crear la salida, todas las plazas quedan disponibles.</small>
+                                        </div>
+
                                     </fieldset>
 
                                     <fieldset class="col-md-6">
@@ -609,6 +618,8 @@
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
                                                 <th scope="col" nowrap>Precio total</th>
+                                                <th scope="col" nowrap>Plazas</th>
+                                                <th scope="col" nowrap>Disponibles</th>
                                                 <th scope="col" nowrap>Segmentos</th>
                                                 <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
@@ -624,6 +635,8 @@
                                                 <th scope="col" nowrap>Precio</th>
                                                 <th scope="col" nowrap>Tasas</th>
                                                 <th scope="col" nowrap>Precio total</th>
+                                                <th scope="col" nowrap>Plazas</th>
+                                                <th scope="col" nowrap>Disponibles</th>
                                                 <th scope="col" nowrap>Segmentos</th>
                                                 <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
@@ -874,6 +887,22 @@
                     render: (data) => `<span style="white-space: nowrap;">${data} &euro;</span>`
                 },
                 {
+                    data: 'total_stock'
+                },
+                {
+                    data: 'available_stock',
+                    render: (data) => {
+                        const seats = Number(data)
+                        if (seats === 0) {
+                            return '0 <span class="badge badge-danger">Agotada</span>'
+                        }
+                        if (seats >= 1 && seats <= 5) {
+                            return seats + ' <span class="badge badge-warning">Pocas plazas</span>'
+                        }
+                        return data
+                    }
+                },
+                {
                     data: 'id',
                     orderable: false,
                     searchable: false,
@@ -910,6 +939,14 @@
                     }
                 }
             ]
+            properties.createdRow = function (row, data) {
+                const seats = Number(data.available_stock)
+                if (seats === 0) {
+                    $(row).addClass('table-danger').attr('title', 'Salida agotada')
+                } else if (seats >= 1 && seats <= 5) {
+                    $(row).addClass('table-warning').attr('title', 'Quedan pocas plazas')
+                }
+            }
 
             $('#the_table').DataTable(properties)
             @endif

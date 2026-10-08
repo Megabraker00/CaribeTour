@@ -60,10 +60,15 @@ Route::controller(ItineraryController::class)->group(function () {
     Route::delete('/tourDate/{id}/destroy', 'destroyTourDate')->name('admin.tour.date.destroy');
 });
 
+Route::put('itineraries/{itinerary}/stock', [ItineraryController::class, 'updateStock'])
+    ->name('admin.itineraries.stock.update');
+
 Route::get('itineraries/{itinerary}/prices', [ItineraryPriceController::class, 'edit'])
     ->name('admin.itineraries.prices.edit');
 Route::put('itineraries/{itinerary}/prices', [ItineraryPriceController::class, 'update'])
     ->name('admin.itineraries.prices.update');
+Route::put('itineraries/{itinerary}/base-price', [ItineraryPriceController::class, 'updateBase'])
+    ->name('admin.itineraries.base-price.update');
 
 Route::get('itineraries/{itinerary}/segments', [SegmentController::class, 'manageItinerarySegments'])
     ->name('admin.itineraries.segments.index');

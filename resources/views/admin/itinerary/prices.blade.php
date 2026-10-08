@@ -29,11 +29,47 @@
     @endif
 
     <div class="card card-outline card-info mb-3">
-        <div class="card-body py-3">
-            <strong>Tarifa base del itinerario</strong> (se usa si no defines precio para un tipo):
-            <span class="ml-2">{{ number_format((float) $itinerary->price, 2, ',', '.') }} €</span>
-            + <span>{{ number_format((float) $itinerary->taxes, 2, ',', '.') }} €</span> tasas
-            = <strong>{{ number_format($itinerary->fullPrice(), 2, ',', '.') }} €</strong> total por persona.
+        <div class="card-header">
+            <strong>Tarifa base del itinerario</strong>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">
+                Se usa cuando un tipo de pasajero no tiene precio propio.
+                Total actual: <strong>{{ number_format($itinerary->fullPrice(), 2, ',', '.') }} €</strong> por persona.
+                Las reservas ya hechas conservan el precio con el que se crearon.
+            </p>
+            @can('write-admin')
+                <form action="{{ route('admin.itineraries.base-price.update', $itinerary) }}" method="POST" class="form-row align-items-end">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group col-md-3">
+                        <label for="base_price">Precio (€)</label>
+                        <input type="number" name="price" id="base_price" step="0.01" min="0" required
+                            class="form-control @error('price') is-invalid @enderror"
+                            value="{{ old('price', $itinerary->price) }}">
+                        @error('price')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="base_taxes">Tasas (€)</label>
+                        <input type="number" name="taxes" id="base_taxes" step="0.01" min="0" required
+                            class="form-control @error('taxes') is-invalid @enderror"
+                            value="{{ old('taxes', $itinerary->taxes) }}">
+                        @error('taxes')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-3">
+                        <button type="submit" class="btn btn-info">Guardar tarifa base</button>
+                    </div>
+                </form>
+            @else
+                <p class="mb-0">
+                    {{ number_format((float) $itinerary->price, 2, ',', '.') }} €
+                    + {{ number_format((float) $itinerary->taxes, 2, ',', '.') }} € tasas.
+                </p>
+            @endcan
         </div>
     </div>
 

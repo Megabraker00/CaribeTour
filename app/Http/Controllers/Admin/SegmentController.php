@@ -29,8 +29,13 @@ class SegmentController extends Controller
             'arrival_terminal_id' => 'required|integer|exists:terminals,id',
             'price' => 'required|numeric|min:0',
             'taxes' => 'required|numeric|min:0',
+            'total_stock' => 'required|integer|min:1|max:9999',
             'product_id' => 'required|integer|exists:products,id',
         ], [
+            'total_stock.required' => 'Indica el número de plazas.',
+            'total_stock.integer' => 'Las plazas deben ser un número entero.',
+            'total_stock.min' => 'La salida debe tener al menos una plaza.',
+            'total_stock.max' => 'Las plazas no pueden superar 9999.',
             'product_id.required' => 'El producto es obligatorio.',
             'departure_terminal_id.exists' => 'Selecciona un terminal de salida válido.',
             'arrival_terminal_id.exists' => 'Selecciona un terminal de llegada válido.',
@@ -42,8 +47,8 @@ class SegmentController extends Controller
         DB::transaction(function () use ($validated, $productId) {
             $itinerary = Itinerary::create([
                 'product_id' => $productId,
-                'total_stock' => 20,
-                'available_stock' => 20,
+                'total_stock' => (int) $validated['total_stock'],
+                'available_stock' => (int) $validated['total_stock'],
                 'price' => $validated['price'],
                 'taxes' => $validated['taxes'],
                 'currency' => 'EUR',

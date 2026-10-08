@@ -156,6 +156,11 @@ class Itinerary extends Model
         return round($this->price + $this->taxes, 2);
     }
 
+    public function soldSeats(): int
+    {
+        return max(0, (int) $this->total_stock - (int) $this->available_stock);
+    }
+
     public function getDaysAttribute()
     {
         return $this->days();
