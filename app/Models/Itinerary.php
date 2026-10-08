@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
 
 class Itinerary extends Model
 {
@@ -67,76 +67,99 @@ class Itinerary extends Model
     }
 
     /**
-     * Tramos que aún se pueden reservar, del más próximo al último.
-     * Un tramo anterior o de conexión no cuenta como otra salida.
+     * Inicio del viaje: el tramo de menor orden. El resto pertenece a la misma salida.
      */
-    public function upcomingSegments(): Collection
-    {
-        $today = now()->startOfDay();
-
-        return $this->segmentsOrderedByDeparture()
-            ->filter(function (Segment $segment) use ($today) {
-                return $segment->departure_date->greaterThanOrEqualTo($today);
-            })
-            ->values();
-    }
-
-    /**
-     * Fechas del resumen: la salida reservable y el último tramo que sale ese día o después.
-     *
-     * @return array{departure: mixed, return: mixed, days: int, nights: int}
-     */
-    public function reservableSummary(): array
-    {
-        $segments = $this->upcomingSegments();
-        if ($segments->isEmpty()) {
-            $segments = $this->segmentsOrderedByDeparture();
-        }
-
-        $first = $segments->first();
-        $last = $segments->last();
-        $departure = $first?->departure_date;
-        $end = $last?->arrival_date ?? $last?->departure_date;
-        $days = 0;
-
-        if ($departure && $end) {
-            $days = (int) $departure->copy()->startOfDay()->diffInDays($end->copy()->startOfDay()) + 1;
-        }
-
-        return [
-            'departure' => $departure,
-            'return' => $last?->departure_date,
-            'days' => $days,
-            'nights' => max(0, $days - 1),
-        ];
-    }
-
-    private function segmentsOrderedByDeparture(): Collection
+    public function openingSegment(): ?Segment
     {
         $segments = $this->relationLoaded('segments')
             ? $this->segments
             : $this->segments()->get();
 
         return $segments
-            ->filter(fn (Segment $segment) => $segment->departure_date !== null)
-            ->sortBy(fn (Segment $segment) => $segment->departure_date->getTimestamp())
-            ->values();
+            ->sortBy([
+                ['sort_order', 'asc'],
+                ['id', 'asc'],
+            ])
+            ->first();
     }
 
+    public function closingSegment(): ?Segment
+    {
+        $segments = $this->relationLoaded('segments')
+            ? $this->segments
+            : $this->segments()->get();
+
+        return $segments
+            ->sortBy([
+                ['sort_order', 'desc'],
+                ['id', 'desc'],
+            ])
+            ->first();
+    }
+
+    /**
+     * La salida se ofrece si el primer tramo sale hoy o más adelante.
+     */
+    public function hasBookableDeparture(): bool
+    {
+        $departure = $this->openingSegment()?->departure_date;
+
+        return $departure !== null && $departure->greaterThanOrEqualTo(now()->startOfDay());
+    }
+
+    public function scopeWithBookableDeparture(Builder $query): Builder
+    {
+        $today = now()->startOfDay();
+
+        return $query->whereExists(function ($subquery) use ($today) {
+            $subquery->selectRaw('1')
+                ->from('segments as opening')
+                ->whereColumn('opening.itinerary_id', 'itineraries.id')
+                ->where('opening.departure_date', '>=', $today)
+                ->whereRaw(
+                    'opening.sort_order = (
+                        select min(earliest.sort_order)
+                        from segments as earliest
+                        where earliest.itinerary_id = opening.itinerary_id
+                    )'
+                );
+        });
+    }
+
+    /**
+     * Fechas del viaje completo, desde el primer tramo hasta el último.
+     *
+     * @return array{departure: mixed, return: mixed, days: int, nights: int}
+     */
+    public function reservableSummary(): array
+    {
+        $first = $this->openingSegment();
+        $last = $this->closingSegment();
+
+        return [
+            'departure' => $first?->departure_date,
+            'return' => $last?->departure_date,
+            'days' => $this->days(),
+            'nights' => $this->nights(),
+        ];
+    }
+
+    /**
+     * Días de calendario, ambos inclusive, del primer tramo al último.
+     * Salir el día 1 y llegar el día 3 son 3 días, sea cual sea la hora.
+     */
     public function days(): int
     {
-        $first = $this->firstSegment();
-        $last = $this->lastSegment();
+        $start = $this->openingSegment()?->departure_date;
+        $end = $this->closingSegment()?->arrival_date;
 
-        if (!$first || !$last || !$first->departure_date || !$last->arrival_date) {
+        if (!$start || !$end) {
             return 0;
         }
 
-        $start = \Carbon\Carbon::parse($first->departure_date);
-        $end = \Carbon\Carbon::parse($last->arrival_date);
+        $calendarDays = (int) $start->copy()->startOfDay()->diffInDays($end->copy()->startOfDay());
 
-        // +1 porque si sale el día 1 y llega el día 3 son 3 días (1,2,3)
-        return $start->diffInDays($end) + 1;
+        return $calendarDays + 1;
     }
 
     public function nights(): int

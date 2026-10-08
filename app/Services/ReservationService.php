@@ -46,6 +46,12 @@ class ReservationService
 
             $quantity = (int) $validated['quantity'];
 
+            if (!$lockedItinerary->hasBookableDeparture()) {
+                throw ValidationException::withMessages([
+                    'itId' => 'Esta salida ya no está disponible.',
+                ]);
+            }
+
             if ($lockedItinerary->available_stock < $quantity) {
                 throw ValidationException::withMessages([
                     'quantity' => 'No hay plazas suficientes para esta salida.',

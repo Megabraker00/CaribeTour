@@ -333,7 +333,87 @@ class ReservationFlowTest extends TestCase
             ->assertJsonPath('data.0.departure_date', '2026-10-13');
     }
 
-    public function test_reservation_summary_shows_the_reservable_departure(): void
+    public function test_reservation_summary_uses_the_opening_segment(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-07 21:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary();
+        $terminalId = $itinerary->segments()->value('departure_terminal_id');
+        $itinerary->segments()->update([
+            'sort_order' => 1,
+            'departure_date' => '2026-10-13 10:00:00',
+            'arrival_date' => '2026-10-13 18:00:00',
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 2,
+            'departure_date' => '2026-10-08 09:00:00',
+            'arrival_date' => '2026-10-08 12:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 3,
+            'departure_date' => '2026-10-20 11:00:00',
+            'arrival_date' => '2026-10-20 18:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('13 de octubre de 2026', false)
+            ->assertSee('20 de octubre de 2026', false)
+            ->assertDontSee('08 de octubre de 2026', false);
+    }
+
+    public function test_tour_page_and_reservation_show_the_same_duration(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-10-07 21:00:00'));
+        [$product, $itinerary] = $this->makeTourWithItinerary();
+        $country = Category::factory()->create(['slug' => 'colombia']);
+        $province = Category::factory()->create([
+            'slug' => 'medellin',
+            'parent_id' => $country->id,
+        ]);
+        $product->update(['category_id' => $province->id]);
+        $terminalId = $itinerary->segments()->value('departure_terminal_id');
+        $itinerary->segments()->update([
+            'sort_order' => 1,
+            'departure_date' => '2026-10-14 01:41:28',
+            'arrival_date' => '2026-10-14 08:00:00',
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'sort_order' => 2,
+            'departure_date' => '2026-09-30 07:36:08',
+            'arrival_date' => '2026-09-30 18:00:00',
+            'departure_terminal_id' => $terminalId,
+            'arrival_terminal_id' => $terminalId,
+        ]);
+
+        $itinerary->refresh();
+        $this->assertSame(15, $itinerary->days);
+        $this->assertSame(14, $itinerary->nights);
+        $this->assertSame(15, $itinerary->reservableSummary()['days']);
+        $this->assertSame(14, $itinerary->reservableSummary()['nights']);
+
+        $duration = '15 Días - 14 Noches';
+
+        $this->get(route('destinos.tour', [
+            'country' => $country->slug,
+            'province' => $province->slug,
+            'tour' => $product->slug,
+        ]))
+            ->assertOk()
+            ->assertSee($duration, false);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee($duration, false);
+    }
+
+    public function test_past_opening_segment_is_not_offered(): void
     {
         Carbon::setTestNow(Carbon::parse('2026-10-07 21:00:00'));
         [$product, $itinerary] = $this->makeTourWithItinerary();
@@ -345,34 +425,27 @@ class ReservationFlowTest extends TestCase
         ]);
         Segment::factory()->create([
             'itinerary_id' => $itinerary->id,
-            'sort_order' => 3,
-            'departure_date' => '2026-09-30 02:00:00',
-            'arrival_date' => '2026-09-30 09:00:00',
-            'departure_terminal_id' => $terminalId,
-            'arrival_terminal_id' => $terminalId,
-        ]);
-        Segment::factory()->create([
-            'itinerary_id' => $itinerary->id,
             'sort_order' => 2,
-            'departure_date' => '2026-10-07 16:00:00',
-            'arrival_date' => '2026-10-07 21:00:00',
-            'departure_terminal_id' => $terminalId,
-            'arrival_terminal_id' => $terminalId,
-        ]);
-        Segment::factory()->create([
-            'itinerary_id' => $itinerary->id,
-            'sort_order' => 4,
-            'departure_date' => '2026-10-12 11:00:00',
-            'arrival_date' => '2026-10-12 18:00:00',
+            'departure_date' => '2026-10-14 11:00:00',
+            'arrival_date' => '2026-10-14 18:00:00',
             'departure_terminal_id' => $terminalId,
             'arrival_terminal_id' => $terminalId,
         ]);
 
         $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertNotFound();
+
+        $this->from(route('reservation.create', [$product, $itinerary]))
+            ->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2))
+            ->assertSessionHasErrors('itId');
+
+        $this->assertSame(5, $itinerary->fresh()->available_stock);
+        $this->assertNull($product->cheapestItinerary());
+        $this->assertFalse(Product::query()->publicVisibleTour()->whereKey($product->id)->exists());
+
+        $this->getJson('/api/v1/products/'.$product->id.'/itineraries?month=10&year=2026')
             ->assertOk()
-            ->assertSee('07 de octubre de 2026', false)
-            ->assertSee('12 de octubre de 2026', false)
-            ->assertDontSee('septiembre', false);
+            ->assertJsonCount(0, 'data');
     }
 
     /**
