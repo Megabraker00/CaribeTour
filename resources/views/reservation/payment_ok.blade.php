@@ -44,7 +44,7 @@
                         </div>
                         <div class="card-footer fs-3">                            
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ number_format($price * 2, 2, ',', '.') }}&euro;</span>
+                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                             </strong>                            
                         </div>
                     </div>
@@ -113,14 +113,9 @@
                             <div class="card shadow-sm mt-4 bg-light">
                                 <div class="card-body">
                                     <h4 class="card-tile">Resumen del Pago</h4>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Precio Base:</span>
-                                        <span>{{ number_format($price, 2, ',', '.') }}€</span>
-                                    </div>
-                                    <hr>
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <span class="h5 mb-0">Total Pagado:</span>
-                                        <span class="h4 mb-0 fw-bold text-primary">{{ number_format($booking->total_price, 2, ',', '.') }}€</span>
+                                        <span class="h4 mb-0 fw-bold text-primary">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                                     </div>
                                     <div class="d-grid gap-2">
                                         <button onclick="window.print();" class="btn btn-outline-dark">
@@ -143,7 +138,9 @@
                         <h5>¿Qué sigue ahora?</h5>
                         <p class="text-muted mb-0">
                             En breve recibirás un correo electrónico de confirmación.
-                            Si tienes alguna duda, contacta con nuestro equipo citando tu referencia <strong>{{ $booking->external_ref }}</strong>.
+                            También puedes <a href="{{ route('reservation.lookup') }}">consultar tu reserva</a>
+                            con el localizador <strong>{{ $booking->external_ref }}</strong> y el correo del titular.
+                            Si tienes alguna duda, contacta con nuestro equipo citando esa referencia.
                         </p>
                     </div>
 

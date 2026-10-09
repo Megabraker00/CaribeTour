@@ -87,6 +87,53 @@ class ReservationFlowTest extends TestCase
             ->assertSee('Ana');
     }
 
+    public function test_store_charges_each_added_passenger_the_per_person_fare(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('Añadir pasajero', false);
+
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 3))
+            ->assertRedirect(route('reservation.payment', [$product, $itinerary]));
+
+        $this->assertSame(2, $itinerary->fresh()->available_stock);
+        $this->assertEquals(330, (float) Booking::query()->first()->total_price);
+        $this->assertEquals(330, Booking::query()->first()->passengersTotal());
+        $this->assertDatabaseCount('passengers', 3);
+    }
+
+    public function test_paid_reservation_page_links_to_the_lookup(): void
+    {
+        Mail::fake();
+        ApiRequestor::setHttpClient(new FakeStripeClient(Status::PAYMENT_STRIPE_SUCCEEDED));
+        config(['services.stripe.secret' => 'sk_test_fake']);
+
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+
+        $this->get(route('reservation.payment.callback', [$product, $itinerary]).'?payment_intent=pi_test')
+            ->assertOk()
+            ->assertSee('consultar tu reserva', false)
+            ->assertSee(route('reservation.lookup'), false);
+    }
+
+    public function test_payment_page_shows_the_sum_of_each_passenger_fare(): void
+    {
+        ApiRequestor::setHttpClient(new FakeStripeClient());
+        config(['services.stripe.secret' => 'sk_test_fake']);
+
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 3));
+
+        $this->get(route('reservation.payment', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('title="Total a pagar">330,00', false)
+            ->assertSee('Pagar 330,00', false)
+            ->assertDontSee('>220,00', false);
+    }
+
     public function test_store_creates_booking_decrements_stock_and_keeps_session(): void
     {
         [$product, $itinerary] = $this->makeTourWithItinerary(5);

@@ -108,6 +108,28 @@ class Booking extends Model
         return $this->hasMany(Passenger::class);
     }
 
+    public function passengersTotal(): float
+    {
+        $passengers = $this->relationLoaded('passengers')
+            ? $this->passengers
+            : $this->passengers()->get();
+
+        if ($passengers->isEmpty()) {
+            return round((float) $this->total_price, 2);
+        }
+
+        $total = $passengers->sum(
+            fn (Passenger $passenger) => (float) $passenger->price_at_booking + (float) $passenger->taxes_at_booking
+        );
+
+        return round((float) $total, 2);
+    }
+
+    public function formattedPassengersTotal(): string
+    {
+        return number_format($this->passengersTotal(), 2, ',', '.');
+    }
+
     public function itineraries(): BelongsToMany
     {
         return $this->belongsToMany(Itinerary::class, 'booking_itinerary')

@@ -1,7 +1,7 @@
 @php
     $segments = request()->segments();
     $url = url('/');
-    $clickable = ! request()->routeIs('reservation.create');
+    $clickable = ! request()->is('reserva', 'reserva/*');
 @endphp
 <section class="container mt-4">
     <nav aria-label="breadcrumb" style="min-height: 24px;">

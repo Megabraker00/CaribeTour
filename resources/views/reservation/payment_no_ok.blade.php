@@ -44,7 +44,7 @@
                         </div>
                         <div class="card-footer fs-3">                            
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ number_format($price * 2, 2, ',', '.') }}&euro;</span>
+                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                             </strong>                            
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                                 <div class="card-body">
                                     <h4 class="card-title">Importe a Pagar</h4>
                                     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-                                        <span class="h4 mb-0 fw-bold text-dark">{{ number_format($booking->total_price, 2, ',', '.') }}€</span>
+                                        <span class="h4 mb-0 fw-bold text-dark">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                                     </div>
                                     
                                     <div class="d-grid gap-2">

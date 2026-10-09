@@ -117,6 +117,14 @@ class ReservationService
             $intent = PaymentIntent::retrieve($existingPayment->transaction_id);
 
             if (in_array($intent->status, ['requires_payment_method', 'requires_confirmation', 'requires_action', 'processing'], true)) {
+                $amount = $this->amountInCents($booking);
+                if ((int) $intent->amount !== $amount) {
+                    $intent = PaymentIntent::update($existingPayment->transaction_id, [
+                        'amount' => $amount,
+                    ]);
+                    $existingPayment->update(['amount' => $booking->total_price]);
+                }
+
                 return $intent;
             }
 
@@ -479,6 +487,74 @@ class ReservationService
         return (string) $refundId;
     }
 
+    public function addPassengerToBooking(Booking $booking, array $data): Passenger
+    {
+        return DB::transaction(function () use ($booking, $data) {
+            $locked = Booking::query()->whereKey($booking->id)->lockForUpdate()->firstOrFail();
+            $this->assertPassengerCanBeAdded($locked);
+
+            $itineraryId = $locked->itineraries()->orderByPivot('itinerary_order')->value('itineraries.id');
+            $itinerary = Itinerary::query()->whereKey($itineraryId)->lockForUpdate()->first();
+            if (!$itinerary || (int) $itinerary->available_stock < 1) {
+                throw new DomainException('No quedan plazas en esta salida.');
+            }
+
+            $fare = $this->fareForPassenger($itinerary, $data['date_of_birth']);
+            $passenger = Passenger::create([
+                'booking_id' => $locked->id,
+                'name' => $data['name'],
+                'last_name' => $data['last_name'],
+                'date_of_birth' => $data['date_of_birth'],
+                'dni_passport' => $data['dni_passport'],
+                'nationality' => $data['nationality'],
+                'gender' => $data['gender'],
+                'passenger_type_id' => $fare['passenger_type_id'],
+                'status_id' => Status::idFor(Client::class, Status::CLIENT_ACTIVE),
+                'price_at_booking' => $fare['price'],
+                'taxes_at_booking' => $fare['taxes'],
+            ]);
+
+            $locked->update([
+                'total_price' => round((float) $locked->total_price + $fare['price'] + $fare['taxes'], 2),
+            ]);
+            $itinerary->decrement('available_stock');
+
+            return $passenger;
+        });
+    }
+
+    public function assertPassengerCanBeAdded(Booking $booking): void
+    {
+        if ($booking->hasStatusSlug(Status::BOOKING_CANCELLED, Status::BOOKING_REFUNDED, Status::BOOKING_NO_SHOW)) {
+            throw new DomainException('No se pueden añadir pasajeros a esta reserva.');
+        }
+
+        if ($booking->passengers()->count() >= 20) {
+            throw new DomainException('La reserva no puede tener más de 20 pasajeros.');
+        }
+
+        if (!$booking->itineraries()->exists()) {
+            throw new DomainException('La reserva no tiene una salida asociada.');
+        }
+    }
+
+    /**
+     * @return array{passenger_type_id: int, price: float|string, taxes: float|string}
+     */
+    private function fareForPassenger(Itinerary $itinerary, string $birthDate): array
+    {
+        $typeId = Passenger::getPassengerTypeIdByAge(\Carbon\Carbon::parse($birthDate)->age);
+        $priceRow = $itinerary->itineraryPrices()
+            ->where('passenger_type_id', $typeId)
+            ->first();
+
+        return [
+            'passenger_type_id' => $typeId,
+            'price' => $priceRow ? $priceRow->price : $itinerary->price,
+            'taxes' => $priceRow ? $priceRow->taxes : $itinerary->taxes,
+        ];
+    }
+
     private function restoreReservedSeats(Booking $booking): void
     {
         $quantity = $booking->passengers()->count();
@@ -559,15 +635,7 @@ class ReservationService
         $totalBookingPrice = 0;
 
         foreach ($validated['passengers'] as $passenger) {
-            $age = \Carbon\Carbon::parse($passenger['birth_date'])->age;
-            $typeId = Passenger::getPassengerTypeIdByAge($age);
-
-            $priceRow = $itinerary->itineraryPrices()
-                ->where('passenger_type_id', $typeId)
-                ->first();
-
-            $price = $priceRow ? $priceRow->price : $itinerary->price;
-            $taxes = $priceRow ? $priceRow->taxes : $itinerary->taxes;
+            $fare = $this->fareForPassenger($itinerary, $passenger['birth_date']);
 
             Passenger::create([
                 'booking_id' => $bookingId,
@@ -577,13 +645,13 @@ class ReservationService
                 'dni_passport' => $passenger['document'],
                 'nationality' => $passenger['nationality'],
                 'gender' => $passenger['gender'],
-                'passenger_type_id' => $typeId,
+                'passenger_type_id' => $fare['passenger_type_id'],
                 'status_id' => Status::idFor(Client::class, Status::CLIENT_ACTIVE),
-                'price_at_booking' => $price,
-                'taxes_at_booking' => $taxes,
+                'price_at_booking' => $fare['price'],
+                'taxes_at_booking' => $fare['taxes'],
             ]);
 
-            $totalBookingPrice += ($price + $taxes);
+            $totalBookingPrice += ($fare['price'] + $fare['taxes']);
         }
 
         return round($totalBookingPrice, 2);
