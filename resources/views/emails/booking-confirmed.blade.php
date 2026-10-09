@@ -5,7 +5,7 @@ Hola {{ $booking->client?->name }},
 
 Tu reserva **{{ $booking->external_ref }}** se ha pagado correctamente.
 
-- Total: {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency }}
+- Total: {{ $booking->formattedPassengersTotal() }} {{ $booking->currency }}
 - Pasajeros: {{ $booking->passengers->count() }}
 
 Conserva este localizador para consultar tu reserva.

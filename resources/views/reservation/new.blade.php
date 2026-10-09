@@ -10,7 +10,10 @@
     <section class="container my-4">
 
         @php
-            $quantity = 2;
+            $maxPassengers = min(20, max(0, (int) $itinerary->available_stock));
+            $minPassengers = min(2, $maxPassengers);
+            $oldPassengerCount = is_array(old('passengers')) ? count(old('passengers')) : 0;
+            $quantity = $oldPassengerCount > 0 ? min($oldPassengerCount, $maxPassengers) : $minPassengers;
         @endphp
 
         <div class="row">
@@ -51,7 +54,7 @@
                         </div>
                         <div class="card-footer fs-3">                            
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ number_format($price * 2, 2, ',', '.') }}&euro;</span>
+                                <i class="bi bi-cash-stack"></i> TOTAL:   <span id="reservation-total" title="Total a pagar">{{ number_format($price * $quantity, 2, ',', '.') }}&euro;</span>
                             </strong>                            
                         </div>
                     </div>
@@ -83,7 +86,7 @@
                     {{-- 1. DATOS DEL TOUR (CAMPOS OCULTOS) --}}
                     {{-- Estos datos vienen de la selección previa del usuario --}}
                     <input type="hidden" name="itId" value="{{ $itinerary->id }}">
-                    <input type="hidden" name="quantity" value="{{ $quantity }}"> {{-- Cantidad de plazas bloqueadas --}}
+                    <input type="hidden" name="quantity" id="quantity" value="{{ $quantity }}">
 
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header">
@@ -121,15 +124,19 @@
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <h5 class="mb-0">Pasajeros</h5>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="copy-holder-to-passenger-1" title="Rellenar el primer pasajero con los datos del titular">
-                                <i class="bi bi-person-down"></i> Copiar titular al pasajero 1
-                            </button>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="copy-holder-to-passenger-1" title="Rellenar el primer pasajero con los datos del titular">
+                                    <i class="bi bi-person-down"></i> Copiar datos del titular
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            {{-- Generamos tantos bloques de pasajeros como 'quantity' se haya elegido --}}
+                        <div class="card-body" id="passenger-list" data-unit-price="{{ $price }}" data-max="{{ $maxPassengers }}" data-min="{{ $minPassengers }}">
                             @for ($i = 1; $i <= $quantity; $i++)
                                 <div class="passenger-block mb-4 pb-3">
-                                    <h6>Pasajero #{{ $i }}</h6>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0 passenger-title">Pasajero #{{ $i }}</h6>
+                                        <button type="button" class="btn btn-outline-danger btn-sm remove-passenger" @if($quantity <= $minPassengers) hidden @endif>Quitar</button>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12 col-lg-6 mb-3">
                                             <label for="passengers[{{ $i }}][first_name]" class="form-label">Nombre</label>
@@ -165,6 +172,11 @@
                                 </div>
                             @endfor
                         </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="add-passenger" @disabled($quantity >= $maxPassengers)>
+                                <i class="bi bi-person-plus"></i> Añadir pasajero
+                            </button>
+                        </div>
                     </div>
 
                     {{-- 3. COMENTARIOS Y ENVÍO --}}
@@ -174,7 +186,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg" @disabled($itinerary->available_stock < $quantity)>Confirmar y proceder al pago</button>
+                        <button type="submit" class="btn btn-success btn-lg" id="confirm-reservation" @disabled($quantity < 1)>Confirmar y proceder al pago</button>
                     </div>
                 </form>
             </div>
@@ -187,6 +199,14 @@
 
     @push('scripts')
     <script>
+        const passengerList = document.getElementById('passenger-list');
+        const quantityInput = document.getElementById('quantity');
+        const totalLabel = document.getElementById('reservation-total');
+        const addPassengerButton = document.getElementById('add-passenger');
+        const unitPrice = Number(passengerList.dataset.unitPrice);
+        const maxPassengers = Number(passengerList.dataset.max);
+        const minPassengers = Number(passengerList.dataset.min);
+
         document.getElementById('copy-holder-to-passenger-1').addEventListener('click', function () {
             let name = document.getElementById('customer_name').value.trim();
             let lastName = document.getElementById('customer_last_name').value.trim();
@@ -198,6 +218,66 @@
             document.querySelector('input[name="passengers[1][nationality]"]').value = nationality;
             document.querySelector('input[name="passengers[1][document]"]').value = documentId;
         });
+
+        addPassengerButton.addEventListener('click', function () {
+            const blocks = passengerList.querySelectorAll('.passenger-block');
+            if (blocks.length >= maxPassengers) {
+                return;
+            }
+
+            const copy = blocks[blocks.length - 1].cloneNode(true);
+            copy.querySelectorAll('input, select').forEach(function (field) {
+                field.value = '';
+            });
+            passengerList.appendChild(copy);
+            refreshPassengers();
+        });
+
+        passengerList.addEventListener('click', function (event) {
+            const button = event.target.closest('.remove-passenger');
+            if (!button) {
+                return;
+            }
+
+            const blocks = passengerList.querySelectorAll('.passenger-block');
+            if (blocks.length <= minPassengers) {
+                return;
+            }
+
+            button.closest('.passenger-block').remove();
+            refreshPassengers();
+        });
+
+        function formatEuro(amount) {
+            const [whole, decimals] = amount.toFixed(2).split('.');
+            const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+            return grouped + ',' + decimals + '€';
+        }
+
+        function refreshPassengers() {
+            const blocks = passengerList.querySelectorAll('.passenger-block');
+            blocks.forEach(function (block, index) {
+                const number = index + 1;
+                block.querySelector('.passenger-title').textContent = 'Pasajero #' + number;
+                block.querySelectorAll('input, select, label').forEach(function (field) {
+                    if (field.name) {
+                        field.name = field.name.replace(/passengers\[\d+\]/, 'passengers[' + number + ']');
+                    }
+                    if (field.id) {
+                        field.id = field.id.replace(/passengers\[\d+\]/, 'passengers[' + number + ']');
+                    }
+                    if (field.htmlFor) {
+                        field.htmlFor = field.htmlFor.replace(/passengers\[\d+\]/, 'passengers[' + number + ']');
+                    }
+                });
+                block.querySelector('.remove-passenger').hidden = blocks.length <= minPassengers;
+            });
+
+            quantityInput.value = blocks.length;
+            totalLabel.textContent = formatEuro(unitPrice * blocks.length);
+            addPassengerButton.disabled = blocks.length >= maxPassengers;
+        }
     </script>
     @endpush
 @endsection

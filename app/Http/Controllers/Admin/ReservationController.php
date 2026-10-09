@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdatePassengerRequest;
 use App\Models\Booking;
 use App\Models\Passenger;
+use App\Models\Status;
 use App\Services\ReservationService;
 use Carbon\Carbon;
 use DomainException;
@@ -88,6 +89,39 @@ class ReservationController extends Controller
         return redirect()
             ->route('admin.booking.show', $booking)
             ->with('success', 'Reserva reembolsada y plazas liberadas. Abono '.$credit->number.' emitido.');
+    }
+
+    public function createPassenger(Booking $booking): View|RedirectResponse
+    {
+        try {
+            $this->reservations->assertPassengerCanBeAdded($booking);
+        } catch (DomainException $exception) {
+            return redirect()
+                ->route('admin.booking.show', $booking)
+                ->with('error', $exception->getMessage());
+        }
+
+        return view('admin.booking.passenger-create', ['booking' => $booking]);
+    }
+
+    public function storePassenger(UpdatePassengerRequest $request, Booking $booking): RedirectResponse
+    {
+        try {
+            $this->reservations->addPassengerToBooking($booking, $request->validated());
+        } catch (DomainException $exception) {
+            return redirect()
+                ->route('admin.booking.show', $booking)
+                ->with('error', $exception->getMessage());
+        }
+
+        $message = 'Pasajero añadido. Se ha reservado una plaza y el total incluye su tarifa.';
+        if ($booking->hasStatusSlug(Status::BOOKING_PAID, Status::BOOKING_CONFIRMED, Status::BOOKING_COMPLETED)) {
+            $message = 'Pasajero añadido. El total incluye su tarifa. El cobro ya realizado no cubre este importe.';
+        }
+
+        return redirect()
+            ->route('admin.booking.show', $booking)
+            ->with('success', $message);
     }
 
     public function editPassenger(Booking $booking, Passenger $passenger): View

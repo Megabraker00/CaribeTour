@@ -69,7 +69,7 @@
                 <div class="card-body">
                     <p class="mb-1"><strong>Ref. externa:</strong> {{ $booking->external_ref ?? '—' }}</p>
                     <p class="mb-1"><strong>Creada:</strong> {{ $booking->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—' }}</p>
-                    <p class="mb-1"><strong>Total:</strong> {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}</p>
+                    <p class="mb-1"><strong>Total:</strong> {{ $booking->formattedPassengersTotal() }} {{ $booking->currency ?? 'EUR' }}</p>
                     <p class="mb-0"><strong>Estado:</strong> {{ $booking->statusRecord->name ?? $booking->status_id }}</p>
                     @can('write-admin')
                         @if ($booking->canCancelAndRefund())
@@ -144,7 +144,7 @@
                     <form action="{{ route('admin.booking.invoices.store', $booking) }}" method="POST" class="d-inline" data-disable-on-submit>
                         @csrf
                         <button type="submit" class="btn btn-sm btn-primary"
-                            onclick="return confirm('¿Emitir factura por {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}?');">
+                            onclick="return confirm('¿Emitir factura por {{ $booking->formattedPassengersTotal() }} {{ $booking->currency ?? 'EUR' }}?');">
                             <i class="fas fa-file-invoice-dollar"></i> Emitir factura
                         </button>
                     </form>
@@ -253,6 +253,13 @@
     <div class="card card-outline card-warning">
         <div class="card-header">
             <h3 class="card-title"><i class="fas fa-users"></i> Pasajeros</h3>
+            @can('write-admin')
+                <div class="card-tools">
+                    <a href="{{ route('admin.booking.passengers.create', $booking) }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-user-plus"></i> Añadir pasajero
+                    </a>
+                </div>
+            @endcan
         </div>
         <div class="card-body p-0">
             @if($booking->passengers->isNotEmpty())
@@ -267,6 +274,7 @@
                             <th>Nacionalidad</th>
                             <th>Precio</th>
                             <th>Tasas</th>
+                            <th class="text-right">PVP</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -280,6 +288,7 @@
                             <td>{{ $pax->nationality ?? '—' }}</td>
                             <td>{{ $pax->price_at_booking ? number_format((float) $pax->price_at_booking, 2, ',', '.') : '—' }}</td>
                             <td>{{ $pax->taxes_at_booking ? number_format((float) $pax->taxes_at_booking, 2, ',', '.') : '—' }}</td>
+                            <td class="text-right">{{ number_format((float) $pax->price_at_booking + (float) $pax->taxes_at_booking, 2, ',', '.') }}</td>
                             <td class="text-right">
                                 @can('write-admin')
                                     <a href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning">
@@ -290,6 +299,13 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="7" class="text-right">Total PVP</th>
+                            <th class="text-right">{{ $booking->formattedPassengersTotal() }}</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             @else

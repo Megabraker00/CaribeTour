@@ -19,7 +19,7 @@ class DatatableController extends Controller
     public function bookings()
     {
         $query = Booking::query()
-            ->with(['client', 'statusRecord', 'itineraries' => function ($q) {
+            ->with(['client', 'statusRecord', 'passengers', 'itineraries' => function ($q) {
                 $q->orderBy('booking_itinerary.itinerary_order')->with(['segments' => function ($sq) {
                     $sq->orderBy('sort_order');
                 }]);
@@ -42,9 +42,7 @@ class DatatableController extends Controller
                 return '—';
             })
             ->addColumn('total_amount', function (Booking $booking) {
-                $totalPrice = $booking->total_price !== null ? (float) $booking->total_price : 0;
-
-                return number_format($totalPrice, 2, ',', '.').' '.($booking->currency ?? 'EUR');
+                return $booking->formattedPassengersTotal().' '.($booking->currency ?? 'EUR');
             })
             ->addColumn('status_name', function (Booking $booking) {
                 $name = $booking->statusRecord->name ?? (string) $booking->status_id;

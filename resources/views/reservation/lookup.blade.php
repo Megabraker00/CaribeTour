@@ -37,7 +37,7 @@
                         <div class="card-body">
                             <p><strong>Estado:</strong> {{ $booking->statusRecord->name ?? $booking->status_id }}</p>
                             <p><strong>Titular:</strong> {{ $booking->client }}</p>
-                            <p><strong>Total:</strong> {{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency }}</p>
+                            <p><strong>Total:</strong> {{ $booking->formattedPassengersTotal() }} {{ $booking->currency }}</p>
                             <p><strong>Pasajeros:</strong></p>
                             <ul>
                                 @foreach ($booking->passengers as $passenger)

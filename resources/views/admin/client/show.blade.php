@@ -87,7 +87,7 @@
                     <tr>
                         <td>{{ $booking->id }}</td>
                         <td>{{ $booking->external_ref ?? '—' }}</td>
-                        <td>{{ number_format((float) $booking->total_price, 2, ',', '.') }} {{ $booking->currency ?? 'EUR' }}</td>
+                        <td>{{ $booking->formattedPassengersTotal() }} {{ $booking->currency ?? 'EUR' }}</td>
                         <td>
                             @if($booking->statusRecord)
                                 <span class="badge badge-secondary">{{ $booking->statusRecord->name }}</span>
