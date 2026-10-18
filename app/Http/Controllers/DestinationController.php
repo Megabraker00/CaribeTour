@@ -11,13 +11,17 @@ class DestinationController extends Controller
     {
         $parentCategories = Category::query()
             ->whereNull('parent_id')
-            /*->whereHas('subCategories.products', function ($q) {
-                $q->publicVisibleTour();
-            })*/
+            ->publiclyAvailable()
+            ->whereHas('subCategories.products', function ($products) {
+                $products->publicVisibleTour();
+            })
             ->with(['images'])
             ->get();
 
-        return view('destination.destinos', ['categories' => $parentCategories]);
+        return view('destination.destinos', [
+            'categories' => $parentCategories,
+            'prices' => $this->formattedLowestPrices($parentCategories->pluck('id'), true),
+        ]);
     }
 
     public function countryShow(string $country)
@@ -32,8 +36,13 @@ class DestinationController extends Controller
             abort(404);
         }
 
+        if (!$parentCategory->isPubliclyAvailable()) {
+            return view('unavailable');
+        }
+
         $subCategories = $parentCategory
             ->subCategories()
+            ->publiclyAvailable()
             ->whereHas('products', function ($q) {
                 $q->publicVisibleTour();
             })
@@ -41,7 +50,11 @@ class DestinationController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('destination.pais', ['category' => $parentCategory, 'subCategories' => $subCategories]);
+        return view('destination.pais', [
+            'category' => $parentCategory,
+            'subCategories' => $subCategories,
+            'prices' => $this->formattedLowestPrices($subCategories->pluck('id')),
+        ]);
     }
 
     public function provinceShow(string $country, string $province)
@@ -55,6 +68,10 @@ class DestinationController extends Controller
             abort(404);
         }
 
+        if (!$parentCategory->isPubliclyAvailable()) {
+            return view('unavailable');
+        }
+
         $subCategory = Category::query()
             ->with(['parentCategory', 'metaData'])
             ->where('slug', $province)
@@ -65,12 +82,16 @@ class DestinationController extends Controller
             abort(404);
         }
 
+        if (!$subCategory->isPubliclyAvailable()) {
+            return view('unavailable');
+        }
+
         $tours = $subCategory->products()
             ->publicVisibleTour()
             ->with(['mainImage', 'category.parentCategory'])
             ->paginate(4);
 
-        $categories_search = Category::whereNotNull('parent_id')->get();
+        $categories_search = Category::query()->publiclyAvailable()->whereNotNull('parent_id')->get();
 
         view()->share('categories', $categories_search);
 
@@ -92,6 +113,10 @@ class DestinationController extends Controller
             abort(404);
         }
 
+        if (!$parentCategory->isPubliclyAvailable()) {
+            return view('unavailable');
+        }
+
         $subCategory = Category::query()
             ->where('slug', $province)
             ->where('parent_id', $parentCategory->id)
@@ -101,10 +126,13 @@ class DestinationController extends Controller
             abort(404);
         }
 
+        if (!$subCategory->isPubliclyAvailable()) {
+            return view('unavailable');
+        }
+
         $tourModel = Product::query()
             ->where('slug', $tour)
             ->where('category_id', $subCategory->id)
-            ->publicVisibleTour()
             ->with(['metaData', 'images'])
             ->with(['itineraries' => function ($query) {
                 $query->where('available_stock', '>', 0)
@@ -117,6 +145,10 @@ class DestinationController extends Controller
 
         if ($tourModel === null) {
             abort(404);
+        }
+
+        if (!Product::query()->whereKey($tourModel->id)->publicVisibleTour()->exists()) {
+            return view('unavailable');
         }
 
         $firstItinerary = $tourModel->cheapestItinerary();
@@ -148,6 +180,21 @@ class DestinationController extends Controller
             'countrySlug' => $country,
             'provinceSlug' => $province,
         ]);
+    }
+
+    /**
+     * @param  iterable<int|string>  $categoryIds
+     * @return array<int, string>
+     */
+    private function formattedLowestPrices(iterable $categoryIds, bool $byParent = false): array
+    {
+        $formatted = [];
+
+        foreach (Product::lowestAdvertisedPrices($categoryIds, $byParent) as $categoryId => $price) {
+            $formatted[$categoryId] = number_format($price, 2, ',', '.');
+        }
+
+        return $formatted;
     }
 
     /**

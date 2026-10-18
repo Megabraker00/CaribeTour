@@ -18,9 +18,23 @@ class ServiceController extends Controller
         $service = Product::query()
             ->where('slug', $servicio)
             ->whereHas('type', static fn ($type) => $type->where('slug', '!=', Type::TOUR))
+            ->first();
+
+        if ($service === null) {
+            abort(404);
+        }
+
+        $visible = Product::query()
+            ->whereKey($service->id)
             ->whereStatusSlug(Status::PRODUCT_ACTIVE)
-            ->with(['images', 'category.parentCategory', 'metaData', 'type'])
-            ->firstOrFail();
+            ->inPublicCategory()
+            ->exists();
+
+        if (!$visible) {
+            return view('unavailable');
+        }
+
+        $service->load(['images', 'category.parentCategory', 'metaData', 'type']);
 
         return view('servicios.show', compact('service'));
     }

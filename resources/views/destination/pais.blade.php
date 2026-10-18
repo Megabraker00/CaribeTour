@@ -57,23 +57,18 @@
                         <div class="card-footer">
                             <h5 class="card-title" title="{{$subCategory->name}}">{{$subCategory->name}}</h5>
                             <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$subCategory->name}} - {{$category->name}}"><i class="bi bi-geo-alt-fill"></i> <small> {{$subCategory->name}} - {{$category->name}}</small></div>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
+                            @if (isset($prices[$subCategory->id]))
+                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde {{ $prices[$subCategory->id] }}&euro;">{{ $prices[$subCategory->id] }}&euro;</span>
+                            @endif
                         </div>
                     </div>
                 </a>
             </div>
             @empty
-                {{-- Esto se mostrará si NO hay tours --}}
-                <div class="alert alert-info text-center shadow-sm">
-                    <i class="bi bi-info-circle-fill me-2"></i>
-                    Actualmente no hay provincias disponibles en <strong>{{ $category->name }}</strong>. 
+                <x-other-destinations>
+                    Actualmente no hay provincias disponibles en <strong>{{ $category->name }}</strong>.
                     ¡Vuelve pronto o consulta otras provincias!
-                </div>
-                
-                {{-- Opcional: Mostrar tours recomendados o un botón de volver --}}
-                <div class="text-center">
-                    <a href="{{ url('/') }}" class="btn btn-primary">Ver otros destinos</a>
-                </div>
+                </x-other-destinations>
             @endforelse           
 
         </div>

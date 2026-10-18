@@ -78,17 +78,10 @@
                     @endif
 
                 @empty
-                    {{-- Esto se mostrará si NO hay tours --}}
-                    <div class="alert alert-info text-center shadow-sm">
-                        <i class="bi bi-info-circle-fill me-2"></i>
-                        Actualmente no hay tours disponibles en <strong>{{ $province->name }}</strong>. 
+                    <x-other-destinations>
+                        Actualmente no hay tours disponibles en <strong>{{ $province->name }}</strong>.
                         ¡Vuelve pronto o consulta otras provincias!
-                    </div>
-                    
-                    {{-- Opcional: Mostrar tours recomendados o un botón de volver --}}
-                    <div class="text-center">
-                        <a href="{{ url('/') }}" class="btn btn-primary">Ver otros destinos</a>
-                    </div>
+                    </x-other-destinations>
                 @endforelse
 
                 <div class="mt-4 d-flex justify-content-center">

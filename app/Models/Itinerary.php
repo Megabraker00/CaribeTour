@@ -98,6 +98,16 @@ class Itinerary extends Model
     }
 
     /**
+     * Salida que se puede anunciar: hay plazas y el primer tramo sale hoy o más adelante.
+     */
+    public function scopeBookableInStock(Builder $query): Builder
+    {
+        return $query
+            ->where('itineraries.available_stock', '>', 0)
+            ->withBookableDeparture();
+    }
+
+    /**
      * La salida se ofrece si el primer tramo sale hoy o más adelante.
      */
     public function hasBookableDeparture(): bool

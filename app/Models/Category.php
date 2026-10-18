@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,6 +47,26 @@ class Category extends Model
     public function subCategories(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Visible en la web: está activa y, si tiene padre, el padre también.
+     */
+    public function scopePubliclyAvailable(Builder $query): Builder
+    {
+        return $query
+            ->whereStatusSlug(Status::CATEGORY_ACTIVE)
+            ->where(function (Builder $category) {
+                $category->whereNull('parent_id')
+                    ->orWhereHas('parentCategory', function (Builder $parent) {
+                        $parent->whereStatusSlug(Status::CATEGORY_ACTIVE);
+                    });
+            });
+    }
+
+    public function isPubliclyAvailable(): bool
+    {
+        return static::query()->whereKey($this->id)->publiclyAvailable()->exists();
     }
 
     public function fullSlug(): string

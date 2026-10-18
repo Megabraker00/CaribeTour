@@ -23,6 +23,7 @@ class ReservationController extends Controller
     public function create(Product $product, Itinerary $itinerary)
     {
         $this->reservations->assertItineraryBelongsToProduct($product, $itinerary);
+        abort_unless($product->isInPublicCategory(), 404);
         abort_unless($itinerary->hasBookableDeparture(), 404);
 
         return view('reservation.new', $this->summaryData($product, $itinerary, self::VIEW_AS_TOUR));
@@ -30,6 +31,8 @@ class ReservationController extends Controller
 
     public function store(StoreReservationRequest $request, Product $product, Itinerary $itinerary)
     {
+        abort_unless($product->isInPublicCategory(), 404);
+
         $this->reservations->createReservation($request->validated(), $product, $itinerary);
 
         return redirect()
