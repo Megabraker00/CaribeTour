@@ -135,7 +135,7 @@ class Product extends Model
     }
 
     /**
-     * Tours activos visibles en la web: el primer tramo de alguna salida es de hoy o posterior.
+     * Tours activos visibles en la web: categoría y padre activos, y el primer tramo de alguna salida es de hoy o posterior.
      */
     public function scopePublicVisibleTour(Builder $query): Builder
     {
@@ -144,18 +144,86 @@ class Product extends Model
             ->whereHas('type', static fn ($type) => $type->where('slug', Type::TOUR))
             ->whereHas('itineraries', function ($itineraries) {
                 $itineraries->withBookableDeparture();
-            });
+            })
+            ->inPublicCategory();
+    }
+
+    /**
+     * La categoría del producto está activa y, si tiene padre, el padre también.
+     */
+    public function scopeInPublicCategory(Builder $query): Builder
+    {
+        return $query->whereHas('category', function (Builder $category) {
+            $category->publiclyAvailable();
+        });
+    }
+
+    public function isInPublicCategory(): bool
+    {
+        return static::query()->whereKey($this->id)->inPublicCategory()->exists();
     }
 
     public function cheapestItinerary()
     {
         return $this->itineraries()
-            ->where('available_stock', '>', 0)
-            ->withBookableDeparture()
+            ->bookableInStock()
             ->with(['segments' => function ($q) {
                 $q->orderBy('sort_order', 'asc');
             }])
             ->orderByRaw('price + taxes ASC')
             ->first();
+    }
+
+    /**
+     * Menor precio por persona (precio + tasas) entre las salidas que
+     * cheapestItinerary() también elegiría, agrupado por país o por provincia.
+     *
+     * @param  iterable<int|string>  $categoryIds
+     * @return array<int, float>
+     */
+    public static function lowestAdvertisedPrices(iterable $categoryIds, bool $byParent = false): array
+    {
+        $ids = collect($categoryIds)
+            ->map(static fn ($id) => (int) $id)
+            ->filter(static fn (int $id) => $id > 0)
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        $query = Itinerary::query()
+            ->bookableInStock()
+            ->whereHas('product', function (Builder $product) use ($ids, $byParent) {
+                $product->publicVisibleTour();
+
+                if ($byParent) {
+                    $product->whereHas('category', function (Builder $category) use ($ids) {
+                        $category->whereIn('parent_id', $ids);
+                    });
+
+                    return;
+                }
+
+                $product->whereIn('category_id', $ids);
+            })
+            ->join('products', 'products.id', '=', 'itineraries.product_id');
+
+        $groupColumn = 'products.category_id';
+
+        if ($byParent) {
+            $query->join('categories', 'categories.id', '=', 'products.category_id');
+            $groupColumn = 'categories.parent_id';
+        }
+
+        return $query
+            ->selectRaw($groupColumn.' as price_category_id, MIN(itineraries.price + itineraries.taxes) as lowest_price')
+            ->groupBy($groupColumn)
+            ->get()
+            ->mapWithKeys(static function ($row) {
+                return [(int) $row->price_category_id => round((float) $row->lowest_price, 2)];
+            })
+            ->all();
     }
 }

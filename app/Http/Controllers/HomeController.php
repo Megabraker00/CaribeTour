@@ -23,6 +23,7 @@ class HomeController extends Controller
                 $join->on('products.id', '=', 'cheapest.product_id');
             })
             ->whereHas('status', static fn ($status) => $status->where('slug', Status::PRODUCT_ACTIVE))
+            ->inPublicCategory()
             ->whereHas('itineraries', function ($itineraries) {
                 $itineraries->withBookableDeparture();
             })
@@ -44,10 +45,11 @@ class HomeController extends Controller
         $featured_excursions = Product::with('category.parentCategory')
             ->whereHas('type', static fn ($type) => $type->where('slug', Type::EXCURSION))
             ->whereStatusSlug(Status::PRODUCT_ACTIVE)
+            ->inPublicCategory()
             ->take(6)
             ->get();
 
-        $categories_search = Category::whereNotNull('parent_id')->get();
+        $categories_search = Category::query()->publiclyAvailable()->whereNotNull('parent_id')->get();
 
         view()->share('categories', $categories_search);
 
