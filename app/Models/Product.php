@@ -163,6 +163,17 @@ class Product extends Model
         return static::query()->whereKey($this->id)->inPublicCategory()->exists();
     }
 
+    /**
+     * Servicio activo visible en la web: no es un tour y su categoría está publicada.
+     */
+    public function scopePublicVisibleService(Builder $query): Builder
+    {
+        return $query
+            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
+            ->whereHas('type', static fn ($type) => $type->where('slug', '!=', Type::TOUR))
+            ->inPublicCategory();
+    }
+
     public function cheapestItinerary()
     {
         return $this->itineraries()
