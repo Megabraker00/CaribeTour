@@ -1,10 +1,15 @@
 @extends('front_template')
 
-@section('title', 'desde el index CaribeTour.es - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', $post->name)
+@section('description', $post->excerpt(160))
+@php
+    $postImageUrl = \App\Support\StructuredData::blogImageUrl($post);
+@endphp
+@section('og_image', $postImageUrl ?? asset('images/og-default.jpg'))
+
+@push('jsonld')
+    <x-json-ld :data="\App\Support\StructuredData::article($post)" />
+@endpush
 
 
 @section('content')
@@ -16,14 +21,16 @@
 
                 <article>
                     <img src="{{ asset($post->mainImage()?->path ?? 'images/i-love-bootstrap2.png') }}" class="img-thumbnail mb-4" alt="{{ $post->mainImageAlt() }}" width="822">
-                    <h2>{{ $post->name }}</h2>
+                    <h1 class="h2">{{ $post->name }}</h1>
                     <hr>
                     {!! $post->content !!}
 
-                    <p>
-                        <strong>Publicado:</strong> 
-                        <time datetime="19-09-2024">19-09-2024</time>
-                    </p>
+                    @if ($post->created_at)
+                        <p>
+                            <strong>Publicado:</strong>
+                            <time datetime="{{ $post->created_at->toDateString() }}">{{ $post->created_at->format('d-m-Y') }}</time>
+                        </p>
+                    @endif
                             
                     @include('components.blog-author', ['blog' => $post])
 

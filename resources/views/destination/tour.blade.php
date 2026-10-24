@@ -1,9 +1,14 @@
 @extends('front_template')
-@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', $tour->name)
+@section('description', $metaDescription)
+@php
+    $tourImageUrl = \App\Support\StructuredData::productImageUrl($tour);
+@endphp
+@section('og_image', $tourImageUrl ?? asset('images/og-default.jpg'))
+
+@push('jsonld')
+    <x-json-ld :data="\App\Support\StructuredData::touristTrip($tour, $metaDescription, $price)" />
+@endpush
 
 @section('content')
     @php
@@ -69,7 +74,7 @@
             <!-- description -->
             <div class="col-md-12 col-lg-6 col-xl-6 mb-4">
 
-                <h2>{{ $tour->name }}</h2>
+                <h1 class="h2">{{ $tour->name }}</h1>
                 <hr>
 
                 <ul class="tour-info">
@@ -181,73 +186,55 @@
         </div>
         <!-- /itinerary and calendar -->
 
-        <!-- related products -->
-        <div class="row my-4">
-            <h4>Productos Relacionados</h4>
-            <hr>
+        @if ($relatedProducts->isNotEmpty())
+            <div class="row my-4">
+                <h2 class="h4">Productos relacionados</h2>
+                <hr>
 
-            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <a href="tour.html" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
+                @foreach ($relatedProducts as $related)
+                    @php
+                        $relatedImage = $related->images->first(fn ($image) => (bool) $image->is_main) ?? $related->images->first();
+                        $relatedPrice = $related->cheapestItinerary();
+                        $relatedStars = $related->stars();
+                        $relatedStarsTitle = $relatedStars === 1
+                            ? 'Categoría: 1 estrella'
+                            : 'Categoría: '.$relatedStars.' estrellas';
+                        $relatedUrl = $related->type?->slug === \App\Models\Type::TOUR
+                            ? route('destinos.tour', [
+                                'country' => $related->category?->parentCategory?->slug,
+                                'province' => $related->category?->slug,
+                                'tour' => $related->slug,
+                            ])
+                            : route('servicios.detalle', $related->slug);
+                    @endphp
+                    <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                        <a href="{{ $relatedUrl }}" class="text-decoration-none">
+                            <div class="card shadow zoom">
+                                <div class="card-body">
+                                    <img loading="lazy" src="{{ asset($relatedImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del {{ $related->name }}" title="{{ $related->name }}" class="img-aspect-4-3 card-img img-fluid" decoding="async">
+                                </div>
+                                <div class="card-footer">
+                                    <h3 class="h5 card-title" title="{{ $related->name }}">{{ $related->name }}</h3>
+                                    <ul class="tour-info">
+                                        <li title="{{ $relatedStarsTitle }}">
+                                            <span class="star-{{ $relatedStars }} fs-6" role="img" aria-label="{{ $relatedStarsTitle }}"></span>
+                                        </li>
+                                        <li class="text-muted" title="Destino: {{ $related->category }} - {{ $related->category?->parentCategory }}">
+                                            <i class="bi bi-geo-alt-fill"></i><small>{{ $related->category }}</small>
+                                        </li>
+                                        @if ($relatedPrice)
+                                            <li title="Precio por persona">
+                                                <i class="bi bi-tag-fill"></i>Desde <span class="price" title="Precio desde {{ $relatedPrice->fullPrice() }}&euro;">{{ $relatedPrice->fullPrice() }}&euro;</span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
+                @endforeach
             </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <a href="tour.html" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap2.png') }}" class="card-img" width="482px">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <a href="tour.html" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap4.png') }}" class="card-img" width="482px">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                <a href="tour.html" class="text-decoration-none">
-                    <div class="card shadow zoom">
-                        <div class="card-body">
-                            <img src="{{ asset('images/i-love-bootstrap3.png') }}" class="card-img" width="482px">
-                        </div>
-                        <div class="card-footer">
-                            <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>
-                            <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                            <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-        <!-- /related products -->
+        @endif
 
     </section>
 

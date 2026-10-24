@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Database\Seeders\StatusSeeder;
 use Database\Seeders\TypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class PublicCategoryCascadeTest extends TestCase
@@ -56,14 +57,14 @@ class PublicCategoryCascadeTest extends TestCase
             ->assertSee('Ver otros destinos')
             ->assertDontSee('Tour oculto');
 
-        $this->get(route('destinos.tour', [
+        $hiddenTour = $this->get(route('destinos.tour', [
             'country' => 'pais-oculto',
             'province' => 'provincia-oculta',
             'tour' => 'tour-oculto',
         ]))
             ->assertOk()
-            ->assertSee('Actualmente este destino no está disponible', false)
-            ->assertDontSee('Tour oculto');
+            ->assertSee('Actualmente este destino no está disponible', false);
+        $this->assertHiddenAfterBreadcrumb($hiddenTour, 'Tour oculto');
 
         $this->get(route('inicio'))
             ->assertOk()
@@ -122,13 +123,12 @@ class PublicCategoryCascadeTest extends TestCase
             ->assertOk()
             ->assertSee('Tour visible');
 
-        $this->get(route('destinos.tour', [
+        $hiddenFare = $this->get(route('destinos.tour', [
             'country' => 'pais-visible',
             'province' => 'provincia-cerrada',
             'tour' => 'tour-barato-oculto',
-        ]))
-            ->assertOk()
-            ->assertDontSee('Tour barato oculto');
+        ]))->assertOk();
+        $this->assertHiddenAfterBreadcrumb($hiddenFare, 'Tour barato oculto');
 
         $this->get(route('destinos.tour', [
             'country' => 'pais-visible',
@@ -153,11 +153,11 @@ class PublicCategoryCascadeTest extends TestCase
             'category_id' => $province->id,
         ]);
 
-        $this->get(route('servicios.detalle', $service->slug))
+        $hiddenService = $this->get(route('servicios.detalle', $service->slug))
             ->assertOk()
             ->assertSee('Actualmente este destino no está disponible', false)
-            ->assertSee('Ver otros destinos')
-            ->assertDontSee('Seguro oculto');
+            ->assertSee('Ver otros destinos');
+        $this->assertHiddenAfterBreadcrumb($hiddenService, 'Seguro oculto');
 
         $province->update([
             'status_id' => Status::idFor(Category::class, Status::CATEGORY_ACTIVE),
@@ -169,6 +169,16 @@ class PublicCategoryCascadeTest extends TestCase
         $this->get(route('servicios.detalle', $service->slug))
             ->assertOk()
             ->assertSee('Seguro oculto');
+    }
+
+    private function assertHiddenAfterBreadcrumb(TestResponse $response, string $text): void
+    {
+        $html = $response->getContent();
+        $breadcrumb = strpos($html, 'aria-label="breadcrumb"');
+        $cut = $breadcrumb === false ? 0 : strpos($html, '</nav>', $breadcrumb);
+        $body = substr($html, (int) $cut);
+
+        $this->assertStringNotContainsString($text, $body);
     }
 
     private function country(string $name, string $slug, bool $active = true): Category

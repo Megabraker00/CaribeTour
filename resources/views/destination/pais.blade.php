@@ -1,9 +1,7 @@
 @extends('front_template')
-@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', $category->name)
+@section('description', $metaDescription)
+@section('og_image', $ogImage ?? asset('images/og-default.jpg'))
 
 @section('content')
     <!-- container -->
@@ -24,7 +22,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="card-body">
-                      <h3 class="card-title">{{$category->name}}</h3>
+                      <h1 class="h3 card-title">{{$category->name}}</h1>
                       @if (!empty($category->meta['description']))
                           <div class="card-text tour-description">{!! $category->meta['description'] !!}</div>
                       @else

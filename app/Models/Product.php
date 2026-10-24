@@ -3,18 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Concerns\BelongsToStatus;
+use App\Models\Concerns\ReadsPlainMetaDescription;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
 {
     use BelongsToStatus;
     use HasFactory;
+    use ReadsPlainMetaDescription;
 
     protected $fillable = [
         'name',
@@ -107,14 +110,50 @@ class Product extends Model
         return implode('/', $ret);
     }
 
-    public function related()
+    /**
+     * Hasta cuatro productos públicos. Se usa el primer grupo que tenga resultados:
+     * tours de la provincia, excursiones de la provincia, tours de otra provincia
+     * del mismo país, excursiones de otras provincias del mismo país y tours de otros países.
+     *
+     * @return Collection<int, self>
+     */
+    public function relatedProducts(int $limit = 4): Collection
     {
-        $productRelated = Product::where('category_id', $this->category->id)
-            ->where('id', '!=', $this->id)
-            ->limit(4)
-            ->get();
+        $provinceId = (int) $this->category_id;
+        $countryId = (int) ($this->category?->parent_id ?? 0);
 
-        return $productRelated;
+        $steps = [
+            fn (Builder $query) => $query->publicVisibleTour()->where('category_id', $provinceId),
+            fn (Builder $query) => $query->publicVisibleExcursion()->where('category_id', $provinceId),
+            fn (Builder $query) => $query->publicVisibleTour()->whereHas(
+                'category',
+                fn (Builder $category) => $category->where('parent_id', $countryId)->whereKeyNot($provinceId)
+            ),
+            fn (Builder $query) => $query->publicVisibleExcursion()->whereHas(
+                'category',
+                fn (Builder $category) => $category->where('parent_id', $countryId)->whereKeyNot($provinceId)
+            ),
+            fn (Builder $query) => $query->publicVisibleTour()->whereHas(
+                'category',
+                fn (Builder $category) => $category->whereNotNull('parent_id')->where('parent_id', '!=', $countryId)
+            ),
+        ];
+
+        foreach ($steps as $constrain) {
+            $query = static::query()->whereKeyNot($this->id);
+            $constrain($query);
+            $found = $query
+                ->with(['category.parentCategory', 'images', 'type', 'metaData'])
+                ->orderBy('name')
+                ->limit($limit)
+                ->get();
+
+            if ($found->isNotEmpty()) {
+                return $found;
+            }
+        }
+
+        return new Collection();
     }
 
     public function metaData()
@@ -142,6 +181,20 @@ class Product extends Model
         return $query
             ->whereStatusSlug(Status::PRODUCT_ACTIVE)
             ->whereHas('type', static fn ($type) => $type->where('slug', Type::TOUR))
+            ->whereHas('itineraries', function ($itineraries) {
+                $itineraries->withBookableDeparture();
+            })
+            ->inPublicCategory();
+    }
+
+    /**
+     * Excursión activa visible en la web: categoría y padre activos, y alguna salida es de hoy o posterior.
+     */
+    public function scopePublicVisibleExcursion(Builder $query): Builder
+    {
+        return $query
+            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
+            ->whereHas('type', static fn ($type) => $type->where('slug', Type::EXCURSION))
             ->whereHas('itineraries', function ($itineraries) {
                 $itineraries->withBookableDeparture();
             })

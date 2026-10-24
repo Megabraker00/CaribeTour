@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property-read array $meta Contenido de meta_data (p. ej. description).
  */
 use App\Models\Concerns\BelongsToStatus;
+use App\Models\Concerns\ReadsPlainMetaDescription;
 
 class Category extends Model
 {
     use BelongsToStatus;
     use HasFactory;
+    use ReadsPlainMetaDescription;
 
     protected $table = 'categories';
 

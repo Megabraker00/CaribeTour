@@ -1,6 +1,7 @@
 @extends('front_template')
 @section('title', 'Consultar reserva')
 @section('description', 'Consulta el estado de tu reserva en CaribeTour con el localizador y el correo del titular.')
+@section('robots', 'noindex, nofollow')
 
 @section('content')
     <section class="container my-4">

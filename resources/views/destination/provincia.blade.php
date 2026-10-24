@@ -1,9 +1,7 @@
 @extends('front_template')
-@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', $province->name.', '.$province->parentCategory->name)
+@section('description', $metaDescription)
+@section('og_image', $ogImage ?? asset('images/og-default.jpg'))
 
 
 @section('content')
@@ -23,6 +21,7 @@
                     @php
                         $cheapItinerary = $tour->cheapestItinerary();
                         $firstSeg = $cheapItinerary?->firstSegment();
+                        $tourImage = $tour->images->first(fn ($image) => (bool) $image->is_main) ?? $tour->images->first();
                     @endphp
 
                     <div class="row mb-4">
@@ -31,7 +30,7 @@
                             
                                 <div class="card">
                                     <div class="card-body">
-                                        <img src="{{ asset($tour?->mainImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del tour {{$tour->name}}" loading="lazy" decoding="async" title="{{$tour->name}}" class="card-img img-aspect-16-9">
+                                        <img src="{{ asset($tourImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del tour {{$tour->name}}" loading="lazy" decoding="async" title="{{$tour->name}}" class="card-img img-aspect-16-9">
                                     </div>
                                 </div>
 

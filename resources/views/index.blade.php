@@ -1,10 +1,11 @@
 @extends('front_template')
 
-@section('title', 'CaribeTour.es - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', 'Especialistas en viajes al Caribe')
+@section('description', 'Viaja al Caribe con CaribeTour. Vuelos, hoteles y paquetes a Punta Cana, Riviera Maya, Cuba y más, con atención personalizada.')
+
+@push('jsonld')
+    <x-json-ld :data="\App\Support\StructuredData::organization()" />
+@endpush
 
 @section('hero')
     <div class="row mt-4">
@@ -24,7 +25,7 @@
                 <div class="col-md-4 mb-4" title="Explora el Mundo con CaribeTour" style="background-image: url('{{ asset('images/explora.jpg') }}'); background-repeat: no-repeat; background-size: contain; background-position: center;"></div>
 
                 <div class="col-md-12 col-lg-8">
-                    <h3>Explora el mundo con CaribeTour</h3>
+                    <h1 class="h3">Explora el mundo con CaribeTour</h1>
                     <hr>
 
                     <div class="row">
@@ -90,113 +91,7 @@
                 </div>
 
                 @endforeach
-    
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_8.jpg') }}"
-                                    class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Ocean Blue & Sand Resort" title="Hotel Ocean Blue & Sand Resort">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Ocean Blue & Sand Resort <span class="star-5 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Santo Domingo - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-    
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-blue-sand-resort']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_9.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
 
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-ocean-el-faro-resort']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_10.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Ocean el Faro Resort" title="Hotel Ocean el Faro Resort">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Hotel Ocean el Faro Resort <span class="star-5 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-vista-sol-punta-cana-beach-resort-spa']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_11.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Vista Sol Punta Cana Beach Resort & Spa" title="Vista Sol Punta Cana Beach Resort & Spa" width="482">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-royal-sun-resort']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_12.jpg') }}" class="img-aspect-4-3 card-img img-fluid">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-carolina']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_8.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Grand Palladium Punta Cana Resort & Spa" title="Grand Palladium Punta Cana Resort & Spa">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Vista Sol Punta Cana Beach Resort & Spa <span class="star-4 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <a href="{{ route('destinos.tour', ['country' => 'republica-dominicana', 'province' => 'punta-cana', 'tour' => 'hotel-catalonia-bavaro-beach-golf-casino-lujo']) }}" class="text-decoration-none">
-                        <div class="card shadow zoom">
-                            <div class="card-body">
-                                <img loading="lazy" src="{{ asset('images/image_14.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Imagen del hotel Catalonia Bávaro Beach, Golf & Casino Lujo" title="Hotel Catalonia Bávaro Beach, Golf & Casino Lujo">
-                            </div>
-                            <div class="card-footer">
-                                <h5 class="card-title">Catalonia Bávaro Beach, Golf & Casino Lujo <span class="star-5 fs-6"></span></h5>
-                                <div class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt-fill"></i> <small> Punta Cana - Rep. Dominicana</small></div>
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde 1126,40&euro;">1126,40&euro;</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-    
             </div>
         </div>
     </section>
@@ -208,7 +103,7 @@
             <div class="row mb-4 ">
 
                 <div class="col-md-3 mb-4">
-                    <a href="blogs" class="text-decoration-none" title="Ver Todos Los Blogs">
+                    <a href="{{ route('blogs') }}" class="text-decoration-none" title="Ver Todos Los Blogs">
                         <h4 class="border-bottom mb-4">Blog de Viajes</h4>
                     </a>
                     <div class="card">

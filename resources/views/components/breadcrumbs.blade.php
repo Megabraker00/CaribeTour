@@ -1,42 +1,22 @@
+@props(['crumbs'])
+
 @php
-    $segments = request()->segments();
-    $url = url('/');
     $clickable = ! request()->is('reserva', 'reserva/*');
 @endphp
 <section class="container mt-4">
     <nav aria-label="breadcrumb" style="min-height: 24px;">
         <ol class="breadcrumb">
-
-            {{-- Home --}}
-            <li class="breadcrumb-item">
-                @if ($clickable)
-                    <a href="{{ url('/') }}" title="Inicio">Inicio</a>
-                @else
-                    <span>Inicio</span>
-                @endif
-            </li>
-
-            @foreach($segments as $index => $segment)
-
-                @php
-                    $url .= '/' . $segment;
-                    $name = ucwords(str_replace('-', ' ', $segment));
-                @endphp
-
-                @if($index + 1 < count($segments))
-                    <li class="breadcrumb-item">
-                        @if ($clickable)
-                            <a href="{{ $url }}" title="{{ $name }}">{{ $name }}</a>
-                        @else
-                            <span>{{ $name }}</span>
-                        @endif
-                    </li>
-                @else
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ $name }}
-                    </li>
-                @endif
-
+            @foreach ($crumbs as $index => $crumb)
+                @php $isCurrent = $index === array_key_last($crumbs); @endphp
+                <li class="breadcrumb-item{{ $isCurrent ? ' active' : '' }}" @if ($isCurrent) aria-current="page" @endif>
+                    @if ($isCurrent)
+                        {{ $crumb['name'] }}
+                    @elseif ($clickable)
+                        <a href="{{ $crumb['url'] }}" title="{{ $crumb['name'] }}">{{ $crumb['name'] }}</a>
+                    @else
+                        <span>{{ $crumb['name'] }}</span>
+                    @endif
+                </li>
             @endforeach
         </ol>
     </nav>

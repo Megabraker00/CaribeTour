@@ -1,13 +1,12 @@
 @extends('front_template')
-@section('title', 'Elige los mejores destinos del caribe - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', 'Servicios de viaje')
+@section('description', 'Vuelos, hoteles, excursiones, cruceros y seguros para organizar un viaje al Caribe.')
 
 @section('content')
     <!-- container -->
     <section class="container my-4">
+
+        <h1 class="mb-4">Servicios de viaje</h1>
 
         <div class="row">  
 

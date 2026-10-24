@@ -1,9 +1,7 @@
 @extends('front_template')
-@section('title', 'Reserva confirmada ' . $booking->external_ref . ' - Especialistas en el Caribe')
-@section('description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_title', 'CaribeTour.es - Especialistas en el Caribe og_title')
-@section('og_description', 'Viaja al Caribe con CaribeTour, especialistas en vuelos y hoteles a los mejores destinos del Caribe. Ofrecemos ofertas exclusivas, atención personalizada y una amplia selección de paquetes vacacionales para que tu experiencia sea inolvidable.')
-@section('og_image', asset('images/og-default.jpg'))
+@section('title', 'Reserva confirmada '.$booking->external_ref)
+@section('description', 'El pago de la reserva '.$booking->external_ref.' se ha registrado. Guarda el localizador para consultarla.')
+@section('robots', 'noindex, nofollow')
 
 @section('content')
 <!-- container -->
