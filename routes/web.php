@@ -38,9 +38,15 @@ Route::controller(ServiceController::class)->group(function () {
     Route::get('/servicios/{cat:slug}', 'categoryIndex');
 });
 
-Route::get('/blogs', [PostController::class, 'index'])->name('blogs');
+Route::get('/blog', [PostController::class, 'index'])->name('blogs');
 
-Route::get('/blogs/{post:slug}', [PostController::class, 'show'])->name('blogs.show');
+Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blogs.show');
+
+Route::permanentRedirect('/blogs', '/blog');
+
+Route::get('/blogs/{post}', function (string $post) {
+    return redirect()->route('blogs.show', ['post' => $post], 301);
+});
 
 Route::get('/contacto', function () {
     return response()->view('contacto')->header(

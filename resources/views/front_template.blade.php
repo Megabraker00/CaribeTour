@@ -4,21 +4,29 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://js.stripe.com https://maps.googleapis.com https://maps.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://js.stripe.com https://cdn.jsdelivr.net https://maps.googleapis.com https://maps.gstatic.com; frame-src https://js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com; manifest-src 'self'; worker-src 'self' blob:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="index, follow" />
+    @php
+        $pageTitle = trim($__env->yieldContent('title', 'Especialistas en viajes al Caribe'));
+        $pageDescription = trim($__env->yieldContent('description', 'Descubre las mejores ofertas en vuelos y hoteles al Caribe. Viajes personalizados a Punta Cana, Riviera Maya y más con CaribeTour.'));
+        $ogTitle = trim($__env->yieldContent('og_title', $pageTitle));
+        $ogDescription = trim($__env->yieldContent('og_description', $pageDescription));
+        $robots = trim($__env->yieldContent('robots', 'index, follow'));
+        $publicCrumbs = request()->routeIs('inicio') ? [] : \App\Support\PublicBreadcrumbs::items();
+    @endphp
+    <meta name="robots" content="{{ $robots }}" />
     <meta name="application-name" content="CaribeTour.es" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Caribetour.es">
-    <meta property="og:title" content="@yield('og_title', 'Viaja al Caribe con CaribeTour')">
-    <meta property="og:description" content="@yield('og_description', 'Ofertas increíbles en vuelos y hoteles. ¡Reserva tu paraíso hoy!')">
+    <meta property="og:title" content="{{ $ogTitle }}">
+    <meta property="og:description" content="{{ $ogDescription }}">
     <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
     <meta property="og:url" content="{{ url()->current() }}">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('og_title', 'Viaja al Caribe con CaribeTour')">
-    <meta name="twitter:description" content="@yield('og_description', 'Ofertas increíbles en vuelos y hoteles. ¡Reserva tu paraíso hoy!')">
+    <meta name="twitter:title" content="{{ $ogTitle }}">
+    <meta name="twitter:description" content="{{ $ogDescription }}">
     <meta name="twitter:image" content="@yield('og_image', asset('images/og-default.jpg'))">
 
     <!-- App -->
@@ -31,9 +39,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="CaribeTour">
 
-    <title>@yield('title', 'Especialistas en viajes al Caribe') | CaribeTour.es</title>
-    <meta name="description" content="@yield('title', 'Descubre las mejores ofertas en vuelos y hoteles al Caribe. Viajes personalizados a Punta Cana, Riviera Maya y más con CaribeTour.')" />
+    <title>{{ $pageTitle }} | CaribeTour.es</title>
+    <meta name="description" content="{{ $pageDescription }}" />
     <link rel="canonical" href="{{ url()->current() }}" />
+
+    @if (count($publicCrumbs) > 1)
+        <x-json-ld :data="\App\Support\StructuredData::breadcrumbList($publicCrumbs)" />
+    @endif
+    @stack('jsonld')
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" href="{{ asset('images/favicon.svg') }}" type="image/svg+xml">
@@ -146,8 +159,8 @@
 
     <main class="flex-fill top-bottom-shadow">
 
-        @if (!request()->routeIs('inicio'))
-            <x-breadcrumbs />
+        @if ($publicCrumbs !== [])
+            <x-breadcrumbs :crumbs="$publicCrumbs" />
         @endif
 
         @yield('content')

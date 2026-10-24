@@ -1,8 +1,6 @@
 @extends('front_template')
 @section('title', $service->name)
-@section('description', $service->meta['description'] ?? 'Servicios de viaje con CaribeTour.')
-@section('og_title', $service->name)
-@section('og_description', $service->meta['description'] ?? 'Servicios de viaje con CaribeTour.')
+@section('description', $service->plainMetaDescription() ?: 'Servicios de viaje con CaribeTour.')
 
 @section('content')
     <section class="container my-4">

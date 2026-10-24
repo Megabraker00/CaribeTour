@@ -69,12 +69,18 @@ class CatalogAndAccessTest extends TestCase
             'content' => '<p>Primera línea del post.</p><p>Segunda línea con más detalle.</p>',
         ]);
 
+        $this->get('/blogs')->assertRedirect('/blog');
+        $this->get('/blogs/'.$post->slug)->assertRedirect(route('blogs.show', $post->slug));
+
         $this->get(route('blogs'))
             ->assertOk()
             ->assertSee('Listado extracto')
             ->assertSee('Primera línea del post.')
             ->assertSee('Segunda línea con más detalle.')
-            ->assertSee($post->excerptHtml(100), false);
+            ->assertSee($post->excerptHtml(100), false)
+            ->assertSee($post->created_at->format('d-m-Y'))
+            ->assertDontSee('Este es el título del blog')
+            ->assertDontSee('19-09-2024');
     }
 
     public function test_blogs_index_shows_real_author_and_social_icons(): void

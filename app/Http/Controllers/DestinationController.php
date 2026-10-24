@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\StructuredData;
 
 class DestinationController extends Controller
 {
@@ -54,6 +55,14 @@ class DestinationController extends Controller
             'category' => $parentCategory,
             'subCategories' => $subCategories,
             'prices' => $this->formattedLowestPrices($subCategories->pluck('id')),
+            'metaDescription' => $this->publishedDescription(
+                $parentCategory,
+                'Tours y provincias en '.$parentCategory->name.'. Compara salidas y el precio por persona.'
+            ),
+            'ogImage' => $this->openGraphImage(
+                $parentCategory,
+                $this->firstPublicTour($subCategories->pluck('id'))
+            ),
         ]);
     }
 
@@ -73,7 +82,7 @@ class DestinationController extends Controller
         }
 
         $subCategory = Category::query()
-            ->with(['parentCategory', 'metaData'])
+            ->with(['parentCategory', 'metaData', 'images'])
             ->where('slug', $province)
             ->where('parent_id', $parentCategory->id)
             ->first();
@@ -88,7 +97,7 @@ class DestinationController extends Controller
 
         $tours = $subCategory->products()
             ->publicVisibleTour()
-            ->with(['mainImage', 'category.parentCategory'])
+            ->with(['images', 'category.parentCategory'])
             ->paginate(4);
 
         $categories_search = Category::query()->publiclyAvailable()->whereNotNull('parent_id')->get();
@@ -99,6 +108,11 @@ class DestinationController extends Controller
             'countrySlug' => $country,
             'province' => $subCategory,
             'tours' => $tours,
+            'metaDescription' => $this->publishedDescription(
+                $subCategory,
+                'Tours en '.$subCategory->name.', '.$parentCategory->name.'. Consulta fechas y el precio por persona.'
+            ),
+            'ogImage' => $this->openGraphImage($subCategory, $tours->first()),
         ]);
     }
 
@@ -157,6 +171,11 @@ class DestinationController extends Controller
             ? $firstItinerary->fullPrice()
             : null;
 
+        $fallback = $tourModel->name.' en '.$subCategory->name.', '.$parentCategory->name.'.';
+        if ($price !== null) {
+            $fallback .= ' Desde '.number_format((float) $price, 2, ',', '.').' € por persona.';
+        }
+
         $days = $firstItinerary?->days;
         $nights = $firstItinerary?->nights;
 
@@ -179,6 +198,8 @@ class DestinationController extends Controller
             'price' => $price,
             'countrySlug' => $country,
             'provinceSlug' => $province,
+            'metaDescription' => $this->publishedDescription($tourModel, $fallback),
+            'relatedProducts' => $tourModel->relatedProducts(),
         ]);
     }
 
@@ -195,6 +216,37 @@ class DestinationController extends Controller
         }
 
         return $formatted;
+    }
+
+    private function openGraphImage(Category $category, ?Product $fallbackTour): ?string
+    {
+        return StructuredData::categoryImageUrl($category)
+            ?? ($fallbackTour ? StructuredData::productImageUrl($fallbackTour) : null);
+    }
+
+    /**
+     * @param  iterable<int|string>  $provinceIds
+     */
+    private function firstPublicTour(iterable $provinceIds): ?Product
+    {
+        $ids = collect($provinceIds)->filter()->values();
+        if ($ids->isEmpty()) {
+            return null;
+        }
+
+        return Product::query()
+            ->publicVisibleTour()
+            ->whereIn('category_id', $ids)
+            ->with('images')
+            ->orderBy('id')
+            ->first();
+    }
+
+    private function publishedDescription(Category|Product $model, string $fallback): string
+    {
+        $plain = $model->plainMetaDescription();
+
+        return $plain !== '' ? $plain : $fallback;
     }
 
     /**
