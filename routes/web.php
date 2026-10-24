@@ -6,6 +6,7 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\PostController;
@@ -27,6 +28,9 @@ use Illuminate\Support\Facades\Route;
 //DB::listen(function ($query) { dump($query->sql); });
 
 Route::get('/', HomeController::class)->name('inicio');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 Route::controller(ServiceController::class)->group(function () {
     Route::get('/servicios', 'index')->name('servicios');

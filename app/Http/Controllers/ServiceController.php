@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Status;
 use App\Models\Type;
 
 class ServiceController extends Controller
@@ -26,8 +25,7 @@ class ServiceController extends Controller
 
         $visible = Product::query()
             ->whereKey($service->id)
-            ->whereStatusSlug(Status::PRODUCT_ACTIVE)
-            ->inPublicCategory()
+            ->publicVisibleService()
             ->exists();
 
         if (!$visible) {

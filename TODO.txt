@@ -31,3 +31,5 @@ Prioridad 4 — producto / UX (puede esperar)
 - Galería más rica; Vite; itinerario distinto por hotel/seguro; venta pública de no-tours.
 - en el correo de confirmación de reserva, poner un enlace a /reserva/consulta?emain={email-usuario}&localizador={localizador-reserva} y validar que si los parámetros GET están seteados entonces hacer el submit del formulario y mostrar directamente la información de la reserva
 - que cuando se añana un pasajero nuevo desde el admin, reflejar que falta por pagar ese pasajero, tener la posibilidad de añadir pagos a la reserva
+- [x] hacer un sitemap (generador de url automático)
+- cuando se crea o se edita un registro aparece un mensaje que luego desaparece, cuando desaparece mueve el contenido, hacer que el mensaje se muestre abajo y que desaparezca lentamente
