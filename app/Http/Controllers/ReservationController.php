@@ -42,6 +42,12 @@ class ReservationController extends Controller
 
     public function payment(Product $product, Itinerary $itinerary)
     {
+        if (!session('booking_id')) {
+            return redirect()
+                ->route('reservation.create', [$product, $itinerary])
+                ->with('error', 'La sesión de la reserva ha caducado. Vuelve a introducir los datos para continuar al pago.');
+        }
+
         $booking = $this->reservations->bookingFromSession($product, $itinerary);
 
         if ($this->reservations->releaseIfUnpaidHoldElapsed($booking)) {

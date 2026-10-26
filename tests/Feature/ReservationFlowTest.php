@@ -180,6 +180,15 @@ class ReservationFlowTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_payment_page_sends_you_back_when_the_session_has_no_booking(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+
+        $this->get(route('reservation.payment', [$product, $itinerary]))
+            ->assertRedirect(route('reservation.create', [$product, $itinerary]))
+            ->assertSessionHas('error', 'La sesión de la reserva ha caducado. Vuelve a introducir los datos para continuar al pago.');
+    }
+
     public function test_confirming_stripe_payment_marks_booking_paid_not_payment_status(): void
     {
         Mail::fake();

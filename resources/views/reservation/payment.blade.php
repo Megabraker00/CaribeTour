@@ -63,7 +63,7 @@
                     <button id="submit" class="btn btn-primary mt-4">
                         Pagar {{ $booking->formattedPassengersTotal() }}&euro;
                     </button>
-                    <div id="error-message"></div>
+                    <div id="error-message" class="text-danger mt-3" role="alert"></div>
                 </form>
 
             </div>
@@ -74,65 +74,68 @@
     <!-- /container -->
 @endsection
 @push('scripts')
+@php
+    $paymentReturnUrl = route('reservation.payment.callback', [$product, $itinerary], true);
+@endphp
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-
+    (function () {
+        const messageContainer = document.querySelector('#error-message');
         const stripeKey = @json($stripeKey);
+        const showError = function (message) {
+            if (messageContainer) {
+                messageContainer.textContent = message;
+            }
+        };
 
-        if (!stripeKey) {
-            console.error("Error: STRIPE_KEY no detectada.");
+        if (!stripeKey || typeof Stripe !== 'function') {
+            showError('No se ha podido cargar el formulario de pago. Recarga la página. Si usas un bloqueador, permite js.stripe.com y vuelve a intentarlo.');
             return;
         }
 
-        window.stripe = Stripe(stripeKey); 
-        const stripe = window.stripe;//Stripe(stripeKey);
-        
-        const options = {
-            clientSecret: "{{ $clientSecret }}",
-            //appearance: { theme: 'flat' },
-        };
+        const stripe = Stripe(stripeKey);
+        let elements;
 
-        const elements = stripe.elements(options);
-        const paymentElement = elements.create("payment");
-        
-        setTimeout(() => {            
-        
-            // Verificamos si el elemento existe antes de montar
-            const el = document.getElementById("payment-element");
-            if (el) {
-                paymentElement.mount("#payment-element");
-                console.log('si se encontro el payment-element');
-            } else {
-                console.error("No se encontró el elemento #payment-element");
+        try {
+            elements = stripe.elements({
+                clientSecret: @json($clientSecret),
+            });
+        } catch (error) {
+            showError(error.message);
+            return;
+        }
+
+        const paymentElement = elements.create('payment');
+        paymentElement.on('loaderror', function (event) {
+            const message = event.error && event.error.message
+                ? event.error.message
+                : 'No se ha podido mostrar el formulario de pago.';
+            showError(message);
+        });
+        paymentElement.mount('#payment-element');
+
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const submitButton = document.getElementById('submit');
+            if (submitButton) {
+                submitButton.disabled = true;
             }
 
-            const form = document.getElementById('payment-form');
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const submitButton = document.getElementById('submit');
-                if (submitButton) {
-                    submitButton.disabled = true;
-                }
-
-                const {error} = await stripe.confirmPayment({
-                    elements,
-                    confirmParams: {
-                        //return_url: "{{ url('/reserva/' . $product->slug . '/' . $itinerary->id . '/pago/ok') }}",
-                        return_url: "{{ route('reservation.payment.callback', [$product, $itinerary], true) }}",
-                    },
-                });
-
-                if (error) {
-                    const messageContainer = document.querySelector('#error-message');
-                    messageContainer.textContent = error.message;
-                    if (submitButton) {
-                        submitButton.disabled = false;
-                    }
-                }
+            const {error} = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: @json($paymentReturnUrl),
+                },
             });
 
-        }, 100);
-    });
+            if (error) {
+                showError(error.message);
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
+        });
+    })();
 </script>
 @endpush
