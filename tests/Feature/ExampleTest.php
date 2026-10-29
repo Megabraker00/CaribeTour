@@ -15,4 +15,14 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_public_pages_allow_stripe_payment_element_hosts(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('https://m.stripe.network', false);
+        $response->assertSee('https://merchant-ui-api.stripe.com', false);
+        $response->assertSee('https://r.stripe.com', false);
+    }
 }
