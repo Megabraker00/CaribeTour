@@ -23,7 +23,7 @@ Prioridad 3 — legal (España / UE)
 
 Prioridad 4 — producto / UX (puede esperar)
 - que cuando se guarde un nuevo registro (tour, proveedor, user, etc) mostrar un mensaje de exito y que desaparezca a lo pocos segundos.
-- crear el CRUD para blog post
+- [x] crear el CRUD para blog post
 - en el formulario de reservas, que la fecha de nacimiento del pasajero 1 tenga el valor por defecto fecha actual - 18 años
 - en el formulario de reservas, en el campo de nacionalidad poner un listado (datalist) de todos los paises para que muestre sugerencias y se vaya autocompletando
 - hacer el apartado de perfil de usuario en el admin
@@ -32,4 +32,8 @@ Prioridad 4 — producto / UX (puede esperar)
 - en el correo de confirmación de reserva, poner un enlace a /reserva/consulta?emain={email-usuario}&localizador={localizador-reserva} y validar que si los parámetros GET están seteados entonces hacer el submit del formulario y mostrar directamente la información de la reserva
 - que cuando se añana un pasajero nuevo desde el admin, reflejar que falta por pagar ese pasajero, tener la posibilidad de añadir pagos a la reserva
 - [x] hacer un sitemap (generador de url automático)
-- cuando se crea o se edita un registro aparece un mensaje que luego desaparece, cuando desaparece mueve el contenido, hacer que el mensaje se muestre abajo y que desaparezca lentamente
+- [x] cuando se crea o se edita un registro aparece un mensaje que luego desaparece, cuando desaparece mueve el contenido, hacer que el mensaje se muestre abajo y que desaparezca lentamente
+- hacer que el formulario de la página contacto sea funcional, ver mejor opción, enviar un correo o sección dedicada en el admin para ver la info (crear tabla)
+- en la pagina de pago confirmado (al finalizar la reserva) mostrar productos relacionados al igual que en tour
+- en la pagina de pago, en el mensaje final, mostrar el correo del cliente al que vamos a enviar el mail de confirmación
+- mostrar la edad de los pasajeros, en el admin y en la confirmación del pago
