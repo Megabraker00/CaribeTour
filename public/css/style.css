@@ -287,6 +287,16 @@ button:focus {
     box-shadow: none;
 }
 
+.carousel-control-prev .bi,
+.carousel-control-next .bi {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    -webkit-text-stroke: 1px #fff;
+    text-shadow: 0 0 0.35rem rgba(0, 0, 0, 0.65);
+}
+
 input[type="checkbox"]:focus,
 input[type="radio"]:focus {
     outline: 2px solid #ff9000;
