@@ -35,7 +35,7 @@ class Client extends Model
     /** Reservas de las que este cliente es titular. */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class)->orderByDesc('id');
     }
 
     public function meta()
