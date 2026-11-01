@@ -1,0 +1,19 @@
+---
+description: Las descripciones de pull request se entregan en ingles
+alwaysApply: true
+---
+
+# Descripciones de pull request
+
+- Cuando el usuario pida la descripcion de una PR, escribirla siempre en ingles.
+- Usar este formato:
+
+```markdown
+## Summary
+- ...
+
+## Test plan
+- [ ] ...
+```
+
+- El titulo del commit y el nombre de la rama siguen el estilo que pida el usuario. Esta regla solo fija el idioma de la descripcion de la PR.
