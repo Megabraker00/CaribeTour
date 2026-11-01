@@ -96,7 +96,7 @@
                                             <span class="text-muted">Pasajeros:</span>
                                             <ol>
                                             @foreach ($booking->passengers as $passenger)
-                                                <li>{{$passenger}} | {{$passenger->dni_passport}}</li>
+                                                <li>{{ $passenger }} | {{ $passenger->ageLabel() ?? '—' }} | {{ $passenger->dni_passport }}</li>
                                             @endforeach
                                             </ol>
                                         </li>

@@ -271,6 +271,7 @@
                             <th>Apellidos</th>
                             <th>DNI/Pasaporte</th>
                             <th>Nacimiento</th>
+                            <th>Edad</th>
                             <th>Nacionalidad</th>
                             <th>Precio</th>
                             <th>Tasas</th>
@@ -285,6 +286,7 @@
                             <td>{{ $pax->last_name }}</td>
                             <td>{{ $pax->dni_passport ?? '—' }}</td>
                             <td>{{ $pax->date_of_birth ? $pax->date_of_birth->format('d/m/Y') : '—' }}</td>
+                            <td>{{ $pax->ageLabel() ?? '—' }}</td>
                             <td>{{ $pax->nationality ?? '—' }}</td>
                             <td>{{ $pax->price_at_booking ? number_format((float) $pax->price_at_booking, 2, ',', '.') : '—' }}</td>
                             <td>{{ $pax->taxes_at_booking ? number_format((float) $pax->taxes_at_booking, 2, ',', '.') : '—' }}</td>
@@ -301,7 +303,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="7" class="text-right">Total PVP</th>
+                            <th colspan="8" class="text-right">Total PVP</th>
                             <th class="text-right">{{ $booking->formattedPassengersTotal() }}</th>
                             <th></th>
                         </tr>
