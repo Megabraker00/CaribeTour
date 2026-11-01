@@ -38,9 +38,12 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $blog = Blog::whereStatusSlug(Status::BLOG_PUBLISHED)
-            ->orderBy('id', 'DESC')
-            ->first() ?? new Blog();
+        $blog = Blog::query()
+            ->with('images')
+            ->whereStatusSlug(Status::BLOG_PUBLISHED)
+            ->latest('created_at')
+            ->latest('id')
+            ->first();
 
         $featured_excursions = Product::with('category.parentCategory')
             ->whereHas('type', static fn ($type) => $type->where('slug', Type::EXCURSION))

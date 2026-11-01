@@ -25,4 +25,19 @@ class ExampleTest extends TestCase
         $response->assertSee('https://merchant-ui-api.stripe.com', false);
         $response->assertSee('https://r.stripe.com', false);
     }
+
+    public function test_unknown_url_shows_the_branded_not_found_page(): void
+    {
+        $this->get('/esta-pagina-no-existe')
+            ->assertNotFound()
+            ->assertSee('Página no encontrada')
+            ->assertSee('noindex, nofollow', false)
+            ->assertSee('Ir al inicio')
+            ->assertSee(route('destinos'), false)
+            ->assertDontSee('aria-label="breadcrumb"', false);
+
+        $this->getJson('/esta-pagina-no-existe')
+            ->assertNotFound()
+            ->assertJsonStructure(['message']);
+    }
 }

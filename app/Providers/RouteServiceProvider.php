@@ -32,11 +32,9 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('register', function (Request $request) {
             return Limit::perMinute(5)
                 ->by($request->ip())
-                ->response(fn (Request $request, array $headers) => response(
-                    __('auth.too_many'),
-                    Response::HTTP_TOO_MANY_REQUESTS,
-                    $headers
-                ));
+                ->response(fn (Request $request, array $headers) => response()
+                    ->view('errors.429', [], Response::HTTP_TOO_MANY_REQUESTS)
+                    ->withHeaders($headers));
         });
 
         RateLimiter::for('reservation-lookup', function (Request $request) {
