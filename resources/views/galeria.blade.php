@@ -28,7 +28,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-4 d-flex justify-content-center">
+            <div class="mt-4">
                 {{ $images->links('pagination::bootstrap-5') }}
             </div>
 

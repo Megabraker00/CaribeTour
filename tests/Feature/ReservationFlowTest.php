@@ -113,10 +113,13 @@ class ReservationFlowTest extends TestCase
         [$product, $itinerary] = $this->makeTourWithItinerary(5);
         $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
 
+        $age = Carbon::parse('1990-01-01')->age;
+
         $this->get(route('reservation.payment.callback', [$product, $itinerary]).'?payment_intent=pi_test')
             ->assertOk()
             ->assertSee('consultar tu reserva', false)
-            ->assertSee(route('reservation.lookup'), false);
+            ->assertSee(route('reservation.lookup'), false)
+            ->assertSee('Pax1 Test | '.$age.' años | DOC1', false);
     }
 
     public function test_payment_page_shows_the_sum_of_each_passenger_fare(): void

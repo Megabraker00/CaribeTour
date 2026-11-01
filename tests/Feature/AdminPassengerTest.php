@@ -26,6 +26,16 @@ class AdminPassengerTest extends TestCase
         $this->admin = User::factory()->create();
     }
 
+    public function test_passenger_age_label_uses_the_spanish_singular(): void
+    {
+        $passenger = new Passenger([
+            'date_of_birth' => now()->subYear(),
+        ]);
+
+        $this->assertSame('1 año', $passenger->ageLabel());
+        $this->assertNull((new Passenger())->ageLabel());
+    }
+
     public function test_guest_cannot_edit_a_passenger(): void
     {
         [$booking, $passenger] = $this->makeBookingWithPassenger();
@@ -51,7 +61,8 @@ class AdminPassengerTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('admin.booking.show', $booking))
             ->assertOk()
-            ->assertSee(route('admin.booking.passengers.edit', [$booking, $passenger]), false);
+            ->assertSee(route('admin.booking.passengers.edit', [$booking, $passenger]), false)
+            ->assertSee($passenger->ageLabel(), false);
 
         $this->actingAs($this->admin)
             ->put(route('admin.booking.passengers.update', [$booking, $passenger]), [

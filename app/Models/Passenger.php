@@ -38,6 +38,17 @@ class Passenger extends Model
         return \ucwords($this->name ." ". $this->last_name);
     }
 
+    public function ageLabel(): ?string
+    {
+        if ($this->date_of_birth === null) {
+            return null;
+        }
+
+        $years = $this->date_of_birth->age;
+
+        return $years === 1 ? '1 año' : $years.' años';
+    }
+
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
