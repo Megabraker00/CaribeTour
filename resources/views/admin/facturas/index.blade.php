@@ -16,7 +16,7 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="the_table" class="table table-striped table-bordered table-hover" style="width:99%">
+                <table id="the_table" class="table table-striped table-hover" style="width:99%">
                     <caption>Lista de Facturas</caption>
                     <thead>
                         <tr>

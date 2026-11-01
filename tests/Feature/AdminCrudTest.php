@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Blog;
+use App\Models\Booking;
+use App\Models\Client;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Product;
@@ -28,6 +30,46 @@ class AdminCrudTest extends TestCase
         parent::setUp();
         $this->seed([TypeSeeder::class, StatusSeeder::class]);
         $this->admin = User::factory()->create();
+    }
+
+    public function test_admin_dashboard_uses_the_same_bootstrap_skin_as_the_lists(): void
+    {
+        $css = 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css';
+
+        $dashboard = $this->actingAs($this->admin)
+            ->get(route('admin'))
+            ->assertOk()
+            ->getContent();
+        $reservations = $this->actingAs($this->admin)
+            ->get(route('admin.booking.index'))
+            ->assertOk()
+            ->getContent();
+
+        $this->assertSame(1, substr_count($dashboard, $css));
+        $this->assertSame(1, substr_count($reservations, $css));
+    }
+
+    public function test_client_bookings_are_listed_from_newest_to_oldest(): void
+    {
+        $client = Client::factory()->create();
+        $older = Booking::factory()->create([
+            'client_id' => $client->id,
+            'external_ref' => 'LOC-OLDER',
+        ]);
+        $older->forceFill(['created_at' => '2026-01-15 08:30:00'])->save();
+        $newer = Booking::factory()->create([
+            'client_id' => $client->id,
+            'external_ref' => 'LOC-NEWER',
+        ]);
+        $newer->forceFill(['created_at' => '2026-03-02 18:45:00'])->save();
+
+        $newerOn = $newer->fresh()->created_at->timezone('Europe/Madrid')->format('d/m/Y H:i');
+        $olderOn = $older->fresh()->created_at->timezone('Europe/Madrid')->format('d/m/Y H:i');
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.client.show', $client))
+            ->assertOk()
+            ->assertSeeInOrder([$newerOn, 'LOC-NEWER', $olderOn, 'LOC-OLDER']);
     }
 
     public function test_guests_cannot_open_admin_cruds(): void

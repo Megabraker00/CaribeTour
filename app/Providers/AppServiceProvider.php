@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +26,11 @@ class AppServiceProvider extends ServiceProvider
         //view()->share('categories', $categories_search);
 
         Paginator::useBootstrapFive();
+
+        // Los listados ya cargaban Bootstrap 4 encima de AdminLTE. Sin esa hoja,
+        // el inicio se queda con la tipografía y los controles más finos de AdminLTE.
+        View::composer('adminlte::page', function () {
+            view()->startPush('css', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">');
+        });
     }
 }

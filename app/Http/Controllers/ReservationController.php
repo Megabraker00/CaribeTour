@@ -6,6 +6,7 @@ use App\Http\Requests\StoreReservationRequest;
 use App\Models\Itinerary;
 use App\Models\Product;
 use App\Models\Status;
+use App\Models\Type;
 use App\Services\ReservationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +27,16 @@ class ReservationController extends Controller
         abort_unless($product->isInPublicCategory(), 404);
         abort_unless($itinerary->hasBookableDeparture(), 404);
 
-        return view('reservation.new', $this->summaryData($product, $itinerary, self::VIEW_AS_TOUR));
+        $soldOut = (int) $itinerary->available_stock < 1;
+
+        return view('reservation.new', array_merge(
+            $this->summaryData($product, $itinerary, self::VIEW_AS_TOUR),
+            [
+                'soldOut' => $soldOut,
+                'hasOtherDepartures' => $soldOut && $product->itineraries()->bookableInStock()->exists(),
+                'tourUrl' => $this->publicTourUrl($product),
+            ]
+        ));
     }
 
     public function store(StoreReservationRequest $request, Product $product, Itinerary $itinerary)
@@ -99,7 +109,9 @@ class ReservationController extends Controller
                 );
                 session()->forget('booking_id');
 
-                return view('reservation.payment_ok', $viewData);
+                return view('reservation.payment_ok', array_merge($viewData, [
+                    'relatedProducts' => $product->relatedProducts(),
+                ]));
             }
 
             return view('reservation.payment_no_ok', $viewData);
@@ -110,6 +122,22 @@ class ReservationController extends Controller
                 ->route('reservation.payment', [$product->slug, $itinerary->id])
                 ->with('error', '[ERROR]: Vuelva a intentar');
         }
+    }
+
+    private function publicTourUrl(Product $product): ?string
+    {
+        $country = $product->category?->parentCategory?->slug;
+        $province = $product->category?->slug;
+
+        if ($product->type?->slug !== Type::TOUR || $country === null || $province === null) {
+            return null;
+        }
+
+        return route('destinos.tour', [
+            'country' => $country,
+            'province' => $province,
+            'tour' => $product->slug,
+        ]);
     }
 
     private function summaryData(Product $product, Itinerary $itinerary, string $productKey): array

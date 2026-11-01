@@ -69,6 +69,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Creada</th>
                         <th>Ref. externa</th>
                         <th>Total</th>
                         <th>Estado</th>
@@ -79,6 +80,7 @@
                     @foreach($client->bookings as $booking)
                     <tr>
                         <td>{{ $booking->id }}</td>
+                        <td>{{ $booking->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—' }}</td>
                         <td>{{ $booking->external_ref ?? '—' }}</td>
                         <td>{{ $booking->formattedPassengersTotal() }} {{ $booking->currency ?? 'EUR' }}</td>
                         <td>

@@ -52,10 +52,15 @@
                             </div>
                             
                         </div>
-                        <div class="card-footer fs-3">                            
+                        <div class="card-footer fs-3">
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span id="reservation-total" title="Total a pagar">{{ number_format($price * $quantity, 2, ',', '.') }}&euro;</span>
-                            </strong>                            
+                                <i class="bi bi-cash-stack"></i> TOTAL:
+                                @if ($soldOut)
+                                    <span>Sin plazas</span>
+                                @else
+                                    <span id="reservation-total" title="Total a pagar">{{ number_format($price * $quantity, 2, ',', '.') }}&euro;</span>
+                                @endif
+                            </strong>
                         </div>
                     </div>
                 </div>
@@ -63,6 +68,20 @@
             </div>
 
             <div class="col-md-6 col-sm-12 col-lg-8">
+                @if ($soldOut)
+                    <div class="alert alert-warning">
+                        <p class="mb-3">Esta salida no tiene plazas disponibles.</p>
+                        @if ($hasOtherDepartures)
+                            <a href="{{ $tourUrl ?? route('destinos') }}" class="btn btn-primary">Ver otras fechas</a>
+                        @endif
+                    </div>
+                    @unless ($hasOtherDepartures)
+                        <x-other-destinations>
+                            Este tour no tiene otras salidas con plazas.
+                            ¡Vuelve pronto o consulta otros destinos!
+                        </x-other-destinations>
+                    @endunless
+                @else
                 @if (session('error'))
                     <div class="alert alert-warning">{{ session('error') }}</div>
                 @endif
@@ -189,6 +208,7 @@
                         <button type="submit" class="btn btn-success btn-lg" id="confirm-reservation" @disabled($quantity < 1)>Confirmar y proceder al pago</button>
                     </div>
                 </form>
+                @endif
             </div>
 
             
@@ -197,6 +217,7 @@
     </section>
     <!-- /container -->
 
+    @unless ($soldOut)
     @push('scripts')
     <script>
         const passengerList = document.getElementById('passenger-list');
@@ -280,4 +301,5 @@
         }
     </script>
     @endpush
+    @endunless
 @endsection

@@ -139,6 +139,12 @@ class AdminInvoiceTest extends TestCase
         $this->actingAs($this->admin)->post(route('admin.booking.invoices.store', $booking));
 
         $this->actingAs($this->admin)
+            ->get(route('admin.facturas.index'))
+            ->assertOk()
+            ->assertSee('class="table table-striped table-hover"', false)
+            ->assertDontSee('table-bordered', false);
+
+        $this->actingAs($this->admin)
             ->getJson(route('api.datatable.invoices', [
                 'draw' => 1,
                 'start' => 0,

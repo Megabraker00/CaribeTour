@@ -34,8 +34,8 @@ Prioridad 4 — producto / UX (puede esperar)
 - [x] hacer un sitemap (generador de url automático)
 - [x] cuando se crea o se edita un registro aparece un mensaje que luego desaparece, cuando desaparece mueve el contenido, hacer que el mensaje se muestre abajo y que desaparezca lentamente
 - [x] hacer que el formulario de la página contacto sea funcional, ver mejor opción, enviar un correo o sección dedicada en el admin para ver la info (crear tabla)
-- en la pagina de pago confirmado (al finalizar la reserva) mostrar productos relacionados al igual que en tour
-- en la pagina de pago, en el mensaje final, mostrar el correo del cliente al que vamos a enviar el mail de confirmación
+- [x] en la pagina de pago confirmado (al finalizar la reserva) mostrar productos relacionados al igual que en tour
+- [x] en la pagina de pago, en el mensaje final, mostrar el correo del cliente al que vamos a enviar el mail de confirmación
 - [x] mostrar la edad de los pasajeros, en el admin y en la confirmación del pago
 - enlazar los servicios (excursiones, vuelos, hoteles, etc...) con proveedores reales
 - [x] en la home hay que enlazar el último post creado en la seccion "Blog de viajes"

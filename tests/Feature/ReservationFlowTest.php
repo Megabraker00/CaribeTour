@@ -43,6 +43,56 @@ class ReservationFlowTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_sold_out_departure_explains_there_are_no_seats(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary(0);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('Esta salida no tiene plazas disponibles')
+            ->assertSee('Este tour no tiene otras salidas con plazas')
+            ->assertSee('Sin plazas')
+            ->assertDontSee('name="passengers[1][first_name]"', false)
+            ->assertDontSee('0,00', false);
+    }
+
+    public function test_sold_out_departure_links_to_the_tour_when_another_date_has_seats(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary(0);
+        $country = Category::factory()->create([
+            'slug' => 'mexico',
+            'parent_id' => null,
+        ]);
+        $province = Category::factory()->create([
+            'slug' => 'cancun',
+            'parent_id' => $country->id,
+        ]);
+        $product->update(['category_id' => $province->id]);
+        $open = Itinerary::factory()->create([
+            'product_id' => $product->id,
+            'available_stock' => 4,
+            'total_stock' => 4,
+        ]);
+        $terminal = Terminal::factory()->create();
+        Segment::factory()->create([
+            'itinerary_id' => $open->id,
+            'departure_date' => now()->addMonth(),
+            'arrival_date' => now()->addMonth()->addDays(7),
+            'departure_terminal_id' => $terminal->id,
+            'arrival_terminal_id' => $terminal->id,
+        ]);
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('Ver otras fechas')
+            ->assertSee(route('destinos.tour', [
+                'country' => 'mexico',
+                'province' => 'cancun',
+                'tour' => $product->slug,
+            ]), false)
+            ->assertDontSee('Este tour no tiene otras salidas con plazas');
+    }
+
     public function test_reservation_create_returns_404_when_itinerary_does_not_belong_to_product(): void
     {
         [$productA] = $this->makeTourWithItinerary();
@@ -119,7 +169,65 @@ class ReservationFlowTest extends TestCase
             ->assertOk()
             ->assertSee('consultar tu reserva', false)
             ->assertSee(route('reservation.lookup'), false)
+            ->assertSee('al mail ana@example.com', false)
+            ->assertSee('en cualquier momento', false)
+            ->assertSee(route('contacto'), false)
             ->assertSee('Pax1 Test | '.$age.' años | DOC1', false);
+    }
+
+    public function test_paid_reservation_page_shows_related_products(): void
+    {
+        Mail::fake();
+        ApiRequestor::setHttpClient(new FakeStripeClient(Status::PAYMENT_STRIPE_SUCCEEDED));
+        config(['services.stripe.secret' => 'sk_test_fake']);
+
+        [$product, $itinerary] = $this->makeTourWithItinerary(5);
+        $country = Category::factory()->create([
+            'name' => 'Colombia',
+            'slug' => 'colombia',
+            'parent_id' => null,
+        ]);
+        $province = Category::factory()->create([
+            'name' => 'Medellín',
+            'slug' => 'medellin',
+            'parent_id' => $country->id,
+        ]);
+        $product->update(['category_id' => $province->id]);
+
+        $related = Product::factory()->tour()->active()->create([
+            'name' => 'Tour vecino',
+            'slug' => 'tour-vecino',
+            'category_id' => $province->id,
+            'supplier_id' => $product->supplier_id,
+            'created_user_id' => $product->created_user_id,
+        ]);
+        $relatedItinerary = Itinerary::factory()->create([
+            'product_id' => $related->id,
+            'available_stock' => 5,
+            'total_stock' => 5,
+            'price' => 80,
+            'taxes' => 5,
+        ]);
+        $terminal = Terminal::factory()->create();
+        Segment::factory()->create([
+            'itinerary_id' => $relatedItinerary->id,
+            'departure_date' => now()->addMonth(),
+            'arrival_date' => now()->addMonth()->addDays(7),
+            'departure_terminal_id' => $terminal->id,
+            'arrival_terminal_id' => $terminal->id,
+        ]);
+
+        $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 2));
+
+        $this->get(route('reservation.payment.callback', [$product, $itinerary]).'?payment_intent=pi_test')
+            ->assertOk()
+            ->assertSee('Productos relacionados')
+            ->assertSee('Tour vecino')
+            ->assertSee(route('destinos.tour', [
+                'country' => 'colombia',
+                'province' => 'medellin',
+                'tour' => 'tour-vecino',
+            ]), false);
     }
 
     public function test_payment_page_shows_the_sum_of_each_passenger_fare(): void

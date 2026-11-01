@@ -135,10 +135,10 @@
                     <div class="my-4 p-4 bg-white rounded shadow-sm border-start border-success border-4">
                         <h5>¿Qué sigue ahora?</h5>
                         <p class="text-muted mb-0">
-                            En breve recibirás un correo electrónico de confirmación.
+                            En breve recibirás un correo electrónico de confirmación al mail {{ $booking->client->email }}.
                             También puedes <a href="{{ route('reservation.lookup') }}">consultar tu reserva</a>
-                            con el localizador <strong>{{ $booking->external_ref }}</strong> y el correo del titular.
-                            Si tienes alguna duda, contacta con nuestro equipo citando esa referencia.
+                            en cualquier momento con el localizador <strong>{{ $booking->external_ref }}</strong> y el correo del titular.
+                            Si tienes alguna duda, <a href="{{ route('contacto') }}">contacta</a> con nuestro equipo citando esa referencia.
                         </p>
                     </div>
 
@@ -147,6 +147,10 @@
 
             </div>
 
+        </div>
+
+        <div class="d-print-none">
+            <x-related-products :products="$relatedProducts" />
         </div>
 
     </section>
