@@ -33,6 +33,7 @@ Route::middleware(['web', 'auth', 'can:access-admin', 'role.writable'])->control
     Route::get('datatable/tours/{id}/itineraries', 'tourItinerarys')->name('api.datatable.tours.itineraries');
     Route::get('datatable/invoices', 'invoices')->name('api.datatable.invoices');
     Route::get('datatable/blogs', 'blogs')->name('api.datatable.blogs');
+    Route::get('datatable/mensajes', 'contactMessages')->name('api.datatable.contact-messages');
 });
 
 Route::prefix('v1')->group(function () {

@@ -62,6 +62,29 @@ class UserRoleTest extends TestCase
         $this->assertDatabaseHas('blogs', ['slug' => 'nota-del-agente']);
     }
 
+    public function test_admin_sidebar_lists_daily_work_before_the_catalog(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $html = $this->actingAs($admin)->get('/admin')->assertOk()->getContent();
+
+        $cursor = 0;
+        foreach ([
+            'admin/reservas',
+            'admin/mensajes',
+            'admin/clientes',
+            'admin/facturas',
+            'admin/pagos',
+            'admin/blogs',
+            'fa-suitcase',
+            'fa-cog',
+        ] as $marker) {
+            $at = strpos($html, $marker, $cursor);
+            $this->assertNotFalse($at, $marker);
+            $cursor = $at;
+        }
+    }
+
     public function test_admin_assigns_roles_and_cannot_remove_the_last_admin(): void
     {
         $admin = User::factory()->admin()->create();

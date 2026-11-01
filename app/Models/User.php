@@ -129,7 +129,7 @@ class User extends Authenticatable
 
     public function adminlte_profile_url()
     {
-        return "profile/$this->id";
+        return 'profile';
     }
 
     // end Admin LTE

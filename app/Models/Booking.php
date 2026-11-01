@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,14 @@ class Booking extends Model
         'total_price',
         'currency',
     ];
+
+    public function scopeAwaitingPayment(Builder $query): Builder
+    {
+        return $query->whereIn('status_id', [
+            Status::idFor(self::class, Status::BOOKING_PENDING),
+            Status::idFor(self::class, Status::BOOKING_PENDING_PAYMENT),
+        ]);
+    }
 
     public function client(): BelongsTo
     {

@@ -316,41 +316,38 @@ return [
             'icon' => 'fas fa-fw fa-home',
         ],
         [
-            'text' => 'Blog',
-            'url' => 'admin/blogs',
-            'icon' => 'fas fa-fw fa-newspaper',
-        ],
-        [
             'text' => 'Reservas',
             'url' => 'admin/reservas',
             'icon' => 'fas fa-fw fa-calendar-check',
-            'label' => 4,
-            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Mensajes',
+            'url' => 'admin/mensajes',
+            'icon' => 'fas fa-fw fa-envelope',
         ],
         [
             'text' => 'Clientes',
             'url' => 'admin/clientes',
             'icon' => 'fas fa-fw fa-address-book',
-            'label' => 4,
-            'label_color' => 'success',
         ],
         [
             'text' => 'Facturas',
             'url' => 'admin/facturas',
             'icon' => 'fas fa-fw fa-file-invoice',
-            'label' => 4,
-            'label_color' => 'success',
         ],
         [
             'text' => 'Pagos',
             'url' => 'admin/pagos',
             'icon' => 'fas fa-fw fa-credit-card',
-            'label' => 23,
-            'label_color' => 'success',
+        ],
+        [
+            'text' => 'Blog',
+            'url' => 'admin/blogs',
+            'icon' => 'fas fa-fw fa-newspaper',
         ],
         [
             'text' => 'PRODUCTOS',
-            'icon' => 'fas fa-fw fa-share',
+            'icon' => 'fas fa-fw fa-suitcase',
             'submenu' => [
                 [
                     'text' => 'Tours',
@@ -376,7 +373,7 @@ return [
         ],
         [
             'text' => 'Configuración',
-            'icon' => 'fa fa-fw fa-file',
+            'icon' => 'fas fa-fw fa-cog',
             'submenu' => [
                 [
                     'text' => 'Tipos',
@@ -415,17 +412,6 @@ return [
                     'can' => 'manage-users',
                 ],
             ],
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/configuracion',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
         ],
         [
             'text' => 'multilevel',
@@ -503,6 +489,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\Menu\AttentionBadgeFilter::class,
     ],
 
     /*

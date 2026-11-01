@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\BookingLookupController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservationController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Models\Image;
 use Illuminate\Support\Facades\Route;
@@ -48,12 +50,10 @@ Route::get('/blogs/{post}', function (string $post) {
     return redirect()->route('blogs.show', ['post' => $post], 301);
 });
 
-Route::get('/contacto', function () {
-    return response()->view('contacto')->header(
-        'Permissions-Policy',
-        'local-network=(self "https://www.google.com" "https://maps.google.com"), loopback-network=(self "https://www.google.com" "https://maps.google.com")'
-    );
-})->name('contacto');
+Route::get('/contacto', [ContactController::class, 'show'])->name('contacto');
+Route::post('/contacto', [ContactController::class, 'store'])
+    ->middleware('throttle:contact')
+    ->name('contacto.store');
 
 Route::controller(DestinationController::class)->group(function () {
     Route::get('/destinos', 'countryIndex')->name('destinos');
@@ -97,3 +97,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth', 'can:access-admin'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});

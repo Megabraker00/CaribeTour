@@ -23,20 +23,34 @@
                 <h2>Encantados de escucharte</h2>
                 <hr>
 
-                <form action="" method="post">
+                @if (session('success'))
+                    <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('contacto.store') }}" method="post" data-disable-on-submit>
+                    @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Tu nombre completo">
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" maxlength="100" required placeholder="Tu nombre completo">
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Tu correo electrónico">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="Tu correo electrónico">
                     </div>
 
                     <div class="mb-3">
                         <label for="message" class="form-label">Mensaje</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" placeholder="Escribe tu mensaje aquí"></textarea>
+                        <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="5" maxlength="5000" required placeholder="Escribe tu mensaje aquí">{{ old('message') }}</textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Enviar</button>

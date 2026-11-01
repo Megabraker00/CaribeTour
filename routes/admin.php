@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
@@ -32,6 +33,12 @@ Route::controller(ReservationController::class)->group(function () {
     Route::post('/reservas/{booking}/pasajeros', 'storePassenger')->name('admin.booking.passengers.store');
     Route::get('/reservas/{booking}/pasajeros/{passenger}/edit', 'editPassenger')->name('admin.booking.passengers.edit');
     Route::put('/reservas/{booking}/pasajeros/{passenger}', 'updatePassenger')->name('admin.booking.passengers.update');
+});
+
+Route::controller(ContactMessageController::class)->group(function () {
+    Route::get('/mensajes', 'index')->name('admin.contact-messages.index');
+    Route::get('/mensajes/{contactMessage}', 'show')->name('admin.contact-messages.show');
+    Route::delete('/mensajes/{contactMessage}', 'destroy')->name('admin.contact-messages.destroy');
 });
 
 Route::controller(ClientController::class)->group(function () {

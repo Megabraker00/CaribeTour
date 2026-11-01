@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Client;
+use App\Models\ContactMessage;
 use App\Models\Invoice;
 use App\Models\Itinerary;
 use App\Models\Product;
@@ -153,6 +154,40 @@ class DatatableController extends Controller
             })
             ->orderColumn('status_name', 'status_id $1')
             ->orderColumn('author', 'created_user_id $1')
+            ->toJson();
+    }
+
+    public function contactMessages()
+    {
+        $query = ContactMessage::query()->select('contact_messages.*');
+
+        return DataTables::eloquent($query)
+            ->addColumn('received_on', function (ContactMessage $message) {
+                return $message->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—';
+            })
+            ->addColumn('excerpt', function (ContactMessage $message) {
+                return \Illuminate\Support\Str::limit($message->message, 80);
+            })
+            ->addColumn('status_label', function (ContactMessage $message) {
+                return $message->read_at === null ? 'Nuevo' : 'Leído';
+            })
+            ->filterColumn('received_on', function ($query, $keyword) {
+                $query->where('created_at', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('excerpt', function ($query, $keyword) {
+                $query->where('message', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('status_label', function ($query, $keyword) {
+                $needle = mb_strtolower($keyword);
+                if (str_contains('nuevo', $needle) || str_contains($needle, 'nuevo')) {
+                    $query->whereNull('read_at');
+                } elseif (str_contains('leído', $needle) || str_contains('leido', $needle) || str_contains($needle, 'leid')) {
+                    $query->whereNotNull('read_at');
+                }
+            })
+            ->orderColumn('received_on', 'created_at $1')
+            ->orderColumn('excerpt', 'message $1')
+            ->orderColumn('status_label', 'read_at $1')
             ->toJson();
     }
 
