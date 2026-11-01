@@ -106,17 +106,18 @@
                     <a href="{{ route('blogs') }}" class="text-decoration-none" title="Ver Todos Los Blogs">
                         <h4 class="border-bottom mb-4">Blog de Viajes</h4>
                     </a>
-                    <div class="card">
-                        <img loading="lazy" src="{{ asset('images/image_15.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="Cómo viajar sin miedo">
-                        <div class="card-body">
-                            <h5 class="card-title">Cómo viajar sin miedo </h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                                the card's content...</p>
+                    @if ($blog)
+                        <div class="card">
+                            <img loading="lazy" src="{{ asset($blog->mainImage()?->path ?? 'images/image_15.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="{{ $blog->mainImageAlt() }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $blog->name }}</h5>
+                                <p class="card-text">{!! $blog->excerptHtml(140) !!}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a class="btn btn-primary stretched-link" href="{{ route('blogs.show', $blog->slug) }}">Saber más</a>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <a class="btn btn-primary stretched-link" href="#">Saber más</a>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
                 <div class="col-md-6">

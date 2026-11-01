@@ -10,7 +10,10 @@
         $ogTitle = trim($__env->yieldContent('og_title', $pageTitle));
         $ogDescription = trim($__env->yieldContent('og_description', $pageDescription));
         $robots = trim($__env->yieldContent('robots', 'index, follow'));
-        $publicCrumbs = request()->routeIs('inicio') ? [] : \App\Support\PublicBreadcrumbs::items();
+        $isHttpError = trim($__env->yieldContent('http_error')) !== '';
+        $publicCrumbs = request()->route() && ! request()->routeIs('inicio') && ! $isHttpError
+            ? \App\Support\PublicBreadcrumbs::items()
+            : [];
     @endphp
     <meta name="robots" content="{{ $robots }}" />
     <meta name="application-name" content="CaribeTour.es" />

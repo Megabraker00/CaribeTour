@@ -37,3 +37,9 @@ Prioridad 4 — producto / UX (puede esperar)
 - en la pagina de pago confirmado (al finalizar la reserva) mostrar productos relacionados al igual que en tour
 - en la pagina de pago, en el mensaje final, mostrar el correo del cliente al que vamos a enviar el mail de confirmación
 - mostrar la edad de los pasajeros, en el admin y en la confirmación del pago
+- enlazar los servicios (excursiones, vuelos, hoteles, etc...) con proveedores reales
+- [x] en la home hay que enlazar el último post creado en la seccion "Blog de viajes"
+- mejorar el estilo de paginación en el frontend (lista de imagenes)
+- hacer que cuando se haga clic sobre el boton "consultar" (en tour y excursiones), que se añada un campo de texto de nombre "asunto" y el valor sea el nombre del tour o excursion que quieran consultar
+- [x] personalizar la pagina 404
+- que los productos (tour, excursiones, etc) se puedan "destacar" para que aparezcan en el slider del home

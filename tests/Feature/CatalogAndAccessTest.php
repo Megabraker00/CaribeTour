@@ -103,6 +103,35 @@ class CatalogAndAccessTest extends TestCase
             ->assertDontSee('bi-facebook', false);
     }
 
+    public function test_home_links_the_latest_created_published_post(): void
+    {
+        Blog::factory()->create([
+            'name' => 'Post antiguo',
+            'slug' => 'post-antiguo',
+            'created_at' => now()->subDay(),
+        ]);
+        $latest = Blog::factory()->create([
+            'name' => 'Post reciente',
+            'slug' => 'post-reciente',
+            'content' => '<p>Texto del último post.</p>',
+            'created_at' => now(),
+        ]);
+        Blog::factory()->draft()->create([
+            'name' => 'Borrador más nuevo',
+            'slug' => 'borrador-mas-nuevo',
+            'created_at' => now()->addMinute(),
+        ]);
+
+        $this->get(route('inicio'))
+            ->assertOk()
+            ->assertSee('Post reciente')
+            ->assertSee('Texto del último post.')
+            ->assertSee(route('blogs.show', $latest->slug), false)
+            ->assertDontSee('Post antiguo')
+            ->assertDontSee('Borrador más nuevo')
+            ->assertDontSee('Cómo viajar sin miedo');
+    }
+
     public function test_service_detail_returns_404_for_tours(): void
     {
         $user = User::factory()->create();
