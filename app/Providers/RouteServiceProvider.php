@@ -45,6 +45,10 @@ class RouteServiceProvider extends ServiceProvider
             return $this->formAttemptLimit($request, 5, 'email');
         });
 
+        RateLimiter::for('contact', function (Request $request) {
+            return $this->formAttemptLimit($request, 5, 'email');
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
