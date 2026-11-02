@@ -58,12 +58,11 @@
                                 <td><code class="small">{{ $cat->slug }}</code></td>
                                 <td>{{ $cat->parentCategory?->name ?? '—' }}</td>
                                 <td>{{ $cat->statusRecord?->name ?? $cat->status_id }}</td>
-                                <td class="text-right">
+                                <td class="text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-warning"
-                                            title="Editar">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.categories.edit', $cat) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                        </div>
                                     @endcan
                                 </td>
                             </tr>

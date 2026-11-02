@@ -4,12 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\Blog;
 use App\Models\Booking;
+use App\Models\Category;
 use App\Models\Client;
 use App\Models\Employee;
+use App\Models\Itinerary;
 use App\Models\Position;
 use App\Models\Product;
+use App\Models\Segment;
 use App\Models\Status;
 use App\Models\Supplier;
+use App\Models\Terminal;
 use App\Models\Type;
 use App\Models\User;
 use Database\Seeders\StatusSeeder;
@@ -30,6 +34,21 @@ class AdminCrudTest extends TestCase
         parent::setUp();
         $this->seed([TypeSeeder::class, StatusSeeder::class]);
         $this->admin = User::factory()->create();
+    }
+
+    public function test_admin_pages_use_the_navy_favicon(): void
+    {
+        $login = $this->get(route('login'))->assertOk()->getContent();
+        $dashboard = $this->actingAs($this->admin)->get(route('admin'))->assertOk()->getContent();
+
+        foreach ([$login, $dashboard] as $html) {
+            $this->assertStringContainsString('favicons/favicon.svg', $html);
+            $this->assertStringContainsString('favicons/favicon.ico', $html);
+            $this->assertStringNotContainsString('images/favicon.svg', $html);
+        }
+
+        $this->assertGreaterThan(1000, filesize(public_path('favicons/favicon.ico')));
+        $this->assertGreaterThan(1000, filesize(public_path('favicons/favicon.svg')));
     }
 
     public function test_admin_dashboard_uses_the_same_bootstrap_skin_as_the_lists(): void
@@ -239,5 +258,74 @@ class AdminCrudTest extends TestCase
             ->assertSessionHas('error');
 
         $this->assertDatabaseHas('users', ['id' => $this->admin->id]);
+    }
+
+    public function test_listing_action_buttons_use_the_same_text_group(): void
+    {
+        Category::factory()->create();
+        Terminal::factory()->create();
+        Employee::factory()->create(['created_user_id' => $this->admin->id]);
+        Supplier::factory()->create();
+        $client = Client::factory()->create();
+        Booking::factory()->create(['client_id' => $client->id]);
+        $product = Product::factory()->create([
+            'category_id' => Category::factory(),
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
+            'supplier_id' => Supplier::factory(),
+            'created_user_id' => $this->admin->id,
+        ]);
+
+        $pages = [
+            route('admin.blogs.index'),
+            route('admin.booking.index'),
+            route('admin.facturas.index'),
+            route('admin.client.index'),
+            route('admin.contact-messages.index'),
+            route('admin.catalog.index', 'tours'),
+            route('admin.users.index'),
+            route('admin.types.index'),
+            route('admin.statuses.index'),
+            route('admin.categories.index'),
+            route('admin.terminals.index'),
+            route('admin.employees.index'),
+            route('admin.suppliers.index'),
+        ];
+
+        foreach ($pages as $url) {
+            $html = $this->actingAs($this->admin)->get($url)->assertOk()->getContent();
+            $this->assertStringContainsString('class="btn-group" role="group"', $html, $url);
+            $this->assertStringNotContainsString('fa-pencil', $html, $url);
+            $this->assertStringNotContainsString('fa-trash', $html, $url);
+            $this->assertStringNotContainsString('fa-info', $html, $url);
+        }
+
+        $edit = $this->actingAs($this->admin)
+            ->get(route('admin.catalog.edit', ['kind' => 'tours', 'id' => $product->id]))
+            ->assertOk()
+            ->getContent();
+        $this->assertStringContainsString('class="btn-group" role="group"', $edit);
+        $this->assertStringContainsString('btn btn-sm btn-info" href="\' + base + \'/\' + row.id + \'/segments"', $edit);
+        $this->assertStringContainsString('btn btn-sm btn-secondary" href="\' + base + \'/\' + row.id + \'/prices"', $edit);
+        $this->assertStringNotContainsString('fa-route', $edit);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.client.show', $client))
+            ->assertOk()
+            ->assertSee('class="btn-group" role="group"', false)
+            ->assertSee('>Más Info</a>', false)
+            ->assertDontSee('fa-info', false);
+
+        $itinerary = Itinerary::factory()->create(['product_id' => $product->id]);
+        Segment::factory()->create(['itinerary_id' => $itinerary->id]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.itineraries.segments.index', $itinerary))
+            ->assertOk()
+            ->assertSee('class="btn-group" role="group"', false)
+            ->assertSee('>Editar</a>', false)
+            ->assertSee('>Eliminar</button>', false)
+            ->assertDontSee('fa-trash', false)
+            ->assertDontSee('Borrar', false);
     }
 }

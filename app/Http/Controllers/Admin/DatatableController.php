@@ -159,11 +159,14 @@ class DatatableController extends Controller
 
     public function contactMessages()
     {
-        $query = ContactMessage::query()->select('contact_messages.*');
+        $query = ContactMessage::query()->with('product')->select('contact_messages.*');
 
         return DataTables::eloquent($query)
             ->addColumn('received_on', function (ContactMessage $message) {
                 return $message->created_at?->timezone('Europe/Madrid')->format('d/m/Y H:i') ?? '—';
+            })
+            ->addColumn('tour_name', function (ContactMessage $message) {
+                return $message->product?->name ?? '—';
             })
             ->addColumn('excerpt', function (ContactMessage $message) {
                 return \Illuminate\Support\Str::limit($message->message, 80);
@@ -173,6 +176,11 @@ class DatatableController extends Controller
             })
             ->filterColumn('received_on', function ($query, $keyword) {
                 $query->where('created_at', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('tour_name', function ($query, $keyword) {
+                $query->whereHas('product', function ($product) use ($keyword) {
+                    $product->where('name', 'like', "%{$keyword}%");
+                });
             })
             ->filterColumn('excerpt', function ($query, $keyword) {
                 $query->where('message', 'like', "%{$keyword}%");
@@ -186,6 +194,12 @@ class DatatableController extends Controller
                 }
             })
             ->orderColumn('received_on', 'created_at $1')
+            ->orderColumn('tour_name', function ($query, $order) {
+                $query->orderBy(
+                    Product::query()->select('name')->whereColumn('products.id', 'contact_messages.product_id'),
+                    $order
+                );
+            })
             ->orderColumn('excerpt', 'message $1')
             ->orderColumn('status_label', 'read_at $1')
             ->toJson();

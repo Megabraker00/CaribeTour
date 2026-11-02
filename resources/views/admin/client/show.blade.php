@@ -91,7 +91,9 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.booking.show', $booking) }}" class="btn btn-sm btn-info" title="Ver reserva"><i class="fas fa-info"></i> Ver reserva</a>
+                            <div class="btn-group" role="group">
+                                <a role="button" href="{{ route('admin.booking.show', $booking) }}" class="btn btn-sm btn-info" title="Más Información">Más Info</a>
+                            </div>
                         </td>
                     </tr>
                     @endforeach

@@ -67,7 +67,7 @@
 
                             <div class="mt-4">
                                 <a title="Ver fechas disponibles para {{$tour->name}}" href="{{ route('destinos.tour', ['country' => $countrySlug, 'province' => $province->slug, 'tour' => $tour->slug]) }}" class="btn btn-primary me-2">Ver Fechas</a>
-                                <button class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</button>
+                                <a href="{{ route('contacto', ['tour' => $tour->slug]) }}" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
                             </div>
                         </div>
                     </div>

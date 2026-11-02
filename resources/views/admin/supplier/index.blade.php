@@ -42,16 +42,14 @@
                                 <td>{{ $supplier->products_count }}</td>
                                 <td class="text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-warning" title="Editar">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
-                                        <form action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST" class="d-inline"
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                            <button type="submit" class="btn btn-sm btn-danger" form="delete-supplier-{{ $supplier->id }}" title="Eliminar">Eliminar</button>
+                                        </div>
+                                        <form id="delete-supplier-{{ $supplier->id }}" action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST" class="d-none"
                                             onsubmit="return confirm('¿Eliminar este proveedor?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         </form>
                                     @endcan
                                 </td>

@@ -32,5 +32,15 @@ class AppServiceProvider extends ServiceProvider
         View::composer('adminlte::page', function () {
             view()->startPush('css', '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">');
         });
+
+        // El mismo dibujo del sitio, sobre un azul más oscuro que el del agua,
+        // para distinguirlo en la pestaña. El SVG va el último: el navegador lo prefiere.
+        View::composer('adminlte::master', function ($view) {
+            $icons = '<link rel="icon" href="'.asset('favicons/favicon.ico').'" sizes="any">'
+                .'<link rel="icon" href="'.asset('favicons/favicon.svg').'" type="image/svg+xml">';
+            $view->getFactory()->startSection('adminlte_css');
+            echo $icons;
+            $view->getFactory()->appendSection();
+        });
     }
 }

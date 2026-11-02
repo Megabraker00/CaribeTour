@@ -613,8 +613,6 @@
                                                 <th scope="col" nowrap>Precio total</th>
                                                 <th scope="col" nowrap>Plazas</th>
                                                 <th scope="col" nowrap>Disponibles</th>
-                                                <th scope="col" nowrap>Segmentos</th>
-                                                <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </thead>
@@ -630,8 +628,6 @@
                                                 <th scope="col" nowrap>Precio total</th>
                                                 <th scope="col" nowrap>Plazas</th>
                                                 <th scope="col" nowrap>Disponibles</th>
-                                                <th scope="col" nowrap>Segmentos</th>
-                                                <th scope="col" nowrap>Tarifas</th>
                                                 <th nowrap></th>
                                             </tr>
                                         </tfoot>
@@ -896,39 +892,22 @@
                     }
                 },
                 {
-                    data: 'id',
-                    orderable: false,
-                    searchable: false,
-                    render: (id) => {
-                        let base = @json(rtrim(url('/admin/itineraries'), '/'));
-                        let url = base + '/' + id + '/segments';
-                        return `<a href="${url}" class="btn btn-sm btn-outline-secondary" title="Gestionar tramos del viaje"><i class="fas fa-route"></i> Segmentos</a>`;
-                    }
-                },
-                {
-                    data: 'id',
-                    orderable: false,
-                    searchable: false,
-                    render: (id) => {
-                        let base = @json(rtrim(url('/admin/itineraries'), '/'));
-                        let url = base + '/' + id + '/prices';
-                        return `<a href="${url}" class="btn btn-sm btn-outline-info" title="Precios por tipo de pasajero"><i class="fas fa-users"></i> Tarifas</a>`;
-                    }
-                },
-                {
                     data: null,
                     orderable: false,
                     searchable: false,
                     render: (data, type, row) => {
-                        if (!@json(auth()->user()?->can('write-admin'))) {
-                            return '';
+                        const base = @json(rtrim(url('/admin/itineraries'), '/'));
+                        const canWrite = @json(auth()->user()?->can('write-admin'));
+                        let buttons = '<div class="btn-group" role="group">' +
+                            '<a role="button" class="btn btn-sm btn-info" href="' + base + '/' + row.id + '/segments" title="Gestionar tramos del viaje">Segmentos</a>' +
+                            '<a role="button" class="btn btn-sm btn-secondary" href="' + base + '/' + row.id + '/prices" title="Precios por tipo de pasajero">Tarifas</a>';
+                        if (!canWrite) {
+                            return buttons + '</div>';
                         }
-                        let routePhp = "{{ route('admin.tour.date.destroy', 0) }}";
-                        let newRoute = routePhp.replace('/0/', `/${row.id}/`);
-                        return `<form method="POST" action="${newRoute}" class="d-inline">
-                        @csrf @method('DELETE')
-                        <input type="submit" onclick="return confirm('¿Seguro de que deseas eliminar este registro?');" value="Eliminar" class="btn btn-sm btn-danger">
-                      </form>`
+                        const destroyUrl = "{{ route('admin.tour.date.destroy', 0) }}".replace('/0/', '/' + row.id + '/');
+                        return buttons +
+                            '<button type="submit" class="btn btn-sm btn-danger" form="delete-itinerary-' + row.id + '" title="Eliminar">Eliminar</button></div>' +
+                            `<form id="delete-itinerary-${row.id}" method="POST" action="${destroyUrl}" class="d-none" onsubmit="return confirm('¿Seguro de que deseas eliminar este registro?');">@csrf @method('DELETE')</form>`;
                     }
                 }
             ]

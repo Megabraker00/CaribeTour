@@ -194,7 +194,9 @@
                                     <td>{{ number_format((float) $invoice->total_amount, 2, ',', '.') }} {{ $invoice->currency }}</td>
                                     <td>{{ $invoice->issue_date?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="text-right">
-                                        <a href="{{ route('admin.facturas.show', $invoice) }}" class="btn btn-sm btn-info">Más Info</a>
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.facturas.show', $invoice) }}" class="btn btn-sm btn-info" title="Más Información">Más Info</a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -293,9 +295,9 @@
                             <td class="text-right">{{ number_format((float) $pax->price_at_booking + (float) $pax->taxes_at_booking, 2, ',', '.') }}</td>
                             <td class="text-right">
                                 @can('write-admin')
-                                    <a href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-pencil-alt"></i> Editar
-                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <a role="button" href="{{ route('admin.booking.passengers.edit', [$booking, $pax]) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                    </div>
                                 @endcan
                             </td>
                         </tr>

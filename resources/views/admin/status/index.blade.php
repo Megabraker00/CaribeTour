@@ -52,19 +52,18 @@
                                 </td>
                                 <td class="text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-warning"
-                                            title="Editar">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.statuses.edit', $s) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                            @unless ($s->is_system)
+                                                <button type="submit" class="btn btn-sm btn-danger" form="delete-status-{{ $s->id }}" title="Eliminar">Eliminar</button>
+                                            @endunless
+                                        </div>
                                         @unless ($s->is_system)
-                                        <form action="{{ route('admin.statuses.destroy', $s) }}" method="POST" class="d-inline"
-                                            onsubmit="return confirm('¿Eliminar este estado? Solo es posible si no está en uso.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                            <form id="delete-status-{{ $s->id }}" action="{{ route('admin.statuses.destroy', $s) }}" method="POST" class="d-none"
+                                                onsubmit="return confirm('¿Eliminar este estado? Solo es posible si no está en uso.');">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
                                         @endunless
                                     @endcan
                                 </td>

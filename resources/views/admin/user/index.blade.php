@@ -45,17 +45,17 @@
                                 </td>
                                 <td>{{ $user->created_at?->format('d/m/Y') }}</td>
                                 <td class="text-right text-nowrap">
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-warning" title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <a role="button" href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                        @if ((int) $user->id !== (int) auth()->id())
+                                            <button type="submit" class="btn btn-sm btn-danger" form="delete-user-{{ $user->id }}" title="Eliminar">Eliminar</button>
+                                        @endif
+                                    </div>
                                     @if ((int) $user->id !== (int) auth()->id())
-                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline"
+                                        <form id="delete-user-{{ $user->id }}" action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-none"
                                             onsubmit="return confirm('¿Eliminar este usuario?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         </form>
                                     @endif
                                 </td>

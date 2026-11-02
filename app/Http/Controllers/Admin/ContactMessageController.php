@@ -16,6 +16,7 @@ class ContactMessageController extends Controller
 
     public function show(ContactMessage $contactMessage): View
     {
+        $contactMessage->load('product');
         $contactMessage->markAsRead();
 
         return view('admin.contact-message.show', compact('contactMessage'));

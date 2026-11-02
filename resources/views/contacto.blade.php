@@ -49,6 +49,14 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="subject" class="form-label">Asunto</label>
+                        <input type="text" class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" value="{{ old('subject', $subject) }}" maxlength="150" required placeholder="Motivo de tu consulta">
+                    </div>
+                    @if ($productSlug !== '')
+                        <input type="hidden" name="product" value="{{ $productSlug }}">
+                    @endif
+
+                    <div class="mb-3">
                         <label for="message" class="form-label">Mensaje</label>
                         <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="5" maxlength="5000" required placeholder="Escribe tu mensaje aquí">{{ old('message') }}</textarea>
                     </div>

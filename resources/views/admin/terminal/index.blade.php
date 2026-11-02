@@ -42,10 +42,9 @@
                                 <td>{{ $t->parentTerminal?->name ?? '—' }}</td>
                                 <td class="text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.terminals.edit', $t) }}" class="btn btn-sm btn-warning"
-                                            title="Editar">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.terminals.edit', $t) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                        </div>
                                     @endcan
                                 </td>
                             </tr>

@@ -56,7 +56,9 @@
             {data: 'issued_on'},
             {
                 data: null,
-                render: (data, type, row) => '<a class="btn btn-sm btn-info" href="{{ url('admin/facturas') }}/' + row.id + '">Más Info</a>',
+                render: (data, type, row) => '<div class="btn-group" role="group">' +
+                    '<a role="button" class="btn btn-sm btn-info" href="{{ url('admin/facturas') }}/' + row.id + '" title="Más Información">Más Info</a>' +
+                    '</div>',
             }
         ]
 
