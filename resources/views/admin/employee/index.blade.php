@@ -44,16 +44,14 @@
                                 <td>{{ $employee->statusRecord?->name ?? '—' }}</td>
                                 <td class="text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm btn-warning" title="Editar">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </a>
-                                        <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="d-inline"
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.employees.edit', $employee) }}" class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                            <button type="submit" class="btn btn-sm btn-danger" form="delete-employee-{{ $employee->id }}" title="Eliminar">Eliminar</button>
+                                        </div>
+                                        <form id="delete-employee-{{ $employee->id }}" action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="d-none"
                                             onsubmit="return confirm('¿Eliminar este empleado?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         </form>
                                     @endcan
                                 </td>

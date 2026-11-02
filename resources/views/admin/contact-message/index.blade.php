@@ -24,6 +24,7 @@
                             <th scope="col">Fecha</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Correo</th>
+                            <th scope="col">Tour</th>
                             <th scope="col">Mensaje</th>
                             <th scope="col">Estado</th>
                             <th nowrap></th>
@@ -35,6 +36,7 @@
                             <th scope="col">Fecha</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Correo</th>
+                            <th scope="col">Tour</th>
                             <th scope="col">Mensaje</th>
                             <th scope="col">Estado</th>
                             <th nowrap></th>
@@ -58,6 +60,7 @@
             {data: 'received_on'},
             {data: 'name'},
             {data: 'email'},
+            {data: 'tour_name'},
             {data: 'excerpt'},
             {
                 data: 'status_label',
@@ -72,13 +75,15 @@
                 render: function(data, type, row) {
                     let showUrl = "{{ url('admin/mensajes') }}/" + row.id;
                     let buttons = '<div class="btn-group" role="group">' +
-                        '<a role="button" class="btn btn-sm btn-info" href="' + showUrl + '" title="Ver mensaje">Ver</a>';
+                        '<a role="button" class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información">Más Info</a>';
                     if (canWrite) {
-                        buttons += '<form action="' + showUrl + '" method="POST" class="d-inline" onsubmit="return confirm(\'¿Eliminar este mensaje?\');">' +
+                        buttons += '<button type="submit" class="btn btn-sm btn-danger" form="delete-message-' + row.id + '" title="Eliminar">Eliminar</button>' +
+                            '</div>' +
+                            '<form id="delete-message-' + row.id + '" action="' + showUrl + '" method="POST" class="d-none" onsubmit="return confirm(\'¿Eliminar este mensaje?\');">' +
                             '<input type="hidden" name="_token" value="' + csrf + '">' +
                             '<input type="hidden" name="_method" value="DELETE">' +
-                            '<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="fas fa-trash"></i></button>' +
                             '</form>';
+                        return buttons;
                     }
                     return buttons + '</div>';
                 }

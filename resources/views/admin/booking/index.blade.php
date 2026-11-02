@@ -73,7 +73,9 @@
                 orderable: false,
                 render: function(data, type, row) {
                     let showUrl = "{{ url('admin/reservas') }}/" + row.id;
-                    return '<a class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información"><i class="fa fa-info"></i> Más Info</a>';
+                    return '<div class="btn-group" role="group">' +
+                        '<a role="button" class="btn btn-sm btn-info" href="' + showUrl + '" title="Más Información">Más Info</a>' +
+                        '</div>';
                 }
             }
         ]

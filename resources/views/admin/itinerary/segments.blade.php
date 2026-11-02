@@ -194,18 +194,16 @@
                                 </td>
                                 <td class="align-middle text-right text-nowrap">
                                     @can('write-admin')
-                                        <a href="{{ route('admin.itineraries.segments.edit', [$itinerary, $segment]) }}"
-                                            class="btn btn-sm btn-warning" title="Editar">
-                                            <i class="fas fa-pencil-alt"></i> Editar
-                                        </a>
-                                        <form action="{{ route('admin.itineraries.segments.destroy', [$itinerary, $segment]) }}"
-                                            method="POST" class="d-inline"
+                                        <div class="btn-group" role="group">
+                                            <a role="button" href="{{ route('admin.itineraries.segments.edit', [$itinerary, $segment]) }}"
+                                                class="btn btn-sm btn-warning" title="Editar registro">Editar</a>
+                                            <button type="submit" class="btn btn-sm btn-danger" form="delete-segment-{{ $segment->id }}" title="Eliminar">Eliminar</button>
+                                        </div>
+                                        <form id="delete-segment-{{ $segment->id }}" action="{{ route('admin.itineraries.segments.destroy', [$itinerary, $segment]) }}"
+                                            method="POST" class="d-none"
                                             onsubmit="return confirm('¿Eliminar este segmento?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="fas fa-trash"></i> Borrar
-                                            </button>
                                         </form>
                                     @endcan
                                 </td>

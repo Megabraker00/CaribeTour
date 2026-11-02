@@ -2,9 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\ContactMessage;
+use App\Models\Itinerary;
+use App\Models\Product;
+use App\Models\Segment;
+use App\Models\Type;
 use App\Models\User;
 use Database\Seeders\StatusSeeder;
+use Database\Seeders\TypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,7 +21,7 @@ class ContactMessageTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(StatusSeeder::class);
+        $this->seed([StatusSeeder::class, TypeSeeder::class]);
     }
 
     public function test_guest_can_send_a_contact_message(): void
@@ -23,6 +29,7 @@ class ContactMessageTest extends TestCase
         $this->post(route('contacto.store'), [
             'name' => 'Ana Pérez',
             'email' => 'ana@example.com',
+            'subject' => 'Viaje a Punta Cana',
             'message' => 'Quiero un viaje a Punta Cana.',
         ])->assertRedirect(route('contacto'))
             ->assertSessionHas('success', 'Hemos recibido tu mensaje. Te responderemos lo antes posible.');
@@ -30,7 +37,9 @@ class ContactMessageTest extends TestCase
         $this->assertDatabaseHas('contact_messages', [
             'name' => 'Ana Pérez',
             'email' => 'ana@example.com',
+            'subject' => 'Viaje a Punta Cana',
             'message' => 'Quiero un viaje a Punta Cana.',
+            'product_id' => null,
             'read_at' => null,
         ]);
 
@@ -45,10 +54,11 @@ class ContactMessageTest extends TestCase
             ->post(route('contacto.store'), [
                 'name' => '',
                 'email' => 'no-es-un-correo',
+                'subject' => '',
                 'message' => '',
             ])
             ->assertRedirect(route('contacto'))
-            ->assertSessionHasErrors(['name', 'email', 'message']);
+            ->assertSessionHasErrors(['name', 'email', 'subject', 'message']);
 
         $this->assertDatabaseCount('contact_messages', 0);
     }
@@ -60,6 +70,7 @@ class ContactMessageTest extends TestCase
         $payload = [
             'name' => 'Ana Pérez',
             'email' => 'ana@example.com',
+            'subject' => 'Hola',
             'message' => 'Hola',
         ];
 
@@ -113,7 +124,9 @@ class ContactMessageTest extends TestCase
         $this->actingAs($viewer)
             ->get(route('admin.contact-messages.show', $message))
             ->assertOk()
-            ->assertSee('Quiero un viaje a Punta Cana.');
+            ->assertSee('Quiero un viaje a Punta Cana.')
+            ->assertSee('Tour')
+            ->assertSee('—');
 
         $this->assertNotNull($message->fresh()->read_at);
 
@@ -144,5 +157,73 @@ class ContactMessageTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.contact-messages.show', $message))
             ->assertNotFound();
+    }
+
+    public function test_consultar_opens_contact_with_the_tour_subject_and_keeps_the_tour(): void
+    {
+        $tour = $this->publicTour();
+        $inquiry = route('contacto', ['tour' => $tour->slug]);
+
+        $this->get(route('destinos.provincia', ['country' => 'mexico', 'province' => 'cancun']))
+            ->assertOk()
+            ->assertSee($inquiry, false);
+
+        $this->get(route('destinos.tour', ['country' => 'mexico', 'province' => 'cancun', 'tour' => $tour->slug]))
+            ->assertOk()
+            ->assertSee($inquiry, false);
+
+        $this->get($inquiry)
+            ->assertOk()
+            ->assertSee('value="'.$tour->name.'"', false)
+            ->assertSee('value="'.$tour->slug.'"', false);
+
+        $this->post(route('contacto.store'), [
+            'name' => 'Ana Pérez',
+            'email' => 'ana@example.com',
+            'subject' => 'Fechas en agosto',
+            'message' => '¿Hay salida en agosto?',
+            'product' => $tour->slug,
+        ])->assertRedirect(route('contacto'));
+
+        $message = ContactMessage::query()->firstOrFail();
+        $this->assertSame('Fechas en agosto', $message->subject);
+        $this->assertSame($tour->id, $message->product_id);
+
+        $this->actingAs(User::factory()->admin()->create())
+            ->get(route('admin.contact-messages.show', $message))
+            ->assertOk()
+            ->assertSee('Fechas en agosto')
+            ->assertSee($tour->name);
+
+        $this->get(route('contacto', ['tour' => 'no-existe']))
+            ->assertOk()
+            ->assertDontSee('name="product"', false);
+    }
+
+    private function publicTour(): Product
+    {
+        $country = Category::factory()->create(['name' => 'México', 'slug' => 'mexico']);
+        $province = Category::factory()->create([
+            'name' => 'Cancún',
+            'slug' => 'cancun',
+            'parent_id' => $country->id,
+        ]);
+        $tour = Product::factory()->tour()->active()->create([
+            'name' => 'Free tour por el casco antiguo',
+            'slug' => 'free-tour-por-el-casco-antiguo',
+            'category_id' => $province->id,
+        ]);
+        $itinerary = Itinerary::factory()->create([
+            'product_id' => $tour->id,
+            'available_stock' => 4,
+            'total_stock' => 4,
+        ]);
+        Segment::factory()->create([
+            'itinerary_id' => $itinerary->id,
+            'type_id' => Type::idFor(Product::class, Type::FLIGHT),
+            'departure_date' => now()->addWeek(),
+        ]);
+
+        return $tour;
     }
 }

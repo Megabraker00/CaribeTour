@@ -63,15 +63,13 @@
             {
                 data: null,
                 render: (data, type, row) => {
-                    let buttons = '<div class="row" role="group">' +
-                       '<a class="btn btn-sm btn-info" href="clientes/' + row.id + '" title="Más Información"> Más Info <i class="fa fa-info"></i></a>';
+                    let buttons = '<div class="btn-group" role="group">' +
+                       '<a role="button" class="btn btn-sm btn-info" href="clientes/' + row.id + '" title="Más Información">Más Info</a>';
                     if (canWrite) {
-                        buttons += '<a class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro"> Editar <i class="fas fa-pencil"></i></a>';
+                        buttons += '<a role="button" class="btn btn-sm btn-warning" href="clientes/' + row.id + '/edit" title="Editar registro">Editar</a>';
                     }
                     return buttons + '</div>';
                 },
-                 //'<a class="btn btn-sm btn-info" href="clientes/'+ row.id +'" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/'+ row.id +'/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>',
-                // defaultContent: '<a class="btn btn-sm btn-info" href="clientes/3" title="Más Información"> Más Info <i class="fa fa-info"></i></a> <a class="btn btn-sm btn-warning" href="clientes/3/edit" title="Editar registro"> Edita <i class="fas fa-pencil"></i></a>'
             }
         ]
 

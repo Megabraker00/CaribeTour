@@ -39,6 +39,12 @@
                 <dt class="col-sm-3">Correo</dt>
                 <dd class="col-sm-9"><a href="mailto:{{ $contactMessage->email }}">{{ $contactMessage->email }}</a></dd>
 
+                <dt class="col-sm-3">Asunto</dt>
+                <dd class="col-sm-9">{{ $contactMessage->subject ?: '—' }}</dd>
+
+                <dt class="col-sm-3">Tour</dt>
+                <dd class="col-sm-9">{{ $contactMessage->product?->name ?? '—' }}</dd>
+
                 <dt class="col-sm-3">Mensaje</dt>
                 <dd class="col-sm-9">{!! nl2br(e($contactMessage->message)) !!}</dd>
             </dl>
