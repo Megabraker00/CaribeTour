@@ -346,6 +346,11 @@ return [
             'icon' => 'fas fa-fw fa-newspaper',
         ],
         [
+            'text' => 'Diapositivas',
+            'url' => 'admin/diapositivas',
+            'icon' => 'fas fa-fw fa-images',
+        ],
+        [
             'text' => 'PRODUCTOS',
             'icon' => 'fas fa-fw fa-suitcase',
             'submenu' => [

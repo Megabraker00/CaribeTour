@@ -136,6 +136,31 @@
             border-color: transparent;
             box-shadow: none;
         }
+
+        .home-carousel .carousel-caption {
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 2.5rem 1.25rem 2.25rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+            text-align: left;
+        }
+
+        .home-carousel .carousel-caption h5,
+        .home-carousel .carousel-caption p,
+        .home-carousel a.home-slide-link,
+        .home-carousel a.home-slide-link:hover,
+        .home-carousel a.home-slide-link:focus {
+            color: #fff;
+        }
+
+        .home-carousel .carousel-item img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            object-position: center;
+        }
     </style>
 
     <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">

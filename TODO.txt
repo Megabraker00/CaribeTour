@@ -41,10 +41,10 @@ Prioridad 4 — producto / UX (puede esperar)
 - [x] mejorar el estilo de paginación en el frontend (lista de imagenes)
 - [x] hacer que cuando se haga clic sobre el boton "consultar" (en tour y excursiones), que se añada un campo de texto de nombre "asunto" y el valor sea el nombre del tour o excursion que quieran consultar
 - [x] personalizar la pagina 404
-- que los productos (tour, excursiones, etc) se puedan "destacar" para que aparezcan en el slider del home
+- [x] el slider de la portada se gestiona con diapositivas propias (imagen, título, texto, enlace a un producto o a una dirección, orden, activa y fechas). Si el producto deja de ser público, esa diapositiva no se muestra
 - en la página de contacto, tambien poner enlaces a las redes sociales de la agencia
-- [x] el buscador de la portada es un bloque gris oscuro: pasarlo a fondo claro, como las tarjetas, para que encaje con el naranja y el verde
-- las leyendas del carrusel se leen mal (texto gris sobre la foto). Ponerlas sobre una banda oscura, o quitarlas si la foto basta
+- [x] el buscador de la portada es un bloque gris oscuro: pasarlo a fondo claro, como las tarjetas, para que encaje con el naranja y el verde (PR de la rama feat/light-search-card pendiente de mergear a main)
+- [x] las leyendas del carrusel se leen mal (texto gris sobre la foto). Ponerlas sobre una banda oscura, o quitarlas si la foto basta
 - [x] los enlaces siguen subrayados porque en el CSS pone text-decoration: done, que el navegador ignora. Corregirlo, y dejar la línea de copyright del footer como texto normal (ahora es un enlace y también se subraya)
 - [x] el anillo naranja de foco sale al hacer clic con el ratón. Que aparezca solo al navegar con el teclado
 - al pasar el cursor, cualquier celda de una tabla se pone amarilla. Limitarlo a las celdas de precio

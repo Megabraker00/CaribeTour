@@ -216,6 +216,43 @@ class Product extends Model
         return static::query()->whereKey($this->id)->inPublicCategory()->exists();
     }
 
+    public function isPubliclyVisible(): bool
+    {
+        $this->loadMissing('type');
+        $query = static::query()->whereKey($this->id);
+
+        return match ($this->type?->slug) {
+            Type::TOUR => $query->publicVisibleTour()->exists(),
+            Type::EXCURSION => $query->publicVisibleExcursion()->exists(),
+            default => $query->publicVisibleService()->exists(),
+        };
+    }
+
+    public function publicHref(): ?string
+    {
+        $this->loadMissing('type', 'category.parentCategory');
+
+        if ($this->slug === '') {
+            return null;
+        }
+
+        if ($this->type?->slug === Type::TOUR) {
+            $country = $this->category?->parentCategory?->slug;
+            $province = $this->category?->slug;
+            if ($country === null || $country === '' || $province === null || $province === '') {
+                return null;
+            }
+
+            return route('destinos.tour', [
+                'country' => $country,
+                'province' => $province,
+                'tour' => $this->slug,
+            ]);
+        }
+
+        return route('servicios.detalle', $this->slug);
+    }
+
     /**
      * Servicio activo visible en la web: no es un tour y su categoría está publicada.
      */
