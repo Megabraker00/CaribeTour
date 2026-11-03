@@ -38,14 +38,15 @@
 
                 <form action="{{ route('contacto.store') }}" method="post" data-disable-on-submit>
                     @csrf
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" maxlength="100" required placeholder="Tu nombre completo">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="Tu correo electrónico">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="name" class="form-label">Nombre</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" maxlength="100" required placeholder="Tu nombre completo">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="Tu correo electrónico">
+                        </div>
                     </div>
 
                     <div class="mb-3">

@@ -52,10 +52,13 @@
 
         .site-pagination .page-link:focus {
             z-index: 3;
+            outline: 0;
+        }
+
+        .site-pagination .page-link:focus-visible {
             color: #444;
             background-color: #fff;
             border-color: #ff9000;
-            outline: 0;
             box-shadow: 0 0 0 0.25rem #ff900026;
         }
 

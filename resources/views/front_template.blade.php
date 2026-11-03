@@ -70,6 +70,33 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap">
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        *:focus:not(:focus-visible) {
+            outline: none;
+            box-shadow: none;
+        }
+
+        *:focus-visible {
+            border-color: #ff9000;
+            outline: 2px solid #ff9000;
+            box-shadow: 0 0 0 .25rem #ff900026;
+        }
+
+        .btn:focus:not(:focus-visible) {
+            box-shadow: none;
+        }
+
+        footer a,
+        footer a:visited,
+        footer a:hover,
+        footer a:focus {
+            color: #fff;
+        }
+    </style>
 
     <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
 
@@ -172,9 +199,9 @@
     <!-- footer -->
     <footer class="py-3 bg-palm text-light">
         <div class="container">
-            <div class="row"><a>CaribeTour.es © 2024 - Todos los derechos reservados.</a></div>
+            <div class="row"><span>CaribeTour.es © 2024 - Todos los derechos reservados.</span></div>
             <div>
-                <a href=#>Condiciones de uso</a> | <a href=#>Aviso Legal</a> | <a href=#>Política de Privacidad</a> | <a href=#>Uso de Cookies</a> | <a href="{{ route('reservation.lookup') }}">Consultar reserva</a>
+                <a href="#" title="Condiciones de uso">Condiciones de uso</a> | <a href="#" title="Aviso Legal">Aviso Legal</a> | <a href="#" title="Política de Privacidad">Política de Privacidad</a> | <a href="#" title="Uso de Cookies">Uso de Cookies</a> | <a href="{{ route('reservation.lookup') }}" title="Consultar reserva">Consultar reserva</a>
             </div>
         </div>
     </footer>
