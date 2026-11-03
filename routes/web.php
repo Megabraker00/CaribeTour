@@ -55,12 +55,13 @@ Route::post('/contacto', [ContactController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('contacto.store');
 
+Route::get('/resultados', [DestinationController::class, 'results'])->name('resultados');
+
 Route::controller(DestinationController::class)->group(function () {
     Route::get('/destinos', 'countryIndex')->name('destinos');
     Route::get('/destinos/{country:slug}', 'countryShow')->name('destinos.pais');
     Route::get("/destinos/{country:slug}/{province:slug}", 'provinceShow')->name('destinos.provincia');
     Route::get("/destinos/{country:slug}/{province:slug}/{tour:slug}", 'tourShow')->name('destinos.tour');
-    Route::get('/destinos/resultados', 'searchResult')->name('destinos.resultado');
 });
 
 Route::get('/galeria', function () {

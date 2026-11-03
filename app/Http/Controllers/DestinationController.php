@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Support\StructuredData;
+use App\Support\TourSearch;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DestinationController extends Controller
 {
@@ -249,11 +252,21 @@ class DestinationController extends Controller
         return $plain !== '' ? $plain : $fallback;
     }
 
-    /**
-     * Ruta reservada en web.php; implementar búsqueda de destinos cuando corresponda.
-     */
-    public function searchResult()
+    public function results(Request $request): View
     {
-        abort(404);
+        $destination = TourSearch::province($request->query('destino'));
+        $origin = TourSearch::terminal($request->query('origen'));
+        $departure = TourSearch::date($request->query('salida'));
+
+        $tours = TourSearch::products($destination, $origin, $departure)
+            ->paginate(4)
+            ->withQueryString();
+
+        return view('destination.resultados', [
+            'tours' => $tours,
+            'destination' => $destination,
+            'origin' => $origin,
+            'departure' => $departure,
+        ]);
     }
 }
