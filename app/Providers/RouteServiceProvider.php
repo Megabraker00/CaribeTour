@@ -49,6 +49,22 @@ class RouteServiceProvider extends ServiceProvider
             return $this->formAttemptLimit($request, 5, 'email');
         });
 
+        RateLimiter::for('password-email', function (Request $request) {
+            return Limit::perMinute(5)
+                ->by($request->ip())
+                ->response(fn (Request $request, array $headers) => response()
+                    ->view('errors.429', [], Response::HTTP_TOO_MANY_REQUESTS)
+                    ->withHeaders($headers));
+        });
+
+        RateLimiter::for('resultados', function (Request $request) {
+            return Limit::perMinute(60)
+                ->by($request->ip())
+                ->response(fn (Request $request, array $headers) => response()
+                    ->view('errors.429', [], Response::HTTP_TOO_MANY_REQUESTS)
+                    ->withHeaders($headers));
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

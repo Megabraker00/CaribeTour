@@ -55,7 +55,9 @@ Route::post('/contacto', [ContactController::class, 'store'])
     ->middleware('throttle:contact')
     ->name('contacto.store');
 
-Route::get('/resultados', [DestinationController::class, 'results'])->name('resultados');
+Route::get('/resultados', [DestinationController::class, 'results'])
+    ->middleware('throttle:resultados')
+    ->name('resultados');
 
 Route::controller(DestinationController::class)->group(function () {
     Route::get('/destinos', 'countryIndex')->name('destinos');
@@ -92,7 +94,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->middleware('throttle:password-email')
+        ->name('password.email');
     Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
