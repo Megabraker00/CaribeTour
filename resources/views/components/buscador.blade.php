@@ -1,6 +1,6 @@
 <!-- buscador -->
 
-    <div class="card mb-4 tour-search-form ">
+    <div class="card shadow mb-4 tour-search-form">
 
         <div class="card-header form-title">
             <h5 class="text-center">Encuentra tu Destino</h5>
