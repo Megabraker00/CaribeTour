@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -121,11 +122,44 @@ class Itinerary extends Model
     {
         $today = now()->startOfDay();
 
-        return $query->whereExists(function ($subquery) use ($today) {
+        return $query->whereOpening(function ($opening) use ($today) {
+            $opening->where('opening.departure_date', '>=', $today);
+        });
+    }
+
+    /**
+     * Salida anunciable que cumple el origen y la fecha del buscador.
+     * La fecha ausente no añade filtro; una fecha pasada tampoco, porque
+     * bookableInStock ya descarta lo anterior a hoy.
+     */
+    public function scopeForSearch(Builder $query, ?int $terminalId, ?Carbon $from): Builder
+    {
+        $query->bookableInStock();
+
+        if ($terminalId) {
+            $query->whereOpening(function ($opening) use ($terminalId) {
+                $opening->where('opening.departure_terminal_id', $terminalId);
+            });
+        }
+
+        if ($from) {
+            $query->whereOpening(function ($opening) use ($from) {
+                $opening->where('opening.departure_date', '>=', $from);
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * El primer tramo de la salida. $constrain añade condiciones sobre el alias opening.
+     */
+    public function scopeWhereOpening(Builder $query, callable $constrain): Builder
+    {
+        return $query->whereExists(function ($subquery) use ($constrain) {
             $subquery->selectRaw('1')
                 ->from('segments as opening')
                 ->whereColumn('opening.itinerary_id', 'itineraries.id')
-                ->where('opening.departure_date', '>=', $today)
                 ->whereRaw(
                     'opening.sort_order = (
                         select min(earliest.sort_order)
@@ -133,6 +167,7 @@ class Itinerary extends Model
                         where earliest.itinerary_id = opening.itinerary_id
                     )'
                 );
+            $constrain($subquery);
         });
     }
 

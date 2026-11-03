@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\TourSearch;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
         //view()->share('categories', $categories_search);
 
         Paginator::useBootstrapFive();
+
+        View::composer('components.buscador', function ($view) {
+            $view->with([
+                'searchProvinces' => TourSearch::provinces(),
+                'searchOrigins' => TourSearch::origins(),
+                'searchDate' => TourSearch::date(request()->query('salida'))?->toDateString() ?? '',
+            ]);
+        });
 
         // Los listados ya cargaban Bootstrap 4 encima de AdminLTE. Sin esa hoja,
         // el inicio se queda con la tipografía y los controles más finos de AdminLTE.
