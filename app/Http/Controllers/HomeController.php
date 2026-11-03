@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Slide;
 use App\Models\Status;
 use App\Models\Type;
 use Illuminate\Support\Facades\DB;
@@ -56,6 +57,8 @@ class HomeController extends Controller
 
         view()->share('categories', $categories_search);
 
-        return view('index', compact('featured_products', 'tours', 'blog', 'featured_excursions'));
+        $slides = Slide::forHome();
+
+        return view('index', compact('featured_products', 'tours', 'blog', 'featured_excursions', 'slides'));
     }
 }

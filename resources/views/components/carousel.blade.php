@@ -1,70 +1,46 @@
-                <!-- carousel -->
-                <div class="col-md-12 col-lg-8 mb-4">
-
-                    <div class="card shadow">
-
-                        <div class="card-body">
-
-                            <div id="carouselExampleCaptions" style="min-height: 200;" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                                <div class="carousel-indicators">
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
-                                        class="active" aria-current="true" aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                                        aria-label="Slide 2"></button>
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                                        aria-label="Slide 3"></button>
-                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
-                                        aria-label="Slide 4"></button>
-                                </div>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="{{ asset('images/image_4.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="...">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>First slide label</h5>
-                                            <p>Some representative placeholder content for the first slide.</p>
-                                        </div>
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="{{ asset('images/image_5.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>Second slide label</h5>
-                                            <p>Some representative placeholder content for the second slide.</p>
-                                        </div>
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="{{ asset('images/image_6.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>Third slide label</h5>
-                                            <p>Some representative placeholder content for the third slide.</p>
-                                        </div>
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="{{ asset('images/image_4.jpg') }}"
-                                            class="d-block w-100 img-aspect-16-9" alt="..." loading="lazy" decoding="async">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>Fourth slide label</h5>
-                                            <p>Some representative placeholder content for the second slide.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="carousel-control-prev" type="button"
-                                    data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                                    <span class="visually-hidden">Anterior</span>
-                                </button>
-                                <button class="carousel-control-next" type="button"
-                                    data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                                    <span class="visually-hidden">Siguiente</span>
-                                </button>
-                            </div>
-
+@if ($slides->isNotEmpty())
+    <div class="col-md-12 col-lg-8 mb-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <div id="carouselExampleCaptions" class="carousel slide carousel-fade home-carousel" @if ($slides->count() > 1) data-bs-ride="carousel" @endif>
+                    @if ($slides->count() > 1)
+                        <div class="carousel-indicators">
+                            @foreach ($slides as $slide)
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ $loop->index }}" @if ($loop->first) class="active" aria-current="true" @endif aria-label="Diapositiva {{ $loop->iteration }}"></button>
+                            @endforeach
                         </div>
-
+                    @endif
+                    <div class="carousel-inner">
+                        @foreach ($slides as $slide)
+                            @php
+                                $href = $slide->href();
+                                $external = str_starts_with((string) $href, 'http');
+                            @endphp
+                            <div class="carousel-item @if ($loop->first) active @endif">
+                                <a href="{{ $href }}" class="home-slide-link" @if ($external) target="_blank" rel="noopener noreferrer" @endif>
+                                    <img src="{{ asset($slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" @unless ($loop->first) loading="lazy" @endunless>
+                                    <div class="carousel-caption">
+                                        <h5>{{ $slide->title }}</h5>
+                                        @if ($slide->text)
+                                            <p class="mb-0">{{ $slide->text }}</p>
+                                        @endif
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
-
+                    @if ($slides->count() > 1)
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
+                    @endif
                 </div>
-                <!-- /carousel -->
+            </div>
+        </div>
+    </div>
+@endif

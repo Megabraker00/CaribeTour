@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItineraryController;
 use App\Http\Controllers\Admin\SegmentController;
+use App\Http\Controllers\Admin\SlideController;
 use App\Http\Controllers\Admin\ItineraryPriceController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReservationController;
@@ -119,6 +120,11 @@ Route::resource('categories', CategoryController::class)->only([
 ]);
 
 Route::resource('blogs', BlogController::class)->names('admin.blogs');
+
+Route::resource('diapositivas', SlideController::class)
+    ->parameters(['diapositivas' => 'slide'])
+    ->except(['show'])
+    ->names('admin.slides');
 
 Route::resource('empleados', EmployeeController::class)
     ->parameters(['empleados' => 'employee'])
