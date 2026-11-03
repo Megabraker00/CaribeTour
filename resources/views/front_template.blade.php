@@ -96,6 +96,46 @@
         footer a:focus {
             color: #fff;
         }
+
+        .tour-search-form {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.125);
+            color: #444;
+        }
+
+        .tour-search-form .form-title,
+        .tour-search-form input,
+        .tour-search-form select {
+            background: #fff;
+            color: #444;
+            box-shadow: none;
+        }
+
+        .tour-search-form input,
+        .tour-search-form select {
+            border: 1px solid #dee2e6;
+        }
+
+        .tour-search-form .form-title {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .tour-search-form .form-title h5,
+        .tour-search-form label {
+            color: #444;
+            text-shadow: none;
+        }
+
+        .tour-search-form .form-control:focus-visible,
+        .tour-search-form .form-select:focus-visible {
+            color: #444;
+            background-color: #fff;
+        }
+
+        .tour-search-form .btn-container {
+            border-color: transparent;
+            box-shadow: none;
+        }
     </style>
 
     <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
