@@ -8,6 +8,12 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap4.min.css">
+    <style>
+        .dataTables_wrapper .dt-buttons {
+            margin-left: .75rem;
+        }
+    </style>
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/custom.css') }}"> --> 
 @endsection
 
@@ -43,6 +49,11 @@
 @section('js')
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
     <script>
         /**
          * datatable properties 
@@ -63,16 +74,13 @@
                 //lengthMenu: [5, 10, 50, 100, 200, 500], // opciones para mostrar cantidad de registros
                 //pageLength: 5, // canditad de registros por pagina por defecto
                 order: [[ 0, 'desc' ]], // por defecto ordene la primera columna en forma descendente
-                //buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                //dom: "Bfrtilp",
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa-solid fa-file-csv"></i>',
-                        titleAttr: "Exportar a Excel",
-                        className: "btn btn-success",
-                    }
-                ],
+                layout: {
+                    topStart: ['pageLength', 'buttons'],
+                    topEnd: 'search',
+                    bottomStart: 'info',
+                    bottomEnd: 'paging',
+                },
+                buttons: dtExportButtons(),
                 columns: [],
                 columnDefs: [
                     {orderable: false, targets: [-1]}, // no se pueda ordenar por la ultima columna, usa targets:'_all' para aplicarlo a todas las columnas
@@ -129,5 +137,6 @@
             }
         }
     </script>
+    @include('admin.partials.datatable-export')
     @yield('custom-js')
 @endsection

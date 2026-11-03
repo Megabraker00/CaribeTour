@@ -126,6 +126,60 @@ class AdminCrudTest extends TestCase
             ->assertJsonFragment(['name' => 'Post DataTable']);
     }
 
+    public function test_datatable_exports_cover_the_filtered_rows_not_only_the_page(): void
+    {
+        $columns = [
+            ['data' => 'id', 'searchable' => 'true', 'orderable' => 'true'],
+            ['data' => 'name', 'searchable' => 'true', 'orderable' => 'true'],
+            ['data' => 'slug', 'searchable' => 'true', 'orderable' => 'true'],
+            ['data' => 'status_name', 'searchable' => 'true', 'orderable' => 'true'],
+            ['data' => 'author', 'searchable' => 'true', 'orderable' => 'true'],
+        ];
+
+        $list = $this->actingAs($this->admin)
+            ->get(route('admin.blogs.index'))
+            ->assertOk()
+            ->getContent();
+
+        foreach (["text: 'CSV'", "text: 'Excel'", "text: 'JSON'", 'fas fa-print', 'aria-label', 'jszip.min.js', 'buttons.html5.min.js', 'buttons.print.min.js'] as $needle) {
+            $this->assertStringContainsString($needle, $list);
+        }
+
+        $product = Product::factory()->create([
+            'category_id' => Category::factory(),
+            'type_id' => Type::idFor(Product::class, Type::TOUR),
+            'status_id' => Status::idFor(Product::class, Status::PRODUCT_ACTIVE),
+            'supplier_id' => Supplier::factory(),
+            'created_user_id' => $this->admin->id,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.catalog.edit', ['kind' => 'tours', 'id' => $product->id]))
+            ->assertOk()
+            ->assertSee('Exportar JSON', false);
+
+        foreach (range(1, 3) as $i) {
+            Blog::factory()->create([
+                'name' => 'Post export '.$i,
+                'created_user_id' => $this->admin->id,
+                'status_id' => Status::idFor(Blog::class, Status::BLOG_PUBLISHED),
+            ]);
+        }
+
+        $all = $this->actingAs($this->admin)
+            ->getJson(route('api.datatable.blogs', [
+                'draw' => 1,
+                'start' => 0,
+                'length' => -1,
+                'search' => ['value' => 'Post export'],
+                'columns' => $columns,
+            ]))
+            ->assertOk()
+            ->assertJsonPath('recordsFiltered', 3);
+
+        $this->assertCount(3, $all->json('data'));
+    }
+
     public function test_admin_can_create_and_update_a_blog(): void
     {
         $this->actingAs($this->admin)

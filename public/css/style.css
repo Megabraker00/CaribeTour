@@ -14,7 +14,7 @@ h1, h2, h3, h4, h5, h6, .nav-item {
 }
 
 a {
-    text-decoration: done;
+    text-decoration: none;
     color: #444;
 }
 
@@ -48,6 +48,13 @@ header {
 
 footer {
     background-position: bottom;
+}
+
+footer a,
+footer a:visited,
+footer a:hover,
+footer a:focus {
+    color: #fff;
 }
 
 .top-shadow {
@@ -259,7 +266,7 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
   line-height: 1;
 }
 
-.btn-check:focus+.btn-primary, .btn-primary:focus {
+.btn-check:focus-visible+.btn-primary, .btn-primary:focus-visible {
     color: #fff;
     background-color: #ff9000;
     border-color: #ff9000;
@@ -267,17 +274,22 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
 }
 /* /buscador */
 
-/* focus */
-*:focus, *:focus-visible {
+/* focus: el anillo solo al tabular, no al hacer clic */
+*:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+*:focus-visible {
     border-color: #ff9000;
     outline: 2px solid #ff9000;
     box-shadow: 0 0 0 .25rem #ff900026;
-}        
+}
 
-input:focus,
-textarea:focus,
-select:focus,
-button:focus {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
     border-color: #ff9000;
     box-shadow: 0 0 0 .25rem #ff900026;
 }
@@ -297,19 +309,19 @@ button:focus {
     text-shadow: 0 0 0.35rem rgba(0, 0, 0, 0.65);
 }
 
-input[type="checkbox"]:focus,
-input[type="radio"]:focus {
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
     outline: 2px solid #ff9000;
     outline-offset: 2px;
 }
 
-.form-select:focus {
+.form-select:focus-visible {
     border-color: #ff9000;
     outline: 0;
     box-shadow: 0 0 0 .25rem #ff900026;
 }
 
-.form-control:focus {
+.form-control:focus-visible {
     color: #fff;
     background-color: #333;
     border-color: #ff9000;
@@ -549,10 +561,13 @@ ul.tour-info .bi {
 
 .site-pagination .page-link:focus {
     z-index: 3;
+    outline: 0;
+}
+
+.site-pagination .page-link:focus-visible {
     color: #444;
     background-color: #fff;
     border-color: #ff9000;
-    outline: 0;
     box-shadow: 0 0 0 0.25rem #ff900026;
 }
 
