@@ -56,8 +56,9 @@ php artisan serve
 
 - Web pública: `/`, destinos, servicios, blog, galería, contacto, reservas.
 - Admin: `/admin` (requiere login).
-- API v1: lectura pública de catálogo; altas/ediciones/borrados con `auth:sanctum`.
+- Calendario del tour: `GET /api/v1/products/{id}/itineraries`.
 - DataTables del admin: sesión autenticada.
+- Webhook de Stripe: `POST /api/stripe/webhook`.
 
 ## Comandos útiles
 

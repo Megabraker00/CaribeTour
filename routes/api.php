@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DatatableController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\StripeWebhookController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 /**
  * DataTables used by the authenticated admin panel (session cookie).
  */
@@ -36,20 +32,5 @@ Route::middleware(['web', 'auth', 'can:access-admin', 'role.writable'])->control
     Route::get('datatable/mensajes', 'contactMessages')->name('api.datatable.contact-messages');
 });
 
-Route::prefix('v1')->group(function () {
-    Route::apiResource('products', App\Http\Controllers\Api\ProductController::class)->only(['index', 'show']);
-    Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class)->only(['index', 'show']);
-    Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class)->only(['index', 'show']);
-    Route::apiResource('types', App\Http\Controllers\Api\TypeController::class)->only(['index', 'show']);
-    Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class)->only(['index', 'show']);
-    Route::get('products/{product}/itineraries', [App\Http\Controllers\Api\ProductController::class, 'tourItineraries'])
-        ->name('api.products.itineraries');
-
-    Route::middleware(['auth:sanctum', 'can:write-admin'])->group(function () {
-        Route::apiResource('products', App\Http\Controllers\Api\ProductController::class)->except(['index', 'show']);
-        Route::apiResource('categories', App\Http\Controllers\Api\CategoryController::class)->except(['index', 'show']);
-        Route::apiResource('statuses', App\Http\Controllers\Api\StatusController::class)->except(['index', 'show']);
-        Route::apiResource('types', App\Http\Controllers\Api\TypeController::class)->except(['index', 'show']);
-        Route::apiResource('terminals', App\Http\Controllers\Api\TerminalController::class)->except(['index', 'show']);
-    });
-});
+Route::get('v1/products/{product}/itineraries', [ProductController::class, 'tourItineraries'])
+    ->name('api.products.itineraries');

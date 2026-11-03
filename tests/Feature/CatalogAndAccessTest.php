@@ -34,16 +34,24 @@ class CatalogAndAccessTest extends TestCase
         $this->actingAs($user)->get('/admin')->assertOk();
     }
 
-    public function test_api_product_store_requires_authentication(): void
+    public function test_api_documentation_requires_an_admin_login(): void
     {
-        $this->postJson('/api/v1/products', [
-            'name' => 'Hack',
-            'slug' => 'hack',
-            'category_id' => 1,
-            'type_id' => 1,
-            'status_id' => 1,
-            'supplier_id' => 1,
-        ])->assertUnauthorized();
+        $this->get('/api/documentation')->assertRedirect(route('login'));
+        $this->get('/docs')->assertRedirect(route('login'));
+
+        $viewer = User::factory()->viewer()->create();
+        $this->actingAs($viewer)->get('/api/documentation')->assertOk();
+        $this->actingAs($viewer)->get('/docs')->assertOk();
+    }
+
+    public function test_removed_catalog_endpoints_are_not_available(): void
+    {
+        $this->getJson('/api/v1/products')->assertNotFound();
+        $this->getJson('/api/v1/categories')->assertNotFound();
+        $this->getJson('/api/v1/statuses')->assertNotFound();
+        $this->getJson('/api/v1/types')->assertNotFound();
+        $this->getJson('/api/v1/terminals')->assertNotFound();
+        $this->postJson('/api/v1/products', [])->assertNotFound();
     }
 
     public function test_blog_show_returns_404_for_drafts(): void

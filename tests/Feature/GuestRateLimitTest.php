@@ -9,6 +9,7 @@ use App\Models\User;
 use Database\Seeders\StatusSeeder;
 use Database\Seeders\TypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class GuestRateLimitTest extends TestCase
@@ -91,6 +92,46 @@ class GuestRateLimitTest extends TestCase
         ])->assertRedirect('/admin');
 
         $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_password_reset_does_not_reveal_whether_the_email_exists(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create();
+
+        $this->from(route('password.request'))
+            ->post(route('password.email'), ['email' => 'nadie@example.com'])
+            ->assertRedirect(route('password.request'))
+            ->assertSessionHas('status', __('passwords.sent'))
+            ->assertSessionDoesntHaveErrors();
+
+        $this->from(route('password.request'))
+            ->post(route('password.email'), ['email' => $user->email])
+            ->assertRedirect(route('password.request'))
+            ->assertSessionHas('status', __('passwords.sent'))
+            ->assertSessionDoesntHaveErrors();
+
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $this->from(route('password.request'))
+                ->post(route('password.email'), ['email' => 'otro'.$attempt.'@example.com'])
+                ->assertRedirect(route('password.request'));
+        }
+
+        $this->from(route('password.request'))
+            ->post(route('password.email'), ['email' => $user->email])
+            ->assertStatus(429)
+            ->assertSee(__('auth.too_many'));
+    }
+
+    public function test_search_results_allow_sixty_requests_per_minute_from_one_ip(): void
+    {
+        for ($attempt = 0; $attempt < 60; $attempt++) {
+            $this->get(route('resultados'))->assertOk();
+        }
+
+        $this->get(route('resultados'))
+            ->assertStatus(429)
+            ->assertSee(__('auth.too_many'));
     }
 
     public function test_closed_registration_returns_too_many_requests_after_five_posts(): void

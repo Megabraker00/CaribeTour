@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
 {
@@ -19,4 +23,18 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+
+    /**
+     * La respuesta es la misma si el correo existe o no, para no revelar las cuentas.
+     */
+    public function sendResetLinkEmail(Request $request): JsonResponse|RedirectResponse
+    {
+        $this->validateEmail($request);
+
+        $this->broker()->sendResetLink(
+            $this->credentials($request)
+        );
+
+        return $this->sendResetLinkResponse($request, Password::RESET_LINK_SENT);
+    }
 }

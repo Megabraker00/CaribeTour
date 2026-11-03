@@ -611,8 +611,7 @@ class ReservationFlowTest extends TestCase
         $this->assertFalse(Product::query()->publicVisibleTour()->whereKey($product->id)->exists());
 
         $this->getJson('/api/v1/products/'.$product->id.'/itineraries?month=10&year=2026')
-            ->assertOk()
-            ->assertJsonCount(0, 'data');
+            ->assertNotFound();
     }
 
     /**
