@@ -43,6 +43,35 @@ class ReservationFlowTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_reservation_form_names_required_fields_and_announces_the_total(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary();
+
+        $this->get(route('reservation.create', [$product, $itinerary]))
+            ->assertOk()
+            ->assertSee('Todos los campos son obligatorios, excepto las observaciones.', false)
+            ->assertSee('autocomplete="section-titular email"', false)
+            ->assertSee('autocomplete="section-titular tel"', false)
+            ->assertSee('id="reservation-total"', false)
+            ->assertSee('aria-live="polite"', false);
+    }
+
+    public function test_reservation_errors_stay_on_the_field(): void
+    {
+        [$product, $itinerary] = $this->makeTourWithItinerary();
+        $payload = $this->reservationPayload($itinerary);
+        $payload['customer_name'] = '';
+
+        $this->followingRedirects()
+            ->from(route('reservation.create', [$product, $itinerary]))
+            ->post(route('reservation.store', [$product, $itinerary]), $payload)
+            ->assertOk()
+            ->assertSee('aria-invalid="true"', false)
+            ->assertSee('aria-describedby="customer_name-error"', false)
+            ->assertSee('id="customer_name-error"', false)
+            ->assertSee('El campo nombre del titular es obligatorio.', false);
+    }
+
     public function test_sold_out_departure_explains_there_are_no_seats(): void
     {
         [$product, $itinerary] = $this->makeTourWithItinerary(0);

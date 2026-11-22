@@ -33,9 +33,9 @@
                             @include('components.blog-author', ['blog' => $blog])
                         </div>
                         <div class="card-footer">
-                            <i class="bi bi-chat-right-text-fill"></i> Comentarios 
+                            <i class="bi bi-chat-right-text-fill" aria-hidden="true"></i> Comentarios 
                             <span class="badge rounded-pill bg-secondary ms-2">75</span>
-                            <i class="bi bi-eye-fill"></i>3.654
+                            <i class="bi bi-eye-fill" aria-hidden="true"></i>3.654
 
                             <div title="Etiquetas">
                                 <span class="badge bg-primary">Primary</span>

@@ -122,6 +122,10 @@ class SeoMetaTest extends TestCase
 
         $home = $this->get(route('inicio'))->assertOk()->getContent();
         $this->assertOneHeading($home, 'Explora el mundo con CaribeTour');
+        $heading = strpos($home, '<h1');
+        $this->assertNotFalse($heading);
+        $this->assertStringNotContainsString('<h5', substr($home, 0, $heading));
+        $this->assertStringContainsString('Encuentra tu Destino', $home);
         $this->assertJsonLdInHead($home);
         $this->assertStringContainsString('"@type":"Organization"', $home);
         $this->assertStringNotContainsString('SearchAction', $home);
@@ -163,6 +167,8 @@ class SeoMetaTest extends TestCase
         $this->assertStringContainsString('images/tours/centro.jpg', $tourPage);
         $this->assertStringNotContainsString('og-default.jpg', $tourPage);
         $this->assertStringNotContainsString('tour.html', $tourPage);
+        $this->assertStringContainsString('id="monthTitle"', $tourPage);
+        $this->assertStringContainsString('aria-live="polite"', $tourPage);
         $this->assertStringNotContainsString('Productos relacionados', $tourPage);
 
         $postPage = $this->get(route('blogs.show', ['post' => $post->slug]))->assertOk()->getContent();

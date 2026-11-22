@@ -16,37 +16,37 @@
 
                     <li class="nav-item">
                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#vuelos" type="button">
-                            <i class="bi bi-airplane-fill"></i> Vuelos
+                            <i class="bi bi-airplane-fill" aria-hidden="true"></i> Vuelos
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#excursiones" type="button">
-                            <i class="bi bi-map-fill"></i> Excursiones
+                            <i class="bi bi-map-fill" aria-hidden="true"></i> Excursiones
                         </button>
                     </li>
                     
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#hoteles" type="button">
-                            <i class="bi bi-building-fill-check"></i> Hoteles
+                            <i class="bi bi-building-fill-check" aria-hidden="true"></i> Hoteles
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cruceros" type="button">
-                            <i class="bi bi-train-freight-front-fill"></i> Cruceros
+                            <i class="bi bi-train-freight-front-fill" aria-hidden="true"></i> Cruceros
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#seguros" type="button">
-                            <i class="bi bi-shield-lock-fill"></i> Seguros
+                            <i class="bi bi-shield-lock-fill" aria-hidden="true"></i> Seguros
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trenes" type="button">
-                            <i class="bi bi-train-front-fill"></i> Trenes
+                            <i class="bi bi-train-front-fill" aria-hidden="true"></i> Trenes
                         </button>
                     </li>
 
@@ -54,7 +54,7 @@
 
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#souvenirs" type="button">
-                            <i class="bi bi-gift-fill"></i> Souvenirs
+                            <i class="bi bi-gift-fill" aria-hidden="true"></i> Souvenirs
                         </button>
                     </li>
 

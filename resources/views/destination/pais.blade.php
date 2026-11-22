@@ -54,9 +54,9 @@
                         </div>
                         <div class="card-footer">
                             <h5 class="card-title" title="{{$subCategory->name}}">{{$subCategory->name}}</h5>
-                            <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$subCategory->name}} - {{$category->name}}"><i class="bi bi-geo-alt-fill"></i> <small> {{$subCategory->name}} - {{$category->name}}</small></div>
+                            <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$subCategory->name}} - {{$category->name}}"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <small> {{$subCategory->name}} - {{$category->name}}</small></div>
                             @if (isset($prices[$subCategory->id]))
-                                <i class="bi bi-tag-fill"></i> Desde <span class="price" title="Precio desde {{ $prices[$subCategory->id] }}&euro;">{{ $prices[$subCategory->id] }}&euro;</span>
+                                <i class="bi bi-tag-fill" aria-hidden="true"></i> Desde <span class="price" title="Precio desde {{ $prices[$subCategory->id] }}&euro;">{{ $prices[$subCategory->id] }}&euro;</span>
                             @endif
                         </div>
                     </div>

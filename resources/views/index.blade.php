@@ -77,12 +77,18 @@
                                 <h5 class="card-title" title="{{$tour->name}}">{{$tour->name}}</h5>
 
                                 <ul class="tour-info">
-                                    <li title="Categoría: 5 estrellas"> <span class="star-{{ $tour->stars() }} fs-6"></span> </li>
+                                    <li title="{{ $tour->starsLabel() }}">
+                                        @if ($tour->stars() > 0)
+                                            <span class="star-{{ $tour->stars() }} fs-6" role="img" aria-label="{{ $tour->starsLabel() }}"></span>
+                                        @else
+                                            <span class="text-muted small">Sin clasificar</span>
+                                        @endif
+                                    </li>
                                     <li class="text-muted" title="Destino: {{$tour->category}} - {{$tour->category?->parentCategory}}">
-                                        <i class="bi bi-geo-alt-fill"></i><small>{{$tour->category}}</small>
+                                        <i class="bi bi-geo-alt-fill" aria-hidden="true"></i><small>{{$tour->category}}</small>
                                     </li>
                                     <li title="Precio por persona">
-                                        <i class="bi bi-tag-fill"></i>Desde <span class="price" title="Precio desde {{ $cheapItinerary->fullPrice() }}&euro;">{{ $cheapItinerary->fullPrice() }}&euro;</span>
+                                        <i class="bi bi-tag-fill" aria-hidden="true"></i>Desde <span class="price" title="Precio desde {{ $cheapItinerary->fullPrice() }}&euro;">{{ $cheapItinerary->fullPrice() }}&euro;</span>
                                     </li>
                                 </ul>
                             </div>

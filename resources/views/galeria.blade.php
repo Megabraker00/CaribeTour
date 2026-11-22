@@ -20,7 +20,7 @@
                         data-type="image">
                         <img src="{{ asset($img->path) }}?250"
                             class="img-fluid img-thumbnail rounded shadow-sm zoom"
-                            alt=""
+                            alt="{{ filled($img->name) ? $img->name : 'Foto de la galería' }}"
                             loading="lazy"
                             decoding="async">
                     </a>

@@ -34,6 +34,11 @@ class ContactController extends Controller
             'subject' => ['required', 'string', 'max:150'],
             'message' => ['required', 'string', 'max:5000'],
             'product' => ['nullable', 'string', 'max:255'],
+        ], [], [
+            'name' => 'nombre',
+            'email' => 'correo electrónico',
+            'subject' => 'asunto',
+            'message' => 'mensaje',
         ]);
 
         $tour = $this->publicTour($data['product'] ?? null);

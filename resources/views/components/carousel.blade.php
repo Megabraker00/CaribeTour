@@ -20,9 +20,12 @@
                                 <a href="{{ $href }}" class="home-slide-link" @if ($external) target="_blank" rel="noopener noreferrer" @endif>
                                     <img src="{{ asset($slide->image_path) }}" class="d-block w-100" alt="{{ $slide->title }}" @unless ($loop->first) loading="lazy" @endunless>
                                     <div class="carousel-caption">
-                                        <h5>{{ $slide->title }}</h5>
+                                        <p class="h5 mb-0">{{ $slide->title }}</p>
                                         @if ($slide->text)
                                             <p class="mb-0">{{ $slide->text }}</p>
+                                        @endif
+                                        @if ($external)
+                                            <span class="visually-hidden">Se abre en una pestaña nueva.</span>
                                         @endif
                                     </div>
                                 </a>

@@ -34,6 +34,8 @@ class GalleryPaginationTest extends TestCase
             ->assertSee('1–12 de 13', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('aria-label="Siguiente"', false)
+            ->assertSee('alt="Foto 1"', false)
+            ->assertDontSee('alt=""', false)
             ->assertDontSee('Mostrando', false);
     }
 }

@@ -12,7 +12,8 @@
             <a href="{{ $link['url'] }}" title="{{ $link['label'] }}"
                 target="_blank" rel="noopener noreferrer"
                 class="text-decoration-none ms-1">
-                <i class="{{ $link['icon'] }}" style="{{ $link['style'] }}"></i>
+                <i class="{{ $link['icon'] }}" style="{{ $link['style'] }}" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ $link['label'] }} (se abre en una pestaña nueva)</span>
             </a>
         @endforeach
     </span>

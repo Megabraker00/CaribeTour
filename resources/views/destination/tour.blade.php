@@ -11,13 +11,6 @@
 @endpush
 
 @section('content')
-    @php
-        $tourStars = isset($tour->meta['stars']) ? (int) $tour->meta['stars'] : 0;
-        $tourStars = max(0, min(5, $tourStars));
-        $tourStarsTitle = $tourStars === 0
-            ? 'Sin clasificación por estrellas'
-            : 'Categoría: '.$tourStars.' '.($tourStars === 1 ? 'estrella' : 'estrellas');
-    @endphp
     <!-- container -->
 
     <section class="container my-4">
@@ -78,16 +71,16 @@
                 <hr>
 
                 <ul class="tour-info">
-                    <li title="{{ $tourStarsTitle }}"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong>
-                        @if ($tourStars > 0)
-                            <span class="star-{{ $tourStars }} fs-6" role="img" aria-label="{{ $tourStarsTitle }}"></span>
+                    <li title="{{ $tour->starsLabel() }}"><i class="bi bi-trophy-fill" aria-hidden="true"></i><strong>Categoría:</strong>
+                        @if ($tour->stars() > 0)
+                            <span class="star-{{ $tour->stars() }} fs-6" role="img" aria-label="{{ $tour->starsLabel() }}"></span>
                         @else
                             <span class="text-muted small">Sin clasificar</span>
                         @endif
                     </li>
-                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$tour->category}}</li>
+                    <li><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><strong>Destino:</strong> {{$tour->category}}</li>
                     <li>
-                        <i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong>
+                        <i class="bi bi-arrow-up-right-square-fill" aria-hidden="true"></i><strong>Salida:</strong>
                         @if ($tourDeparture)
                             {{ ucfirst(\Carbon\Carbon::parse($tourDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}
                         @else
@@ -95,22 +88,22 @@
                         @endif
                     </li>
                     <li>
-                        <i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong>
+                        <i class="bi bi-arrow-down-left-square-fill" aria-hidden="true"></i><strong>Regreso:</strong>
                         @if ($tourReturn)
                             {{ ucfirst(\Carbon\Carbon::parse($tourReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}
                         @else
                             <span class="text-muted">—</span>
                         @endif
                     </li>
-                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{ $days ?? '—' }} Días - {{ $nights ?? '—' }} Noches</li>
-                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">@if ($price !== null){{ $price }}&euro;@else<span class="text-muted">Consultar</span>@endif</span></li>
+                    <li><i class="bi bi-calendar-week-fill" aria-hidden="true"></i><strong>Duración:</strong> {{ $days ?? '—' }} Días - {{ $nights ?? '—' }} Noches</li>
+                    <li title="Precio por persona"><i class="bi bi-tag-fill" aria-hidden="true"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">@if ($price !== null){{ $price }}&euro;@else<span class="text-muted">Consultar</span>@endif</span></li>
                 </ul>
 
                 <div class="mt-4">
                     @if ($firstDate)
                         <a href="{{ route('reservation.create', ['product' => $tour->slug, 'itinerary' => $firstDate->id]) }}" class="btn btn-primary me-2">Reservar Fechas</a>
                     @endif
-                    <a href="{{ route('contacto', ['tour' => $tour->slug]) }}" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
+                    <a href="{{ route('contacto', ['tour' => $tour->slug]) }}#name" class="btn btn-secondary" title="Realizar una consulta sobre este tour">Consultar</a>
                 </div>
             </div>
             <!-- /description -->
@@ -123,12 +116,12 @@
             <div class="col-md-12 col-lg-6 col-xl-6">
 
                 @if (!empty($tour->meta['description']))
-                    <h5><i class="bi bi-card-text"></i> Descripción</h5>
+                    <h5><i class="bi bi-card-text" aria-hidden="true"></i> Descripción</h5>
                     <div class="tour-description mb-4">{!! $tour->meta['description'] !!}</div>
                 @endif
 
                 @if(!empty($tour->meta['includes']))
-                    <h5><i class="bi bi-card-checklist"></i> Incluye</h5>
+                    <h5><i class="bi bi-card-checklist" aria-hidden="true"></i> Incluye</h5>
                     <ul>
                         @foreach($tour->meta['includes'] as $include)
                             <li>{{ $include }}</li>
@@ -149,18 +142,18 @@
                         <thead>
                             <tr>
                                 <th>
-                                    <button id="prevMonth" class="btn btn-primary" title="Mes anterior">
-                                        <i class="bi bi-arrow-left"></i>
+                                    <button id="prevMonth" type="button" class="btn btn-primary" title="Mes anterior" aria-label="Mes anterior">
+                                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
                                     </button>
                                 </th>
 
                                 <th colspan="5" class="text-center">
-                                    <h4 id="monthTitle" class="mb-0">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
+                                    <h4 id="monthTitle" class="mb-0" aria-live="polite" aria-atomic="true">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
                                 </th>
 
                                 <th>
-                                    <button id="nextMonth" class="btn btn-primary" title="Mes siguiente">
-                                        <i class="bi bi-arrow-right"></i>
+                                    <button id="nextMonth" type="button" class="btn btn-primary" title="Mes siguiente" aria-label="Mes siguiente">
+                                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                     </button>
                                 </th>
                             </tr>
@@ -264,7 +257,10 @@
 
             // Función para pintar el calendario
             function renderCalendar() {
-                monthTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+                const nextMonthTitle = `${monthNames[viewMonth]} ${viewYear}`;
+                if (monthTitle.textContent !== nextMonthTitle) {
+                    monthTitle.textContent = nextMonthTitle;
+                }
                 calendarBody.innerHTML = '';
 
                 const firstDay = new Date(viewYear, viewMonth, 1);
