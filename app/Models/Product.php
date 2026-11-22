@@ -170,7 +170,19 @@ class Product extends Model
     {
         $stars = isset($this->meta['stars']) ? (int) $this->meta['stars'] : 0;
         $stars = max(0, min(5, $stars));
+
         return $stars;
+    }
+
+    public function starsLabel(): string
+    {
+        $stars = $this->stars();
+
+        if ($stars === 0) {
+            return 'Sin clasificación por estrellas';
+        }
+
+        return 'Categoría: '.$stars.' '.($stars === 1 ? 'estrella' : 'estrellas');
     }
 
     /**

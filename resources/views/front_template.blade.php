@@ -121,6 +121,7 @@
         }
 
         .tour-search-form .form-title h5,
+        .tour-search-form .form-title .h5,
         .tour-search-form label {
             color: #444;
             text-shadow: none;
@@ -147,6 +148,7 @@
         }
 
         .home-carousel .carousel-caption h5,
+        .home-carousel .carousel-caption .h5,
         .home-carousel .carousel-caption p,
         .home-carousel a.home-slide-link,
         .home-carousel a.home-slide-link:hover,
@@ -161,6 +163,24 @@
             object-fit: cover;
             object-position: center;
         }
+
+        .skip-link {
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            z-index: 1080;
+            padding: 0.5rem 1rem;
+            background: #fff;
+            color: #333;
+            border: 2px solid #333;
+            border-radius: 0.25rem;
+            transform: translateY(-150%);
+        }
+
+        .skip-link:focus {
+            transform: translateY(0.5rem);
+            color: #333;
+        }
     </style>
 
     <link rel="preload" as="image" href="{{ asset('images/site_bg.jpg') }}" fetchpriority="high">
@@ -171,6 +191,8 @@
 
 </head>
 <body class="min-vh-100 d-flex flex-column">
+
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <header class="bg-palm">
 
@@ -190,7 +212,7 @@
                 <!-- Botón hamburguesa -->
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Abrir menú">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -200,42 +222,48 @@
 
                         <li class="nav-item">
                             <a href="{{ route('inicio') }}"
-                            class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}"
+                            @if (request()->routeIs('inicio')) aria-current="page" @endif>
                                 <strong>INICIO</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('destinos') }}"
-                            class="nav-link {{ request()->routeIs('destinos*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('destinos*') ? 'active' : '' }}"
+                            @if (request()->routeIs('destinos*')) aria-current="page" @endif>
                                 <strong>DESTINOS</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('servicios') }}"
-                            class="nav-link {{ request()->routeIs('servicios*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('servicios*') ? 'active' : '' }}"
+                            @if (request()->routeIs('servicios*')) aria-current="page" @endif>
                                 <strong>SERVICIOS</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('blogs') }}"
-                            class="nav-link {{ request()->routeIs('blogs*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('blogs*') ? 'active' : '' }}"
+                            @if (request()->routeIs('blogs*')) aria-current="page" @endif>
                                 <strong>BLOG</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('galeria') }}"
-                            class="nav-link {{ request()->routeIs('galeria') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('galeria') ? 'active' : '' }}"
+                            @if (request()->routeIs('galeria')) aria-current="page" @endif>
                                 <strong>GALERÍA</strong>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="{{ route('contacto') }}"
-                            class="nav-link {{ request()->routeIs('contacto') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('contacto') ? 'active' : '' }}"
+                            @if (request()->routeIs('contacto')) aria-current="page" @endif>
                                 <strong>CONTACTOS</strong>
                             </a>
                         </li>
@@ -252,7 +280,7 @@
 
     </header>
 
-    <main class="flex-fill top-bottom-shadow">
+    <main id="contenido" tabindex="-1" class="flex-fill top-bottom-shadow">
 
         @if ($publicCrumbs !== [])
             <x-breadcrumbs :crumbs="$publicCrumbs" />
@@ -287,6 +315,11 @@
     @yield('custom-js')
     @stack('scripts')
     <script>
+        const firstInvalidField = document.querySelector('[aria-invalid="true"]');
+        if (firstInvalidField) {
+            firstInvalidField.focus();
+        }
+
         document.querySelectorAll('form[data-disable-on-submit]').forEach(function (form) {
             form.addEventListener('submit', function () {
                 form.querySelectorAll('[type="submit"]').forEach(function (button) {

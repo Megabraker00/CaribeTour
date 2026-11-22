@@ -48,6 +48,41 @@ class ContactMessageTest extends TestCase
             ->assertSee('Hemos recibido tu mensaje. Te responderemos lo antes posible.');
     }
 
+    public function test_contact_page_names_its_fields_and_the_office_details(): void
+    {
+        $this->get(route('contacto'))
+            ->assertOk()
+            ->assertSee('Todos los campos son obligatorios.', false)
+            ->assertSee('autocomplete="name"', false)
+            ->assertSee('autocomplete="email"', false)
+            ->assertSee('href="tel:+1234567890"', false)
+            ->assertSee('se abre en una pestaña nueva', false)
+            ->assertSee('Saltar al contenido', false)
+            ->assertSee('href="#contenido"', false)
+            ->assertSee('aria-label="Abrir menú"', false)
+            ->assertSee('aria-current="page"', false)
+            ->assertDontSee('Toggle navigation', false)
+            ->assertDontSee('autofocus', false);
+    }
+
+    public function test_contact_errors_are_tied_to_the_fields(): void
+    {
+        $this->followingRedirects()
+            ->from(route('contacto'))
+            ->post(route('contacto.store'), [
+                'name' => '',
+                'email' => 'no-es-un-correo',
+                'subject' => '',
+                'message' => '',
+            ])
+            ->assertOk()
+            ->assertSee('aria-invalid="true"', false)
+            ->assertSee('aria-describedby="name-error"', false)
+            ->assertSee('id="name-error"', false)
+            ->assertSee('id="email-error"', false)
+            ->assertSee('El campo nombre es obligatorio.', false);
+    }
+
     public function test_contact_form_requires_name_email_and_message(): void
     {
         $this->from(route('contacto'))
@@ -166,16 +201,22 @@ class ContactMessageTest extends TestCase
 
         $this->get(route('destinos.provincia', ['country' => 'mexico', 'province' => 'cancun']))
             ->assertOk()
-            ->assertSee($inquiry, false);
+            ->assertSee($inquiry.'#name', false);
 
         $this->get(route('destinos.tour', ['country' => 'mexico', 'province' => 'cancun', 'tour' => $tour->slug]))
             ->assertOk()
-            ->assertSee($inquiry, false);
+            ->assertSee($inquiry.'#name', false);
+
+        $this->get(route('resultados'))
+            ->assertOk()
+            ->assertSee($inquiry.'#name', false);
 
         $this->get($inquiry)
             ->assertOk()
             ->assertSee('value="'.$tour->name.'"', false)
-            ->assertSee('value="'.$tour->slug.'"', false);
+            ->assertSee('value="'.$tour->slug.'"', false)
+            ->assertSee('id="name"', false)
+            ->assertDontSee('autofocus', false);
 
         $this->post(route('contacto.store'), [
             'name' => 'Ana Pérez',

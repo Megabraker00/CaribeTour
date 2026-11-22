@@ -22,27 +22,33 @@
                             <h5 class="card-title" title="{{$product->name}}">{{$product->name}}</h5>
                             <div class="card-subtitle mb-2 text-muted" title="Resumen">
                                 <ul class="tour-info">
-                                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
-                                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$product->category}} - {{$product->category?->parentCategory}}</li>
-                                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($productDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($productReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
+                                    <li title="{{ $product->starsLabel() }}"><i class="bi bi-trophy-fill" aria-hidden="true"></i><strong>Categoría:</strong>
+                                        @if ($product->stars() > 0)
+                                            <span class="star-{{ $product->stars() }} fs-6" role="img" aria-label="{{ $product->starsLabel() }}"></span>
+                                        @else
+                                            <span class="text-muted small">Sin clasificar</span>
+                                        @endif
+                                    </li>
+                                    <li><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><strong>Destino:</strong> {{$product->category}} - {{$product->category?->parentCategory}}</li>
+                                    <li><i class="bi bi-arrow-up-right-square-fill" aria-hidden="true"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($productDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                                    <li><i class="bi bi-arrow-down-left-square-fill" aria-hidden="true"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($productReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                                    <li><i class="bi bi-calendar-week-fill" aria-hidden="true"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
                                     @if(!empty($product->meta['includes']))
-                                    <i class="bi bi-ui-checks"></i><strong>Incluye: </strong>
+                                    <i class="bi bi-ui-checks" aria-hidden="true"></i><strong>Incluye: </strong>
                                         <ul>
                                             @foreach($product->meta['includes'] as $include)
                                                 <li>{{ $include }}</li>
                                             @endforeach
                                         </ul>
                                     @endif
-                                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
+                                    <li title="Precio por persona"><i class="bi bi-tag-fill" aria-hidden="true"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
                                 </ul>
                             </div>
                             
                         </div>
                         <div class="card-footer fs-3">                            
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
+                                <i class="bi bi-cash-stack" aria-hidden="true"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                             </strong>                            
                         </div>
                     </div>
@@ -59,7 +65,7 @@
 
                         <div class="card-body">
                             <div class="mb-4">
-                                <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;" aria-hidden="true"></i>
                             </div>
                             <h1 class="display-5 fw-bold">¡Pago Confirmado!</h1>
 
@@ -80,7 +86,7 @@
                         <div class="col-sm-12 col-md-12 col-lg-8">
                             <div class="card shadow-sm mt-4">
                                 <div class="card-header bg-white py-4">
-                                    <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Detalles</h4>
+                                    <h4 class="mb-0"><i class="bi bi-info-circle me-2" aria-hidden="true"></i>Detalles</h4>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled mb-0">
@@ -117,7 +123,7 @@
                                     </div>
                                     <div class="d-grid gap-2">
                                         <button onclick="window.print();" class="btn btn-outline-dark">
-                                            <i class="bi bi-printer me-2"></i>Imprimir Recibo
+                                            <i class="bi bi-printer me-2" aria-hidden="true"></i>Imprimir Recibo
                                         </button>
                                         <a href="{{ url('/') }}" class="btn btn-primary">
                                             Volver al Inicio

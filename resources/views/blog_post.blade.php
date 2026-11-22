@@ -49,15 +49,15 @@
 
                 <div id="rrss text-center" class="fs-4">
                     <h5>Compartir en:</h5>
-                    <i class="bi bi-facebook" style="color: rgb(6, 82, 223);" title="Facebook"></i>
-                    <i class="bi bi-instagram" style="color: rgb(233, 62, 147);" title="Instagram"></i>
-                    <i class="bi bi-linkedin" style="color: #0a66c2;" title="Linkedin"></i>
-                    <i class="bi bi-twitter" style="color: #45a3fe;" title="Twitter"></i>
-                    <i class="bi bi-twitter-x" style="color: black;" title="X"></i>
-                    <i class="bi bi-telegram" style="color: #45a3fe;" title="Telegram"></i>
-                    <i class="bi bi-whatsapp" style="color: rgb(50, 126, 50);" title="Whatsapp"></i>
-                    <i class="bi bi-envelope-at-fill text-secondary"  title="Enviar por email"></i>
-                    <i class="bi bi-share-fill" title="Copiar enlace"></i>
+                    <i class="bi bi-facebook" style="color: rgb(6, 82, 223);" title="Facebook" aria-hidden="true"></i>
+                    <i class="bi bi-instagram" style="color: rgb(233, 62, 147);" title="Instagram" aria-hidden="true"></i>
+                    <i class="bi bi-linkedin" style="color: #0a66c2;" title="Linkedin" aria-hidden="true"></i>
+                    <i class="bi bi-twitter" style="color: #45a3fe;" title="Twitter" aria-hidden="true"></i>
+                    <i class="bi bi-twitter-x" style="color: black;" title="X" aria-hidden="true"></i>
+                    <i class="bi bi-telegram" style="color: #45a3fe;" title="Telegram" aria-hidden="true"></i>
+                    <i class="bi bi-whatsapp" style="color: rgb(50, 126, 50);" title="Whatsapp" aria-hidden="true"></i>
+                    <i class="bi bi-envelope-at-fill text-secondary"  title="Enviar por email" aria-hidden="true"></i>
+                    <i class="bi bi-share-fill" title="Copiar enlace" aria-hidden="true"></i>
 
                 </div>
 
@@ -91,7 +91,7 @@
                 </form>
 
                 <h4>
-                    <i class="bi bi-chat-right-text-fill"></i> Comentarios 
+                    <i class="bi bi-chat-right-text-fill" aria-hidden="true"></i> Comentarios 
                     <span class="badge rounded-pill bg-secondary ms-2">75</span>
                 </h4>
                 <hr>
@@ -107,8 +107,8 @@
                                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus eaque unde molestias culpa? Tempore excepturi odio adipisci dicta molestias explicabo, debitis eveniet reprehenderit nulla nemo inventore quae sequi. Ipsum, voluptates!
                             </p>
                             <div>
-                                <i class="bi bi-hand-thumbs-up-fill" title="Me Gusta"></i>
-                                <i class="bi bi-hand-thumbs-down-fill" title="No me gusta"></i>
+                                <i class="bi bi-hand-thumbs-up-fill" title="Me Gusta" aria-hidden="true"></i>
+                                <i class="bi bi-hand-thumbs-down-fill" title="No me gusta" aria-hidden="true"></i>
                                 <time datetime="19-09-2024">19-09-2024</time>
                             </div>
 
@@ -125,8 +125,8 @@
                                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus eaque unde molestias culpa? Tempore excepturi odio adipisci dicta molestias explicabo, debitis eveniet reprehenderit nulla nemo inventore quae sequi. Ipsum, voluptates!
                             </p>
                             <div>
-                                <i class="bi bi-hand-thumbs-up-fill"></i>
-                                <i class="bi bi-hand-thumbs-down-fill"></i>
+                                <i class="bi bi-hand-thumbs-up-fill" aria-hidden="true"></i>
+                                <i class="bi bi-hand-thumbs-down-fill" aria-hidden="true"></i>
                                 <time datetime="19-09-2024">19-09-2024</time>
                             </div>
 

@@ -26,32 +26,32 @@
                 @if (session('success'))
                     <div class="alert alert-success" role="alert">{{ session('success') }}</div>
                 @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger" role="alert">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
                 <form action="{{ route('contacto.store') }}" method="post" data-disable-on-submit>
                     @csrf
+                    <p class="text-muted">Todos los campos son obligatorios.</p>
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label for="name" class="form-label">Nombre</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" maxlength="100" required placeholder="Tu nombre completo">
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" maxlength="100" required autocomplete="name" placeholder="Tu nombre completo" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror>
+                            @error('name')
+                                <div id="name-error" class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-6 mb-3">
                             <label for="email" class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" maxlength="255" required placeholder="Tu correo electrónico">
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" maxlength="255" required autocomplete="email" placeholder="Tu correo electrónico" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
+                            @error('email')
+                                <div id="email-error" class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="subject" class="form-label">Asunto</label>
-                        <input type="text" class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" value="{{ old('subject', $subject) }}" maxlength="150" required placeholder="Motivo de tu consulta">
+                        <input type="text" class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" value="{{ old('subject', $subject) }}" maxlength="150" required placeholder="Motivo de tu consulta" @error('subject') aria-invalid="true" aria-describedby="subject-error" @enderror>
+                        @error('subject')
+                            <div id="subject-error" class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     @if ($productSlug !== '')
                         <input type="hidden" name="product" value="{{ $productSlug }}">
@@ -59,7 +59,10 @@
 
                     <div class="mb-3">
                         <label for="message" class="form-label">Mensaje</label>
-                        <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="5" maxlength="5000" required placeholder="Escribe tu mensaje aquí">{{ old('message') }}</textarea>
+                        <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="5" maxlength="5000" required placeholder="Escribe tu mensaje aquí" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror>{{ old('message') }}</textarea>
+                        @error('message')
+                            <div id="message-error" class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <button type="submit" class="btn btn-primary">Enviar</button>
@@ -70,10 +73,10 @@
                 <h2>Información de contacto</h2>
                 <hr>
 
-                <p><i class="bi bi-geo-alt-fill"></i> <a href="https://maps.google.com/?q=calle+falsa+123+alcobendas+madrid+28100" target="_blank"> Calle Falsa 123, Ciudad, País</a></p>
-                <p><i class="bi bi-telephone-fill"></i> Teléfono: +1 234 567 890</p>
-                <p><i class="bi bi-envelope-fill"></i> Correo electrónico: <a href="mailto:info@caribetour.es">info@caribetour.es</a></p>
-                <p><i class="bi bi-clock-fill"></i> Horario de atención: Lunes a Viernes de 9:00 a 18:00</p>
+                <p><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <a href="https://maps.google.com/?q=calle+falsa+123+alcobendas+madrid+28100" target="_blank" rel="noopener noreferrer">Calle Falsa 123, Ciudad, País <small>(se abre en una pestaña nueva)</small></a></p>
+                <p><i class="bi bi-telephone-fill" aria-hidden="true"></i> Teléfono: <a href="tel:+1234567890">+1 234 567 890</a></p>
+                <p><i class="bi bi-envelope-fill" aria-hidden="true"></i> Correo electrónico: <a href="mailto:info@caribetour.es">info@caribetour.es</a></p>
+                <p><i class="bi bi-clock-fill" aria-hidden="true"></i> Horario de atención: Lunes a Viernes de 9:00 a 18:00</p>
             </div>
 
         </div>

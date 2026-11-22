@@ -24,27 +24,33 @@
                             <h5 class="card-title" title="{{$product->name}}">{{$product->name}}</h5>
                             <div class="card-subtitle mb-2 text-muted" title="Resumen">
                                 <ul class="tour-info">
-                                    <li title="Categoría: 5 estrellas"><i class="bi bi-trophy-fill"></i><strong>Categoría:</strong> <span class="star-5 fs-6"></span> </li>
-                                    <li><i class="bi bi-geo-alt-fill"></i><strong>Destino:</strong> {{$product->category}} - {{$product->category?->parentCategory}}</li>
-                                    <li><i class="bi bi-arrow-up-right-square-fill"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($productDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                                    <li><i class="bi bi-arrow-down-left-square-fill"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($productReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
-                                    <li><i class="bi bi-calendar-week-fill"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
+                                    <li title="{{ $product->starsLabel() }}"><i class="bi bi-trophy-fill" aria-hidden="true"></i><strong>Categoría:</strong>
+                                        @if ($product->stars() > 0)
+                                            <span class="star-{{ $product->stars() }} fs-6" role="img" aria-label="{{ $product->starsLabel() }}"></span>
+                                        @else
+                                            <span class="text-muted small">Sin clasificar</span>
+                                        @endif
+                                    </li>
+                                    <li><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><strong>Destino:</strong> {{$product->category}} - {{$product->category?->parentCategory}}</li>
+                                    <li><i class="bi bi-arrow-up-right-square-fill" aria-hidden="true"></i><strong>Salida:</strong> {{ ucfirst(\Carbon\Carbon::parse($productDeparture)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                                    <li><i class="bi bi-arrow-down-left-square-fill" aria-hidden="true"></i><strong>Regreso:</strong> {{ ucfirst(\Carbon\Carbon::parse($productReturn)->locale('es')->translatedFormat('l d \d\e F \d\e Y')) }}</li>
+                                    <li><i class="bi bi-calendar-week-fill" aria-hidden="true"></i><strong>Duración:</strong> {{$days}} Días - {{$nights}} Noches</li>
                                     @if(!empty($product->meta['includes']))
-                                    <i class="bi bi-ui-checks"></i><strong>Incluye: </strong>
+                                    <i class="bi bi-ui-checks" aria-hidden="true"></i><strong>Incluye: </strong>
                                         <ul>
                                             @foreach($product->meta['includes'] as $include)
                                                 <li>{{ $include }}</li>
                                             @endforeach
                                         </ul>
                                     @endif
-                                    <li title="Precio por persona"><i class="bi bi-tag-fill"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
+                                    <li title="Precio por persona"><i class="bi bi-tag-fill" aria-hidden="true"></i><strong class="fs-5">Precio por Persona: </strong><span class="fs-4 fw-bold">{{$price}}&euro;</span></li>
                                 </ul>
                             </div>
                             
                         </div>
                         <div class="card-footer fs-3">                            
                              <strong>
-                                <i class="bi bi-cash-stack"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
+                                <i class="bi bi-cash-stack" aria-hidden="true"></i> TOTAL:   <span title="Total a pagar">{{ $booking->formattedPassengersTotal() }}&euro;</span>
                             </strong>                            
                         </div>
                     </div>

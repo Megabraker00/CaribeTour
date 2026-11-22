@@ -1,5 +1,5 @@
 <div class="alert alert-info text-center shadow-sm">
-    <i class="bi bi-info-circle-fill me-2"></i>
+    <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
     {{ $slot }}
 </div>
 <div class="text-center">

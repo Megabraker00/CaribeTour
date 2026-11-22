@@ -12,18 +12,19 @@
                 <form action="{{ route('reservation.lookup.submit') }}" method="POST" class="card shadow-sm mb-4" data-disable-on-submit>
                     @csrf
                     <div class="card-body">
+                        <p class="text-muted">Todos los campos son obligatorios.</p>
                         <div class="mb-3">
                             <label for="external_ref" class="form-label">Localizador</label>
-                            <input type="text" class="form-control @error('external_ref') is-invalid @enderror" id="external_ref" name="external_ref" value="{{ old('external_ref') }}" required>
+                            <input type="text" class="form-control @error('external_ref') is-invalid @enderror" id="external_ref" name="external_ref" value="{{ old('external_ref') }}" required @error('external_ref') aria-invalid="true" aria-describedby="external_ref-error" @enderror>
                             @error('external_ref')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div id="external_ref-error" class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo del titular</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror>
                             @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div id="email-error" class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <button type="submit" class="btn btn-primary">Consultar</button>

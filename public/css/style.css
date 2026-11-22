@@ -93,18 +93,26 @@ footer a:focus {
 .btn-primary {
     background-color: #ff9000;
     border-color: #ff9000;
-    color: #fff;
+    color: #333;
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
     background-color: #ff9000;
     border-color: #ff9000;
-    color: #fff;
+    color: #333;
 }
 
-.btn-primary:hover {
+.btn-primary:focus {
+    color: #333;
+    background-color: #ff9000;
+    border-color: #ff9000;
+}
+
+.btn-primary:hover,
+.btn-primary:active {
     background-color: #F38A00;
     border-color: #F38A00;
+    color: #333;
 } 
 
 .navbar-brand img {
@@ -114,7 +122,14 @@ footer a:focus {
 .navbar-toggler { min-height: 40px; }
 
 .navbar-toggler {
-    border-color: rgba(255,255,255,0.6);
+    background-color: #24321a;
+    border-color: #24321a;
+}
+
+.navbar-nav.nav-pills {
+    /* background-color: rgba(36, 50, 26, 0.25); */
+    border-radius: 0.5rem;
+    padding: 0.25rem;
 }
 
 .navbar-toggler-icon {
@@ -140,11 +155,12 @@ footer a:focus {
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     background-color: #ff9000;
+    color: #333;
 }
 
 .nav-pills .nav-link:hover {
     background-color: #ff9000;
-    color: #f8f9fa;
+    color: #333;
 }
 
 .nav-link:focus {
@@ -221,6 +237,7 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
 }
 
 .tour-search-form .form-title h5,
+.tour-search-form .form-title .h5,
 .tour-search-form label {
     color: #444;
     text-shadow: none;
@@ -269,7 +286,7 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
 }
 
 .btn-check:focus-visible+.btn-primary, .btn-primary:focus-visible {
-    color: #fff;
+    color: #333;
     background-color: #ff9000;
     border-color: #ff9000;
     box-shadow: 0 0 0 .25rem #ff900026;
@@ -311,6 +328,7 @@ button:focus-visible {
 }
 
 .home-carousel .carousel-caption h5,
+.home-carousel .carousel-caption .h5,
 .home-carousel .carousel-caption p,
 .home-carousel a.home-slide-link,
 .home-carousel a.home-slide-link:hover,
