@@ -86,6 +86,17 @@
             box-shadow: 0 0 0 .25rem #ff900026;
         }
 
+        a:has(> .card) {
+            display: block;
+            border-radius: 0.25rem;
+        }
+
+        a:has(> .card):focus-visible {
+            border-color: #ff9000;
+            outline: 2px solid #ff9000;
+            box-shadow: 0 0 0 .25rem #ff900026;
+        }
+
         .btn:focus:not(:focus-visible) {
             box-shadow: none;
         }

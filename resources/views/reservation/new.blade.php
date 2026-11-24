@@ -241,7 +241,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="button" class="btn btn-outline-primary btn-sm" id="add-passenger" @disabled($quantity >= $maxPassengers)>
-                                <i class="bi bi-person-plus" aria-hidden="true"></i> Añadir pasajero
+                                <i class="bi bi-person-plus" aria-hidden="true"></i> Añadir otro pasajero
                             </button>
                         </div>
                     </div>

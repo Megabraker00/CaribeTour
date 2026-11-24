@@ -305,6 +305,19 @@ td:hover { /* TODO: resaltar sólo la celdas con precios */
     box-shadow: 0 0 0 .25rem #ff900026;
 }
 
+/* El enlace que envuelve la tarjeta es inline y el navegador no pinta su outline.
+   El radio es el de .card, para que el foco siga las esquinas como en .nav-link. */
+a:has(> .card) {
+    display: block;
+    border-radius: 0.25rem;
+}
+
+a:has(> .card):focus-visible {
+    border-color: #ff9000;
+    outline: 2px solid #ff9000;
+    box-shadow: 0 0 0 .25rem #ff900026;
+}
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,

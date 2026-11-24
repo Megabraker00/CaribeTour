@@ -49,3 +49,4 @@ Prioridad 4 — producto / UX (puede esperar)
 - [x] el anillo naranja de foco sale al hacer clic con el ratón. Que aparezca solo al navegar con el teclado
 - al pasar el cursor, cualquier celda de una tabla se pone amarilla. Limitarlo a las celdas de precio
 - [x] incluir los botones de exportar csv, exportar json, imprimir en las tablas (datatable) del admin
+- hacer pruebas de rendimiento con miles o millones de registros en la base de datos para ver que tal responde la app

@@ -53,7 +53,7 @@
                             <img src="{{ asset($provImgSrc) }}" alt="Imagen de {{$subCategory->name}}" title="{{$subCategory->name}}" class="card-img" loading="lazy" decoding="async">
                         </div>
                         <div class="card-footer">
-                            <h5 class="card-title" title="{{$subCategory->name}}">{{$subCategory->name}}</h5>
+                            <h2 class="h5 card-title fw-normal" title="{{$subCategory->name}}">{{$subCategory->name}}</h2>
                             <div class="card-subtitle mb-2 text-muted" title="Ubicado en {{$subCategory->name}} - {{$category->name}}"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <small> {{$subCategory->name}} - {{$category->name}}</small></div>
                             @if (isset($prices[$subCategory->id]))
                                 <i class="bi bi-tag-fill" aria-hidden="true"></i> Desde <span class="price" title="Precio desde {{ $prices[$subCategory->id] }}&euro;">{{ $prices[$subCategory->id] }}&euro;</span>
