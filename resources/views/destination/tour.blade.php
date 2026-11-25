@@ -116,12 +116,12 @@
             <div class="col-md-12 col-lg-6 col-xl-6">
 
                 @if (!empty($tour->meta['description']))
-                    <h5><i class="bi bi-card-text" aria-hidden="true"></i> Descripción</h5>
+                    <h2 class="h5 fw-normal"><i class="bi bi-card-text" aria-hidden="true"></i> Descripción</h2>
                     <div class="tour-description mb-4">{!! $tour->meta['description'] !!}</div>
                 @endif
 
                 @if(!empty($tour->meta['includes']))
-                    <h5><i class="bi bi-card-checklist" aria-hidden="true"></i> Incluye</h5>
+                    <h2 class="h5 fw-normal"><i class="bi bi-card-checklist" aria-hidden="true"></i> Incluye</h2>
                     <ul>
                         @foreach($tour->meta['includes'] as $include)
                             <li>{{ $include }}</li>
@@ -148,7 +148,7 @@
                                 </th>
 
                                 <th colspan="5" class="text-center">
-                                    <h4 id="monthTitle" class="mb-0" aria-live="polite" aria-atomic="true">{{ ucfirst(now()->translatedFormat('F Y')) }}</h4>
+                                    <h2 id="monthTitle" class="h4 mb-0 fw-normal" aria-live="polite" aria-atomic="true">{{ ucfirst(now()->translatedFormat('F Y')) }}</h2>
                                 </th>
 
                                 <th>

@@ -22,7 +22,7 @@
                             <img src="{{ asset($countryImgSrc) }}" alt="Imagen de {{$category->name}}" title="{{$category->name}}" class="card-img" loading="lazy" decoding="async">
                         </div>
                         <div class="card-footer">
-                            <h5 class="card-title" title="{{$category->name}}"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>{{$category->name}}</h5>
+                            <h2 class="h5 card-title fw-normal" title="{{$category->name}}"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>{{$category->name}}</h2>
                             @if (isset($prices[$category->id]))
                                 <i class="bi bi-tag-fill" aria-hidden="true"></i> Desde <span class="price" title="Precio desde {{ $prices[$category->id] }}&euro;">{{ $prices[$category->id] }}&euro;</span>
                             @endif

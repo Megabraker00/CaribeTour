@@ -125,6 +125,10 @@ class SeoMetaTest extends TestCase
         $heading = strpos($home, '<h1');
         $this->assertNotFalse($heading);
         $this->assertStringNotContainsString('<h5', substr($home, 0, $heading));
+        $this->assertStringNotContainsString('<h5', $home);
+        $this->assertStringNotContainsString('<h6', $home);
+        $this->assertStringContainsString('<h2 class="h4 border-bottom mb-4 fw-normal">Excursiones</h2>', $home);
+        $this->assertStringContainsString('<h3 class="h6 card-subtitle mb-2 text-muted fw-normal">', $home);
         $this->assertStringContainsString('Encuentra tu Destino', $home);
         $this->assertJsonLdInHead($home);
         $this->assertStringContainsString('"@type":"Organization"', $home);
@@ -167,7 +171,7 @@ class SeoMetaTest extends TestCase
         $this->assertStringContainsString('images/tours/centro.jpg', $tourPage);
         $this->assertStringNotContainsString('og-default.jpg', $tourPage);
         $this->assertStringNotContainsString('tour.html', $tourPage);
-        $this->assertStringContainsString('id="monthTitle"', $tourPage);
+        $this->assertStringContainsString('<h2 id="monthTitle" class="h4 mb-0 fw-normal"', $tourPage);
         $this->assertStringContainsString('aria-live="polite"', $tourPage);
         $this->assertStringNotContainsString('Productos relacionados', $tourPage);
 

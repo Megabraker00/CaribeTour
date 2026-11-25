@@ -74,7 +74,7 @@
                                 <img loading="lazy" src="{{ asset($tour->mainImage?->path ?? 'images/image_12.jpg') }}" alt="Imagen del {{$tour->name}}" title="{{$tour->name}}" class="img-aspect-4-3 card-img img-fluid">
                             </div>
                             <div class="card-footer">
-                                <h5 class="card-title" title="{{$tour->name}}">{{$tour->name}}</h5>
+                                <h2 class="h5 card-title fw-normal" title="{{$tour->name}}">{{$tour->name}}</h2>
 
                                 <ul class="tour-info">
                                     <li title="{{ $tour->starsLabel() }}">
@@ -110,13 +110,13 @@
 
                 <div class="col-md-3 mb-4">
                     <a href="{{ route('blogs') }}" class="text-decoration-none" title="Ver Todos Los Blogs">
-                        <h4 class="border-bottom mb-4">Blog de Viajes</h4>
+                        <h2 class="h4 border-bottom mb-4 fw-normal">Blog de Viajes</h2>
                     </a>
                     @if ($blog)
                         <div class="card">
                             <img loading="lazy" src="{{ asset($blog->mainImage()?->path ?? 'images/image_15.jpg') }}" class="img-aspect-4-3 card-img img-fluid" alt="{{ $blog->mainImageAlt() }}">
                             <div class="card-body">
-                                <h5 class="card-title">{{ $blog->name }}</h5>
+                                <h3 class="h5 card-title fw-normal">{{ $blog->name }}</h3>
                                 <p class="card-text">{!! $blog->excerptHtml(140) !!}</p>
                             </div>
                             <div class="card-footer">
@@ -128,7 +128,7 @@
 
                 <div class="col-md-6">
                     <a href="excursiones" class="text-decoration-none" title="Ver Todos Las Excursiones">
-                        <h4 class="border-bottom mb-4">Excursiones</h4>
+                        <h2 class="h4 border-bottom mb-4 fw-normal">Excursiones</h2>
                     </a>
                     <div class="row">
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-3">
@@ -137,7 +137,7 @@
                                     class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Excursiones">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Excusrsion al Páramo</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Excusrsion al Páramo</h3>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                                         class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Excursiones">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Galopando por el Caribe</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Galopando por el Caribe</h3>
                                 </div>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                                     class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Tocando el Cielo">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Tocando el Cielo</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Tocando el Cielo</h3>
                                 </div>
                             </div>
                         </div>
@@ -170,7 +170,7 @@
                                     class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Excursion al Páramo">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Excursion al Páramo</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Excursion al Páramo</h3>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                                     class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Galopando por el Caribe">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Galopando por el Caribe</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Galopando por el Caribe</h3>
                                 </div>
                             </div>
                         </div>
@@ -193,7 +193,7 @@
                                     class="img-aspect-4-3 card-img mb-2 img-fluid" alt="Tocando el Cielo">
                                 <div class="card-body">
 
-                                    <h6 class="card-subtitle mb-2 text-muted">Tocando el Cielo</h6>
+                                    <h3 class="h6 card-subtitle mb-2 text-muted fw-normal">Tocando el Cielo</h3>
                                 </div>
                             </div>
                             </a>
@@ -204,7 +204,7 @@
                 </div>
 
                 <div class="col-md-3 mb-4">
-                    <h4 class="border-bottom mb-4">Twitter o Instagram</h4>
+                    <h2 class="h4 border-bottom mb-4 fw-normal">Twitter o Instagram</h2>
 
                     <!-- <iframe src="https://www.instagram.com/p/C3FgE1Hti0o/"></iframe> -->
 
