@@ -172,7 +172,7 @@ class ReservationFlowTest extends TestCase
 
         $this->get(route('reservation.create', [$product, $itinerary]))
             ->assertOk()
-            ->assertSee('Añadir pasajero', false);
+            ->assertSee('Añadir otro pasajero', false);
 
         $this->post(route('reservation.store', [$product, $itinerary]), $this->reservationPayload($itinerary, 3))
             ->assertRedirect(route('reservation.payment', [$product, $itinerary]));
